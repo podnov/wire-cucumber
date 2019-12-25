@@ -13,6 +13,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.apache.http.HttpHeaders.ACCEPT;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +101,23 @@ public class WireCucumber implements En, AutoCloseable {
 		}
 	}
 
+	protected void createSteps() {
+		Given("a wire mock named {string}", setMockName());
+		Given("that wire mock handles the {word} verb with a url equal to {string}", bootstrapRequestMock());
+		Given("that wire mock accepts {string}", setMockAccepts());
+		Given("that wire mock content type is {string}", setMockContentType());
+		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
+		Given("that wire mock response content type is {string}", setMockResponseBody());
+		Given("that wire mock response body is {string}", setMockResponseBody());
+		Given("that wire mock is finalized", finalizeRequestMock());
+
+		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
+		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
+		Then("the request body should have been:", addRequestVerifierBody());
+		Then("the request body should have been empty", addRequestVerifierEmptyBody());
+		Then("my request is verified", verifyRequest());
+	}
+
 	protected WireCucumberRuntimeException createUnexpectedHttpVerbException(String httpVerb) {
 		String message = String.format("Unexpected http verb [%s]", httpVerb);
 		return new WireCucumberRuntimeException(message);
@@ -124,28 +142,8 @@ public class WireCucumber implements En, AutoCloseable {
 	}
 
 	public void initialize() {
-		String host = "localhost";
-
-		wireMockServer = new WireMockServer(options().dynamicPort());
-		wireMockServer.start();
-		int port = wireMockServer.port();
-		configureFor(host, port);
-
-		String message = String.format("wire-cucumber started on [%s:%s]", host, port);
-		logger.info(message);
-
-		Given("a wire mock named {string}", setMockName());
-		Given("that wire mock handles the {word} verb with a url equal to {string}", bootstrapRequestMock());
-		Given("that wire mock accepts {string}", setMockAccepts());
-		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
-		Given("that wire mock response content type is {string}", setMockResponseBody());
-		Given("that wire mock response body is {string}", setMockResponseBody());
-		Given("that wire mock is finalized", finalizeRequestMock());
-		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
-		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
-		Then("the request body should have been:", addRequestVerifierBody());
-		Then("the request body should have been empty", addRequestVerifierEmptyBody());
-		Then("my request is verified", verifyRequest());
+		startWireMockServer();
+		createSteps();
 	}
 
 	protected A1<String> setCurrentRequestVerifyBuilder() {
@@ -168,8 +166,14 @@ public class WireCucumber implements En, AutoCloseable {
 	}
 
 	protected A1<String> setMockAccepts() {
-		return (headerPattern) -> {
-			currentRequestBuilder.withHeader(ACCEPT, equalTo(headerPattern));
+		return (value) -> {
+			currentRequestBuilder.withHeader(ACCEPT, equalTo(value));
+		};
+	}
+
+	protected A1<String> setMockContentType() {
+		return (value) -> {
+			currentRequestBuilder.withHeader(CONTENT_TYPE, equalTo(value));
 		};
 	}
 
@@ -189,6 +193,18 @@ public class WireCucumber implements En, AutoCloseable {
 		return (count) -> {
 			expectedMockInvocationCount = count;
 		};
+	}
+
+	protected void startWireMockServer() {
+		String host = "localhost";
+
+		wireMockServer = new WireMockServer(options().dynamicPort());
+		wireMockServer.start();
+		int port = wireMockServer.port();
+		configureFor(host, port);
+
+		String message = String.format("wire-cucumber started on [%s:%s]", host, port);
+		logger.info(message);
 	}
 
 	protected A0 verifyRequest() {
