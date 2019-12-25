@@ -39,8 +39,8 @@ public class WireCucumber implements En, AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
-	private MappingBuilder currentRequestStub;
-	private ResponseDefinitionBuilder currentRequestStubResponse;
+	private MappingBuilder currentRequestBuilder;
+	private ResponseDefinitionBuilder currentResponseBuilder;
 	private RequestPatternBuilder currentRequestVerifyBuilder;
 	private WireMockServer wireMockServer;
 
@@ -97,23 +97,23 @@ public class WireCucumber implements En, AutoCloseable {
 
 			switch (httpVerb) {
 			case "DELETE":
-				currentRequestStub = delete(urlPattern);
+				currentRequestBuilder = delete(urlPattern);
 				break;
 
 			case "GET":
-				currentRequestStub = get(urlPattern);
+				currentRequestBuilder = get(urlPattern);
 				break;
 
 			case "PATCH":
-				currentRequestStub = patch(urlPattern);
+				currentRequestBuilder = patch(urlPattern);
 				break;
 
 			case "POST":
-				currentRequestStub = post(urlPattern);
+				currentRequestBuilder = post(urlPattern);
 				break;
 
 			case "PUT":
-				currentRequestStub = put(urlPattern);
+				currentRequestBuilder = put(urlPattern);
 				break;
 
 			default:
@@ -137,8 +137,9 @@ public class WireCucumber implements En, AutoCloseable {
 
 	protected A0 finalizeRequestStub() {
 		return () -> {
-			stubFor(currentRequestStub.willReturn(currentRequestStubResponse));
-			currentRequestStub = null;
+			stubFor(currentRequestBuilder.willReturn(currentResponseBuilder));
+			currentRequestBuilder = null;
+			currentResponseBuilder = null;
 		};
 	}
 
@@ -167,25 +168,25 @@ public class WireCucumber implements En, AutoCloseable {
 
 	protected A1<String> setStubAccepts() {
 		return (headerPattern) -> {
-			currentRequestStub.withHeader(ACCEPT, equalTo(headerPattern));
+			currentRequestBuilder.withHeader(ACCEPT, equalTo(headerPattern));
 		};
 	}
 
 	protected A1<String> setStubResponseBody() {
 		return (responseBody) -> {
-			currentRequestStubResponse.withBody(responseBody);
+			currentResponseBuilder.withBody(responseBody);
 		};
 	}
 
 	protected A1<String> setStubResponseContent() {
 		return (contentType) -> {
-			currentRequestStubResponse.withHeader(CONTENT_TYPE, contentType);
+			currentResponseBuilder.withHeader(CONTENT_TYPE, contentType);
 		};
 	}
 
 	protected A1<Integer> setStubResponseStatus() {
 		return (status) -> {
-			currentRequestStubResponse = aResponse().withStatus(200);
+			currentResponseBuilder = aResponse().withStatus(200);
 		};
 	}
 
