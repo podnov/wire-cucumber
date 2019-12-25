@@ -35,7 +35,7 @@ import io.cucumber.java8.StepdefBody.A0;
 import io.cucumber.java8.StepdefBody.A1;
 import io.cucumber.java8.StepdefBody.A2;
 
-public class WireCucumber implements En {
+public class WireCucumber implements En, AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
@@ -123,6 +123,13 @@ public class WireCucumber implements En {
 		};
 	}
 
+	@Override
+	public void close() throws Exception {
+		if (wireMockServer != null) {
+			wireMockServer.shutdownServer();
+		}
+	}
+
 	protected WireCucumberRuntimeException createUnexpectedHttpVerbException(String httpVerb) {
 		String message = String.format("Unexpected http verb [%s]", httpVerb);
 		return new WireCucumberRuntimeException(message);
@@ -135,7 +142,7 @@ public class WireCucumber implements En {
 		};
 	}
 
-	public void init() {
+	public void initialize() {
 		String host = "localhost";
 
 		wireMockServer = new WireMockServer(options().dynamicPort());

@@ -19,7 +19,7 @@ public class WireCucumberTest implements En {
 
 	public WireCucumberTest() {
 		wireCucumber = new WireCucumber();
-		wireCucumber.init();
+		wireCucumber.initialize();
 		int port = wireCucumber.getWireMockServer().port();
 
 		When("I GET the hello world resource", () -> {
@@ -50,6 +50,10 @@ public class WireCucumberTest implements En {
 
 		Then("the response body should be {string}", (expectedResponseBody) -> {
 			actualResponse.body(equalTo((String) expectedResponseBody));
+		});
+
+		After(() -> {
+			wireCucumber.close();
 		});
 
 	}
