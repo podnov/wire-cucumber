@@ -7,9 +7,11 @@ import org.junit.runner.RunWith;
 
 import io.cucumber.java8.En;
 import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 import io.restassured.response.ValidatableResponse;
 
 @RunWith(Cucumber.class)
+@CucumberOptions(strict = true)
 public class WireCucumberTest implements En {
 
 	private ValidatableResponse actualResponse;
@@ -18,12 +20,19 @@ public class WireCucumberTest implements En {
 	public WireCucumberTest() {
 		wireCucumber = new WireCucumber();
 		wireCucumber.init();
+		int port = wireCucumber.getWireMockServer().port();
 
-		When("I call the hello world resource", () -> {
-			int port = wireCucumber.getWireMockServer().port();
+		When("I GET the hello world resource", () -> {
 			actualResponse = given()
 					.port(port)
 					.get("/hello-world")
+					.then();
+		});
+
+		When("I POST the hello world resource", () -> {
+			actualResponse = given()
+					.port(port)
+					.post("/hello-world")
 					.then();
 		});
 
@@ -34,6 +43,7 @@ public class WireCucumberTest implements En {
 		Then("the response body should be {string}", (expectedResponseBody) -> {
 			actualResponse.body(equalTo((String) expectedResponseBody));
 		});
+
 	}
 
 }
