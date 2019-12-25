@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.ValueMatcher;
 
-public class EmeptyRequestBodyMatcher implements ValueMatcher<Request> {
+public class EmptyRequestBodyMatcher implements ValueMatcher<Request> {
 
 	@Override
 	public MatchResult match(Request value) {
