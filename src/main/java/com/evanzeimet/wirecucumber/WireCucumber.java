@@ -3,22 +3,19 @@ package com.evanzeimet.wirecucumber;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.patch;
-import static com.github.tomakehurst.wiremock.client.WireMock.patchRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.apache.http.HttpHeaders.ACCEPT;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +24,10 @@ import com.evanzeimet.wirecucumber.matchers.EmeptyRequestBodyMatcher;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import io.cucumber.java8.En;
 import io.cucumber.java8.StepdefBody.A0;
@@ -39,9 +38,12 @@ public class WireCucumber implements En, AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
+	private String currentMockName;
 	private MappingBuilder currentRequestBuilder;
-	private ResponseDefinitionBuilder currentResponseBuilder;
 	private RequestPatternBuilder currentRequestVerifyBuilder;
+	private ResponseDefinitionBuilder currentResponseBuilder;
+	private Integer expectedMockInvocationCount;
+	private Map<String, StubMapping> namedMocks = new HashMap<>();
 	private WireMockServer wireMockServer;
 
 	public WireMockServer getWireMockServer() {
@@ -60,38 +62,7 @@ public class WireCucumber implements En, AutoCloseable {
 		};
 	}
 
-	protected A2<String, String> bootstrapRequestVerifier() {
-		return (httpVerb, path) -> {
-			UrlPattern urlPattern = urlEqualTo(path);
-
-			switch (httpVerb) {
-			case "DELETE":
-				currentRequestVerifyBuilder = deleteRequestedFor(urlPattern);
-				break;
-
-			case "GET":
-				currentRequestVerifyBuilder = getRequestedFor(urlPattern);
-				break;
-
-			case "PATCH":
-				currentRequestVerifyBuilder = patchRequestedFor(urlPattern);
-				break;
-
-			case "POST":
-				currentRequestVerifyBuilder = postRequestedFor(urlPattern);
-				break;
-
-			case "PUT":
-				currentRequestVerifyBuilder = putRequestedFor(urlPattern);
-				break;
-
-			default:
-				throw createUnexpectedHttpVerbException(httpVerb);
-			}
-		};
-	}
-
-	protected A2<String, String> bootstrapRequestStub() {
+	protected A2<String, String> bootstrapRequestMock() {
 		return (httpVerb, path) -> {
 			UrlPattern urlPattern = urlEqualTo(path);
 
@@ -119,7 +90,6 @@ public class WireCucumber implements En, AutoCloseable {
 			default:
 				createUnexpectedHttpVerbException(httpVerb);
 			}
-
 		};
 	}
 
@@ -135,9 +105,19 @@ public class WireCucumber implements En, AutoCloseable {
 		return new WireCucumberRuntimeException(message);
 	}
 
-	protected A0 finalizeRequestStub() {
+	protected A0 finalizeRequestMock() {
 		return () -> {
-			stubFor(currentRequestBuilder.willReturn(currentResponseBuilder));
+			if (currentMockName == null) {
+				throw new WireCucumberRuntimeException("Mock name not set");
+			}
+			if (namedMocks.containsKey(currentMockName)) {
+				String message = String.format("Mock name [%s] already in use", currentMockName);
+				throw new WireCucumberRuntimeException(message);
+			}
+
+			StubMapping stubMapping = stubFor(currentRequestBuilder.willReturn(currentResponseBuilder));
+			namedMocks.put(currentMockName, stubMapping);
+			currentMockName = null;
 			currentRequestBuilder = null;
 			currentResponseBuilder = null;
 		};
@@ -154,45 +134,66 @@ public class WireCucumber implements En, AutoCloseable {
 		String message = String.format("wire-cucumber started on [%s:%s]", host, port);
 		logger.info(message);
 
-		Given("a stub for a {word} with url equal to {string} exists", bootstrapRequestStub());
-		Given("that stub accepts {string}", setStubAccepts());
-		Given("that stub will return a response with status {int}", setStubResponseStatus());
-		Given("that stub response content type is {string}", setStubResponseBody());
-		Given("that stub response body is {string}", setStubResponseBody());
-		Given("that stub is finalized", finalizeRequestStub());
-		Then("a {word} should have been sent with url equal to {string}", bootstrapRequestVerifier());
+		Given("a wire mock named {string}", setMockName());
+		Given("that wire mock handles the {word} verb with a url equal to {string}", bootstrapRequestMock());
+		Given("that wire mock accepts {string}", setMockAccepts());
+		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
+		Given("that wire mock response content type is {string}", setMockResponseBody());
+		Given("that wire mock response body is {string}", setMockResponseBody());
+		Given("that wire mock is finalized", finalizeRequestMock());
+		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
+		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 		Then("the request body should have been:", addRequestVerifierBody());
 		Then("the request body should have been empty", addRequestVerifierEmptyBody());
 		Then("my request is verified", verifyRequest());
 	}
 
-	protected A1<String> setStubAccepts() {
+	protected A1<String> setCurrentRequestVerifyBuilder() {
+		return (name) -> {
+			StubMapping stubMapping = namedMocks.get(name);
+			if (stubMapping == null) {
+				String message = String.format("No mock found for name [%s]", name);
+				throw new WireCucumberRuntimeException(message);
+			}
+
+			RequestPattern request = stubMapping.getRequest();
+			currentRequestVerifyBuilder = RequestPatternBuilder.like(request);
+		};
+	}
+
+	protected A1<String> setMockName() {
+		return (name) -> {
+			currentMockName = name;
+		};
+	}
+
+	protected A1<String> setMockAccepts() {
 		return (headerPattern) -> {
 			currentRequestBuilder.withHeader(ACCEPT, equalTo(headerPattern));
 		};
 	}
 
-	protected A1<String> setStubResponseBody() {
+	protected A1<String> setMockResponseBody() {
 		return (responseBody) -> {
 			currentResponseBuilder.withBody(responseBody);
 		};
 	}
 
-	protected A1<String> setStubResponseContent() {
-		return (contentType) -> {
-			currentResponseBuilder.withHeader(CONTENT_TYPE, contentType);
-		};
-	}
-
-	protected A1<Integer> setStubResponseStatus() {
+	protected A1<Integer> setMockResponseStatus() {
 		return (status) -> {
 			currentResponseBuilder = aResponse().withStatus(200);
 		};
 	}
 
+	protected A1<Integer> setVerifyMockInvocationCount() {
+		return (count) -> {
+			expectedMockInvocationCount = count;
+		};
+	}
+
 	protected A0 verifyRequest() {
 		return () -> {
-			verify(currentRequestVerifyBuilder);
+			verify(expectedMockInvocationCount, currentRequestVerifyBuilder);
 		};
 	}
 
