@@ -44,6 +44,13 @@ public class WireCucumberTest implements En {
 					.then();
 		});
 
+		When("I GET the hello galaxy resource", () -> {
+			actualResponse = given()
+					.port(port)
+					.get("/hello-galaxy")
+					.then();
+		});
+
 		Then("the response status code should be {int}", (expectedStatusCode) -> {
 			actualResponse.statusCode((int) expectedStatusCode);
 		});
