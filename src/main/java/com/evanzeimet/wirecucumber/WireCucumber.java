@@ -23,6 +23,7 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.evanzeimet.wirecucumber.matchers.EmeptyRequestBodyMatcher;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
@@ -45,6 +46,18 @@ public class WireCucumber implements En {
 
 	public WireMockServer getWireMockServer() {
 		return wireMockServer;
+	}
+
+	protected A1<String> addRequestVerifierBody() {
+		return (requestBody) -> {
+			currentRequestVerifyBuilder.withRequestBody(equalTo(requestBody));
+		};
+	}
+
+	protected A0 addRequestVerifierEmptyBody() {
+		return () -> {
+			currentRequestVerifyBuilder.andMatching(new EmeptyRequestBodyMatcher());
+		};
 	}
 
 	protected A2<String, String> bootstrapRequestVerifier() {
@@ -139,7 +152,9 @@ public class WireCucumber implements En {
 		Given("that stub response content type is {string}", setStubResponseBody());
 		Given("that stub response body is {string}", setStubResponseBody());
 		Given("that stub is finalized", finalizeRequestStub());
-		Then("a {word} should have been sent url equal to {string}", bootstrapRequestVerifier());
+		Then("a {word} should have been sent with url equal to {string}", bootstrapRequestVerifier());
+		Then("the request body should have been:", addRequestVerifierBody());
+		Then("the request body should have been empty", addRequestVerifierEmptyBody());
 		Then("my request is verified", verifyRequest());
 	}
 

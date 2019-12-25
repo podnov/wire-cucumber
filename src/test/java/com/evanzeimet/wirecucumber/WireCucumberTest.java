@@ -36,6 +36,14 @@ public class WireCucumberTest implements En {
 					.then();
 		});
 
+		When("I POST the hello world resource with:", (requestBody) -> {
+			actualResponse = given()
+					.port(port)
+					.body((String) requestBody)
+					.post("/hello-world")
+					.then();
+		});
+
 		Then("the response status code should be {int}", (expectedStatusCode) -> {
 			actualResponse.statusCode((int) expectedStatusCode);
 		});
