@@ -35,4 +35,4 @@ Scenario: JSON request
 		"invocationName": "invocation-0"
 	}
 	"""
-	And my request is verified
+	And the request is verified

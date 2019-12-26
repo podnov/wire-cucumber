@@ -26,6 +26,7 @@ public class WireCucumberTest {
 		wireCucumber.close();
 
 		verify(givenWireMockServer).shutdownServer();
+		assertNull(wireCucumber.wireMockServer);
 	}
 
 	@Test

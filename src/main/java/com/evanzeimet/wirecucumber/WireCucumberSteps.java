@@ -95,18 +95,20 @@ public class WireCucumberSteps implements En {
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
-		Given("that wire mock response content type is {string}", setMockResponseBody());
-		Given("that wire mock response body is {string}", setMockResponseBody());
 		Given("that wire mock response body is:", setMockResponseBody());
+		Given("that wire mock response body is {string}", setMockResponseBody());
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
+		// TODO I'm not a huge fan of the "the request" language
 		Then("the request body should have been:", addRequestVerifierBody());
+		Then("the request body should have been {string}", addRequestVerifierBody());
 		Then("the request body should have been empty", addRequestVerifierEmptyBody());
 		Then("the request body of invocation {int} should have been:", verifyRequestInvocationBody());
+		Then("the request body of invocation {int} should have been {string}", verifyRequestInvocationBody());
 		Then("the request body of invocation {int} should have been empty", verifyRequestInvocationEmptyBody());
-		Then("my request is verified", verifyRequest());
+		Then("the request is verified", verifyRequest());
 	}
 
 	protected WireCucumberRuntimeException createUnexpectedHttpVerbException(String httpVerb) {
@@ -208,7 +210,7 @@ public class WireCucumberSteps implements En {
 		boolean matches = matchInvocation(invocation, pattern);
 
 		if (!matches) {
-			// TODO this should delay until "my request is verified" step?
+			// TODO this should delay until "the request is verified" step?
 			throw new VerificationException(pattern, 1, 0);
 		}
 	}

@@ -15,7 +15,7 @@ Scenario: DELETE Hello World
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "delete-hello-world"
 	And that mock should have been invoked 1 time
-	And my request is verified
+	And the request is verified
 
 
 Scenario: GET Hello World
@@ -29,7 +29,7 @@ Scenario: GET Hello World
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
 	And that mock should have been invoked 1 time
-	And my request is verified
+	And the request is verified
 
 
 Scenario: PATCH Hello World
@@ -43,7 +43,7 @@ Scenario: PATCH Hello World
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "patch-hello-world"
 	And that mock should have been invoked 1 time
-	And my request is verified
+	And the request is verified
 
 
 Scenario: POST Hello World
@@ -58,7 +58,7 @@ Scenario: POST Hello World
 	And I want to verify interactions with the wire mock named "post-hello-world"
 	And that mock should have been invoked 1 time
 	And the request body should have been empty
-	And my request is verified
+	And the request is verified
 
 
 Scenario: PUT Hello World
@@ -72,7 +72,7 @@ Scenario: PUT Hello World
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "put-hello-world"
 	And that mock should have been invoked 1 time
-	And my request is verified
+	And the request is verified
 
 
 Scenario: Request with entity
@@ -97,4 +97,4 @@ Scenario: Request with entity
 		"invocationName": "invocation-0"
 	}
 	"""
-	And my request is verified
+	And the request is verified

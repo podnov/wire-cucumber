@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
-public class WireCucumber implements AutoCloseable {
+import io.cucumber.java8.En;
+
+public class WireCucumber implements En, AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
@@ -23,6 +25,7 @@ public class WireCucumber implements AutoCloseable {
 	public void close() throws Exception {
 		if (wireMockServer != null) {
 			wireMockServer.shutdownServer();
+			wireMockServer = null;
 		}
 	}
 

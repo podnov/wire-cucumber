@@ -18,7 +18,7 @@ Scenario: Multiple calls on the same mock
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
 	And that mock should have been invoked 3 times
-	And my request is verified
+	And the request is verified
 
 
 Scenario: Multiple calls to different mocks
@@ -40,10 +40,10 @@ Scenario: Multiple calls to different mocks
 	And the response body should be "Hello Galaxy"
 	And I want to verify interactions with the wire mock named "get-hello-world"
 	And that mock should have been invoked 1 time
-	And my request is verified
+	And the request is verified
 	And I want to verify interactions with the wire mock named "get-hello-galaxy"
 	And that mock should have been invoked 1 time
-	And my request is verified
+	And the request is verified
 
 
 Scenario: Multiple calls verifying specific invocation details
@@ -85,4 +85,4 @@ Scenario: Multiple calls verifying specific invocation details
 		"invocationName": "invocation-2"
 	}
 	"""
-	And my request is verified
+	And the request is verified
