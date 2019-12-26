@@ -21,6 +21,7 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:4.1.2'
 	testImplementation 'junit:junit:4.12'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
+	testImplementation 'org.mockito:mockito-core:1.+'
 }
 
 test {
@@ -30,5 +31,13 @@ test {
 jacocoTestReport {
 	reports {
 		xml.enabled true
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+				'**/*Exception*'
+			])
+		}))
 	}
 }

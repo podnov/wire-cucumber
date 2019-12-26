@@ -12,8 +12,8 @@ public class WireCucumber implements AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
-	private WireCucumberSteps steps;
-	private WireMockServer wireMockServer;
+	protected WireCucumberSteps steps;
+	protected WireMockServer wireMockServer;
 
 	public WireMockServer getWireMockServer() {
 		return wireMockServer;

@@ -45,20 +45,6 @@ public class WireCucumberSteps implements En {
 	protected Integer expectedMockInvocationCount;
 	protected Map<String, StubMapping> namedMocks = new HashMap<>();
 
-	protected A2<Integer, String> addRequestInvocationVerifierBody() {
-		return (invocationIndex, requestBody) -> {
-			RequestPattern bodyPattern = new RequestPatternBuilder().withRequestBody(equalTo(requestBody)).build();
-			matchInvocation(invocationIndex, bodyPattern);
-		};
-	}
-
-	protected A1<Integer> addRequestInvocationVerifierEmptyBody() {
-		return (invocationIndex) -> {
-			RequestPattern bodyPattern = new RequestPatternBuilder().andMatching(new EmptyRequestBodyMatcher()).build();
-			matchInvocation(invocationIndex, bodyPattern);
-		};
-	}
-
 	protected A1<String> addRequestVerifierBody() {
 		return (requestBody) -> {
 			currentRequestVerifyBuilder.withRequestBody(equalTo(requestBody));
@@ -97,7 +83,7 @@ public class WireCucumberSteps implements En {
 				break;
 
 			default:
-				createUnexpectedHttpVerbException(httpVerb);
+				throw createUnexpectedHttpVerbException(httpVerb);
 			}
 		};
 	}
@@ -116,8 +102,8 @@ public class WireCucumberSteps implements En {
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 		Then("the request body should have been:", addRequestVerifierBody());
 		Then("the request body should have been empty", addRequestVerifierEmptyBody());
-		Then("the request body of invocation {int} should have been:", addRequestInvocationVerifierBody());
-		Then("the request body of invocation {int} should have been empty", addRequestInvocationVerifierEmptyBody());
+		Then("the request body of invocation {int} should have been:", verifyInvocationBody());
+		Then("the request body of invocation {int} should have been empty", verifyInvocationEmptyBody());
 		Then("my request is verified", verifyRequest());
 	}
 
@@ -144,22 +130,14 @@ public class WireCucumberSteps implements En {
 		};
 	}
 
-	protected void matchInvocation(Integer invocationIndex, RequestPattern pattern) throws VerificationException {
-		List<LoggedRequest> invocations = findAll(currentRequestVerifyBuilder);
-		int invocationCount = invocations.size();
-		if (invocationCount <= invocationIndex) {
-			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
-					invocationIndex, invocationCount);
-			throw new WireCucumberRuntimeException(message);
-		}
+	protected List<LoggedRequest> findRequestsForPattern(RequestPatternBuilder pattern) {
+		return findAll(pattern);
+	}
 
-		LoggedRequest invocation = invocations.get(invocationIndex);
-		boolean doesNotMatch = from(asList(invocation)).filter(thatMatch(pattern)).isEmpty();
-
-		if (doesNotMatch) {
-			// TODO this should delay until "my request is verified" step?
-			throw new VerificationException(pattern, 1, 0);
-		}
+	protected boolean matchInvocation(LoggedRequest invocation, RequestPattern pattern) {
+		return !from(asList(invocation))
+				.filter(thatMatch(pattern))
+				.isEmpty();
 	}
 
 	protected A1<String> setCurrentRequestVerifyBuilder() {
@@ -208,6 +186,46 @@ public class WireCucumberSteps implements En {
 	protected A1<Integer> setVerifyMockInvocationCount() {
 		return (count) -> {
 			expectedMockInvocationCount = count;
+		};
+	}
+
+	protected void verifyInvocation(Integer invocationIndex, RequestPattern pattern) throws VerificationException {
+		List<LoggedRequest> invocations = findRequestsForPattern(currentRequestVerifyBuilder);
+		int invocationCount = invocations.size();
+		if (invocationCount <= invocationIndex) {
+			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
+					invocationIndex, invocationCount);
+			throw new WireCucumberRuntimeException(message);
+		}
+
+		LoggedRequest invocation = invocations.get(invocationIndex);
+		verifyInvocation(invocation, pattern);
+	}
+
+	protected void verifyInvocation(LoggedRequest invocation, RequestPattern pattern) throws VerificationException {
+		boolean matches = matchInvocation(invocation, pattern);
+
+		if (!matches) {
+			// TODO this should delay until "my request is verified" step?
+			throw new VerificationException(pattern, 1, 0);
+		}
+	}
+
+	protected A2<Integer, String> verifyInvocationBody() {
+		return (invocationIndex, requestBody) -> {
+			RequestPattern bodyPattern = new RequestPatternBuilder()
+					.withRequestBody(equalTo(requestBody))
+					.build();
+			verifyInvocation(invocationIndex, bodyPattern);
+		};
+	}
+
+	protected A1<Integer> verifyInvocationEmptyBody() {
+		return (invocationIndex) -> {
+			RequestPattern bodyPattern = new RequestPatternBuilder()
+					.andMatching(new EmptyRequestBodyMatcher())
+					.build();
+			verifyInvocation(invocationIndex, bodyPattern);
 		};
 	}
 
