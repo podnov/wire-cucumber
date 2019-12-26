@@ -38,12 +38,12 @@ import io.cucumber.java8.StepdefBody.A2;
 
 public class WireCucumberSteps implements En {
 
-	private String currentMockName;
-	private MappingBuilder currentRequestBuilder;
-	private RequestPatternBuilder currentRequestVerifyBuilder;
-	private ResponseDefinitionBuilder currentResponseBuilder;
-	private Integer expectedMockInvocationCount;
-	private Map<String, StubMapping> namedMocks = new HashMap<>();
+	protected String currentMockName;
+	protected MappingBuilder currentRequestBuilder;
+	protected RequestPatternBuilder currentRequestVerifyBuilder;
+	protected ResponseDefinitionBuilder currentResponseBuilder;
+	protected Integer expectedMockInvocationCount;
+	protected Map<String, StubMapping> namedMocks = new HashMap<>();
 
 	protected A2<Integer, String> addRequestInvocationVerifierBody() {
 		return (invocationIndex, requestBody) -> {
