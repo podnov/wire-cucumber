@@ -1,6 +1,7 @@
 package com.evanzeimet.wirecucumber;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.runner.RunWith;
@@ -60,6 +61,8 @@ public class WireCucumberFunctionalTest implements En {
 		When("I POST the hello world resource with:", (requestBody) -> {
 			actualResponse = given()
 					.port(port)
+					.accept(JSON)
+					.contentType(JSON)
 					.body((String) requestBody)
 					.post("/hello-world")
 					.then();
@@ -77,6 +80,10 @@ public class WireCucumberFunctionalTest implements En {
 		});
 
 		Then("the response body should be {string}", (expectedResponseBody) -> {
+			actualResponse.body(equalTo((String) expectedResponseBody));
+		});
+
+		Then("the response body should be:", (expectedResponseBody) -> {
 			actualResponse.body(equalTo((String) expectedResponseBody));
 		});
 

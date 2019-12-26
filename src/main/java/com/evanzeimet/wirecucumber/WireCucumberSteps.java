@@ -1,6 +1,7 @@
 package com.evanzeimet.wirecucumber;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
@@ -96,14 +97,15 @@ public class WireCucumberSteps implements En {
 		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
 		Given("that wire mock response content type is {string}", setMockResponseBody());
 		Given("that wire mock response body is {string}", setMockResponseBody());
+		Given("that wire mock response body is:", setMockResponseBody());
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 		Then("the request body should have been:", addRequestVerifierBody());
 		Then("the request body should have been empty", addRequestVerifierEmptyBody());
-		Then("the request body of invocation {int} should have been:", verifyInvocationBody());
-		Then("the request body of invocation {int} should have been empty", verifyInvocationEmptyBody());
+		Then("the request body of invocation {int} should have been:", verifyRequestInvocationBody());
+		Then("the request body of invocation {int} should have been empty", verifyRequestInvocationEmptyBody());
 		Then("my request is verified", verifyRequest());
 	}
 
@@ -155,13 +157,13 @@ public class WireCucumberSteps implements En {
 
 	protected A1<String> setMockAccepts() {
 		return (value) -> {
-			currentRequestBuilder.withHeader(ACCEPT, equalTo(value));
+			currentRequestBuilder.withHeader(ACCEPT, containing(value));
 		};
 	}
 
 	protected A1<String> setMockContentType() {
 		return (value) -> {
-			currentRequestBuilder.withHeader(CONTENT_TYPE, equalTo(value));
+			currentRequestBuilder.withHeader(CONTENT_TYPE, containing(value));
 		};
 	}
 
@@ -211,7 +213,7 @@ public class WireCucumberSteps implements En {
 		}
 	}
 
-	protected A2<Integer, String> verifyInvocationBody() {
+	protected A2<Integer, String> verifyRequestInvocationBody() {
 		return (invocationIndex, requestBody) -> {
 			RequestPattern bodyPattern = new RequestPatternBuilder()
 					.withRequestBody(equalTo(requestBody))
@@ -220,7 +222,7 @@ public class WireCucumberSteps implements En {
 		};
 	}
 
-	protected A1<Integer> verifyInvocationEmptyBody() {
+	protected A1<Integer> verifyRequestInvocationEmptyBody() {
 		return (invocationIndex) -> {
 			RequestPattern bodyPattern = new RequestPatternBuilder()
 					.andMatching(new EmptyRequestBodyMatcher())
