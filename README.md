@@ -1,6 +1,6 @@
 # wire-cucumber
 
-[<img src="https://github.com/podnov/wire-cucumber/workflows/java-ci/badge.svg">](https://github.com/podnov/wire-cucumber/actions?query=workflow%3A%22java-ci%22)
+[<img src="https://github.com/podnov/wire-cucumber/workflows/java-ci/badge.svg">](https://github.com/podnov/wire-cucumber/actions?query=workflow%3A%22java-ci%22) [<img src="https://codecov.io/gh/podnov/wire-cucumber/branch/master/graph/badge.svg">](https://codecov.io/gh/podnov/wire-cucumber/branch/master)
 
 The intent of this project is to make mocking external REST calls easier by standardizing how how the mocks are configured and reducing the scaffolding needed to create those mocks.
 
