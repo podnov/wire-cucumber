@@ -35,4 +35,5 @@ Scenario: JSON request
 		"invocationName": "invocation-0"
 	}
 	"""
+	And the request should have had header "Content-Type" "application/json"
 	And the request is verified

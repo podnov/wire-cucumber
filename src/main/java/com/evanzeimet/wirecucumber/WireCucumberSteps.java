@@ -41,20 +41,26 @@ public class WireCucumberSteps implements En {
 
 	protected String currentMockName;
 	protected MappingBuilder currentRequestBuilder;
-	protected RequestPatternBuilder currentRequestVerifyBuilder;
+	protected RequestPatternBuilder currentRequestVerifierBuilder;
 	protected ResponseDefinitionBuilder currentResponseBuilder;
 	protected Integer expectedMockInvocationCount;
 	protected Map<String, StubMapping> namedMocks = new HashMap<>();
 
 	protected A1<String> addRequestVerifierBody() {
 		return (requestBody) -> {
-			currentRequestVerifyBuilder.withRequestBody(equalTo(requestBody));
+			currentRequestVerifierBuilder.withRequestBody(equalTo(requestBody));
 		};
 	}
 
 	protected A0 addRequestVerifierEmptyBody() {
 		return () -> {
-			currentRequestVerifyBuilder.andMatching(new EmptyRequestBodyMatcher());
+			currentRequestVerifierBuilder.andMatching(new EmptyRequestBodyMatcher());
+		};
+	}
+
+	protected A2<String, String> addRequestVerifierHeader() {
+		return (name, value) -> {
+			currentRequestVerifierBuilder.withHeader(name, containing(value));
 		};
 	}
 
@@ -108,6 +114,7 @@ public class WireCucumberSteps implements En {
 		Then("the request body of invocation {int} should have been:", verifyRequestInvocationBody());
 		Then("the request body of invocation {int} should have been {string}", verifyRequestInvocationBody());
 		Then("the request body of invocation {int} should have been empty", verifyRequestInvocationEmptyBody());
+		Then("the request should have had header {string} {string}", addRequestVerifierHeader());
 		Then("the request is verified", verifyRequest());
 	}
 
@@ -153,7 +160,7 @@ public class WireCucumberSteps implements En {
 			}
 
 			RequestPattern request = stubMapping.getRequest();
-			currentRequestVerifyBuilder = RequestPatternBuilder.like(request);
+			currentRequestVerifierBuilder = RequestPatternBuilder.like(request);
 		};
 	}
 
@@ -194,7 +201,7 @@ public class WireCucumberSteps implements En {
 	}
 
 	protected void verifyInvocation(Integer invocationIndex, RequestPattern pattern) throws VerificationException {
-		List<LoggedRequest> invocations = findRequestsForPattern(currentRequestVerifyBuilder);
+		List<LoggedRequest> invocations = findRequestsForPattern(currentRequestVerifierBuilder);
 		int invocationCount = invocations.size();
 		if (invocationCount <= invocationIndex) {
 			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
@@ -235,7 +242,7 @@ public class WireCucumberSteps implements En {
 
 	protected A0 verifyRequest() {
 		return () -> {
-			verify(expectedMockInvocationCount, currentRequestVerifyBuilder);
+			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
 		};
 	}
 

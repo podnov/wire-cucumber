@@ -178,15 +178,15 @@ public class WireCucumberStepsTest {
 	public void verifyInvocation_invalidInvocationIndex() {
 		Integer givenInvocationIndex = 42;
 		RequestPattern givenPattern = mock(RequestPattern.class);
-		RequestPatternBuilder givenCurrentRequestVerifyBuilder = mock(RequestPatternBuilder.class);
+		RequestPatternBuilder givenCurrentRequestVerifierBuilder = mock(RequestPatternBuilder.class);
 
-		steps.currentRequestVerifyBuilder = givenCurrentRequestVerifyBuilder;
+		steps.currentRequestVerifierBuilder = givenCurrentRequestVerifierBuilder;
 
 		List<LoggedRequest> givenRequests = new ArrayList<>();
 
 		doReturn(givenRequests)
 				.when(steps)
-				.findRequestsForPattern(givenCurrentRequestVerifyBuilder);
+				.findRequestsForPattern(givenCurrentRequestVerifierBuilder);
 
 		WireCucumberRuntimeException actualException = null;
 

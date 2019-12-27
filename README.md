@@ -25,6 +25,7 @@ Then the request body should have been empty
 Then the request body of invocation {int} should have been:
 Then the request body of invocation {int} should have been {string}
 Then the request body of invocation {int} should have been empty
+Then the request should have had header {string} {string}
 Then my request is verified
 ```
 
