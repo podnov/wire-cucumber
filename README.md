@@ -80,6 +80,7 @@ Example cucumber features consuming the this library can be [found in this proje
 ## How do I run specific cucumber tests?
 ```
 CUCUMBER_OPTIONS='--tags @core' ./gradlew clean test
+CUCUMBER_OPTIONS='--tags @extensibility' ./gradlew clean test
 CUCUMBER_OPTIONS='--tags @headers' ./gradlew clean test
 CUCUMBER_OPTIONS='--tags @multipleInvocations' ./gradlew clean test
 ```

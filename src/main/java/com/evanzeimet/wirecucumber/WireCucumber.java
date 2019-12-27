@@ -21,6 +21,10 @@ public class WireCucumber implements En, AutoCloseable {
 		return wireMockServer;
 	}
 
+	public WireCucumberSteps getSteps() {
+		return steps;
+	}
+
 	@Override
 	public void close() throws Exception {
 		if (wireMockServer != null) {

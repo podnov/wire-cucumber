@@ -136,8 +136,8 @@ public class WireCucumberStepsTest {
 		steps.finalizeRequestMock().accept();
 
 		assertNull(steps.currentMockName);
-		assertNull(steps.currentRequestBuilder);
-		assertNull(steps.currentResponseBuilder);
+		assertNull(steps.getCurrentRequestBuilder());
+		assertNull(steps.getCurrentResponseBuilder());
 	}
 
 	@Test
@@ -247,6 +247,16 @@ public class WireCucumberStepsTest {
 		}
 
 		assertNull(actualException);
+	}
+
+	@Test
+	public void verifyRequest() throws Throwable {
+		steps.expectedMockInvocationCount = 0;
+		steps.currentRequestVerifierBuilder = RequestPatternBuilder.allRequests();
+
+		steps.verifyRequest().accept();
+
+		assertNull(steps.currentRequestVerifierBuilder);
 	}
 
 	protected void bootstrapWireMock() {

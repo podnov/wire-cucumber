@@ -46,6 +46,18 @@ public class WireCucumberSteps implements En {
 	protected Integer expectedMockInvocationCount;
 	protected Map<String, StubMapping> namedMocks = new HashMap<>();
 
+	public MappingBuilder getCurrentRequestBuilder() {
+		return currentRequestBuilder;
+	}
+
+	public RequestPatternBuilder getCurrentRequestVerifierBuilder() {
+		return currentRequestVerifierBuilder;
+	}
+
+	public ResponseDefinitionBuilder getCurrentResponseBuilder() {
+		return currentResponseBuilder;
+	}
+
 	protected A1<String> addRequestVerifierBody() {
 		return (requestBody) -> {
 			currentRequestVerifierBuilder.withRequestBody(equalTo(requestBody));
@@ -243,6 +255,7 @@ public class WireCucumberSteps implements En {
 	protected A0 verifyRequest() {
 		return () -> {
 			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
+			currentRequestVerifierBuilder = null;
 		};
 	}
 
