@@ -1,6 +1,7 @@
 package com.evanzeimet.wirecucumber;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.evanzeimet.wirecucumber.matchers.EmptyRequestBodyMatcher;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.VerificationException;
@@ -66,7 +66,7 @@ public class WireCucumberSteps implements En {
 
 	protected A0 addRequestVerifierEmptyBody() {
 		return () -> {
-			currentRequestVerifierBuilder.andMatching(new EmptyRequestBodyMatcher());
+			currentRequestVerifierBuilder.withRequestBody(absent());
 		};
 	}
 
@@ -246,7 +246,7 @@ public class WireCucumberSteps implements En {
 	protected A1<Integer> verifyRequestInvocationEmptyBody() {
 		return (invocationIndex) -> {
 			RequestPattern bodyPattern = new RequestPatternBuilder()
-					.andMatching(new EmptyRequestBodyMatcher())
+					.withRequestBody(absent())
 					.build();
 			verifyInvocation(invocationIndex, bodyPattern);
 		};
@@ -255,6 +255,7 @@ public class WireCucumberSteps implements En {
 	protected A0 verifyRequest() {
 		return () -> {
 			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
+			expectedMockInvocationCount = null;
 			currentRequestVerifierBuilder = null;
 		};
 	}
