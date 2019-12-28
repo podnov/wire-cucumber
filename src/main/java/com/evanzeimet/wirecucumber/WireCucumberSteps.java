@@ -1,5 +1,7 @@
 package com.evanzeimet.wirecucumber;
 
+import static com.evanzeimet.wirecucumber.verification.VerificationConstants.ACTUAL;
+import static com.evanzeimet.wirecucumber.verification.VerificationConstants.EXPECTED;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
@@ -19,18 +21,26 @@ import static java.util.Arrays.asList;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.evanzeimet.wirecucumber.verification.MatchInvocationResult;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.VerificationException;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.github.tomakehurst.wiremock.verification.diff.JUnitStyleDiffRenderer;
+import com.github.tomakehurst.wiremock.verification.diff.WireCucumberDiffLine;
+import com.google.common.base.Joiner;
+import com.google.common.collect.FluentIterable;
 
 import io.cucumber.java8.En;
 import io.cucumber.java8.StepdefBody.A0;
@@ -42,6 +52,7 @@ public class WireCucumberSteps implements En {
 	protected String currentMockName;
 	protected MappingBuilder currentRequestBuilder;
 	protected RequestPatternBuilder currentRequestVerifierBuilder;
+	protected List<MatchInvocationResult<?>> currentRequestVerifierCustomMatchResults;
 	protected ResponseDefinitionBuilder currentResponseBuilder;
 	protected Integer expectedMockInvocationCount;
 	protected Map<String, StubMapping> namedMocks = new HashMap<>();
@@ -157,10 +168,41 @@ public class WireCucumberSteps implements En {
 		return findAll(pattern);
 	}
 
-	protected boolean matchInvocation(LoggedRequest invocation, RequestPattern pattern) {
-		return !from(asList(invocation))
+	protected MatchInvocationResult<Request> matchInvocation(Integer invocationIndex,
+			RequestPattern pattern)
+			throws VerificationException {
+		List<LoggedRequest> invocations = findRequestsForPattern(currentRequestVerifierBuilder);
+		int invocationCount = invocations.size();
+
+		if (invocationCount <= invocationIndex) {
+			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
+					invocationIndex, invocationCount);
+			throw new WireCucumberRuntimeException(message);
+		}
+
+		LoggedRequest invocation = invocations.get(invocationIndex);
+		MatchResult matchResult = matchInvocation(invocation, pattern);
+
+		String requestAttribute = String.format("request-invocation-%d", invocationIndex);
+		WireCucumberDiffLine<Request> diffLine = new WireCucumberDiffLine<Request>(requestAttribute,
+				pattern,
+				invocation,
+				pattern.getExpected());
+
+		MatchInvocationResult<Request> result = new MatchInvocationResult<>();
+
+		result.setDiffLine(diffLine);
+		result.setInvocationIndex(invocationIndex);
+		result.setMatchResult(matchResult);
+
+		return result;
+	}
+
+	protected MatchResult matchInvocation(LoggedRequest invocation, RequestPattern pattern) {
+		boolean empty = from(asList(invocation))
 				.filter(thatMatch(pattern))
 				.isEmpty();
+		return MatchResult.of(!empty);
 	}
 
 	protected A1<String> setCurrentRequestVerifyBuilder() {
@@ -173,6 +215,7 @@ public class WireCucumberSteps implements En {
 
 			RequestPattern request = stubMapping.getRequest();
 			currentRequestVerifierBuilder = RequestPatternBuilder.like(request);
+			currentRequestVerifierCustomMatchResults = new ArrayList<>();
 		};
 	}
 
@@ -212,52 +255,49 @@ public class WireCucumberSteps implements En {
 		};
 	}
 
-	protected void verifyInvocation(Integer invocationIndex, RequestPattern pattern) throws VerificationException {
-		List<LoggedRequest> invocations = findRequestsForPattern(currentRequestVerifierBuilder);
-		int invocationCount = invocations.size();
-		if (invocationCount <= invocationIndex) {
-			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
-					invocationIndex, invocationCount);
-			throw new WireCucumberRuntimeException(message);
-		}
+	protected void verifyRequestCustom() {
+		FluentIterable<MatchInvocationResult<?>> failedMatches = from(currentRequestVerifierCustomMatchResults)
+				.filter(input -> !input.getMatchResult().isExactMatch());
 
-		LoggedRequest invocation = invocations.get(invocationIndex);
-		verifyInvocation(invocation, pattern);
-	}
+		if (!failedMatches.isEmpty()) {
+			String message = failedMatches.transform(input -> {
+				Object expected = EXPECTED.apply(input.getDiffLine());
+				Object actual = ACTUAL.apply(input.getDiffLine());
+				String diffMessage = JUnitStyleDiffRenderer.junitStyleDiffMessage(expected, actual);
+				return String.format("for invocation at index %d,%s", input.getInvocationIndex(), diffMessage);
+			}).join(Joiner.on("\n"));
 
-	protected void verifyInvocation(LoggedRequest invocation, RequestPattern pattern) throws VerificationException {
-		boolean matches = matchInvocation(invocation, pattern);
-
-		if (!matches) {
-			// TODO this should delay until "the request is verified" step?
-			throw new VerificationException(pattern, 1, 0);
+			throw new VerificationException(message);
 		}
 	}
 
 	protected A2<Integer, String> verifyRequestInvocationBody() {
 		return (invocationIndex, requestBody) -> {
-			RequestPattern bodyPattern = new RequestPatternBuilder()
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
 					.build();
-			verifyInvocation(invocationIndex, bodyPattern);
+			MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
+			currentRequestVerifierCustomMatchResults.add(matchResult);
 		};
 	}
 
 	protected A1<Integer> verifyRequestInvocationEmptyBody() {
 		return (invocationIndex) -> {
-			RequestPattern bodyPattern = new RequestPatternBuilder()
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(absent())
 					.build();
-			verifyInvocation(invocationIndex, bodyPattern);
+			MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
+			currentRequestVerifierCustomMatchResults.add(matchResult);
 		};
 	}
 
 	protected A0 verifyRequest() {
 		return () -> {
 			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
-			expectedMockInvocationCount = null;
+			verifyRequestCustom();
 			currentRequestVerifierBuilder = null;
+			currentRequestVerifierCustomMatchResults = null;
+			expectedMockInvocationCount = null;
 		};
 	}
-
 }

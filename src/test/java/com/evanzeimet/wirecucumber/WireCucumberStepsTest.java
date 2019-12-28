@@ -6,12 +6,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -25,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.VerificationException;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
+import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -142,16 +140,16 @@ public class WireCucumberStepsTest {
 
 	@Test
 	public void matchInvocation_false() {
-		String givenHeadername = "garbage";
-		String givenPatternHeaderValue = "do-not-use";
+		String givenHeadername = "given-header-name";
+		String givenPatternHeaderValue = "given-pattern-header-value";
 		RequestPattern givenPattern = RequestPatternBuilder.newRequestPattern()
 				.withHeader(givenHeadername, equalTo(givenPatternHeaderValue))
 				.build();
 		LoggedRequest givenInvocation = createGivenLoggedRequest();
 
-		boolean actual = steps.matchInvocation(givenInvocation, givenPattern);
+		MatchResult actual = steps.matchInvocation(givenInvocation, givenPattern);
 
-		assertFalse(actual);
+		assertFalse(actual.isExactMatch());
 	}
 
 	@Test
@@ -191,7 +189,7 @@ public class WireCucumberStepsTest {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			steps.verifyInvocation(givenInvocationIndex, givenPattern);
+			steps.matchInvocation(givenInvocationIndex, givenPattern);
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -204,59 +202,15 @@ public class WireCucumberStepsTest {
 	}
 
 	@Test
-	public void verifyInvocation_match_false() {
-		boolean givenMatch = false;
-		LoggedRequest givenInvocation = mock(LoggedRequest.class);
-		RequestPattern givenPattern = mock(RequestPattern.class);
-
-		doReturn(givenMatch)
-				.when(steps)
-				.matchInvocation(givenInvocation, givenPattern);
-
-		VerificationException actualException = null;
-
-		try {
-			steps.verifyInvocation(givenInvocation, givenPattern);
-		} catch (VerificationException e) {
-			actualException = e;
-		}
-
-		assertNotNull(actualException);
-
-		String actualExceptionMessage = actualException.getMessage();
-		String expectedExceptionMessage = "Expected exactly 1 requests matching the following pattern but received 0";
-		assertThat(actualExceptionMessage, startsWith(expectedExceptionMessage));
-	}
-
-	@Test
-	public void verifyInvocation_match_true() {
-		boolean givenMatch = true;
-		LoggedRequest givenInvocation = mock(LoggedRequest.class);
-		RequestPattern givenPattern = mock(RequestPattern.class);
-
-		doReturn(givenMatch)
-				.when(steps)
-				.matchInvocation(givenInvocation, givenPattern);
-
-		VerificationException actualException = null;
-
-		try {
-			steps.verifyInvocation(givenInvocation, givenPattern);
-		} catch (VerificationException e) {
-			actualException = e;
-		}
-
-		assertNull(actualException);
-	}
-
-	@Test
 	public void verifyRequest() throws Throwable {
 		steps.expectedMockInvocationCount = 0;
 		steps.currentRequestVerifierBuilder = RequestPatternBuilder.allRequests();
+		steps.currentRequestVerifierCustomMatchResults = Collections.emptyList();
 
 		steps.verifyRequest().accept();
 
 		assertNull(steps.currentRequestVerifierBuilder);
+		assertNull(steps.currentRequestVerifierCustomMatchResults);
 	}
 
 	protected void bootstrapWireMock() {

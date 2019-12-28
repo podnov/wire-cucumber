@@ -62,6 +62,7 @@ Scenario: Multiple calls verifying specific invocation details
 	And the response body should be "Hello World"
 	# invocation-1, no body:
 	When I POST the hello world resource
+	Then the response status code should be 200
 	When I POST the hello world resource with:
 	"""
 	{

@@ -3,6 +3,7 @@ Feature: Wire Cucumber Basic Tests
 
 # TODO negative scenarios, confirm cucumber exceptions for match failures
 # TODO named invocations?
+# TODO handles ANY verb in addition to handles the X verb
 
 Scenario: DELETE Hello World
 	Given a wire mock named "delete-hello-world"
