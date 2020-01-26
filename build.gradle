@@ -3,6 +3,8 @@ plugins {
 	id 'java-library'
 	id 'maven-publish'
 }
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 repositories {
 	jcenter()
@@ -10,6 +12,7 @@ repositories {
 
 ext {
 	cucumberVersion = "4.7.4"
+	isReleaseVersion = !version.endsWith("SNAPSHOT")
 }
 
 dependencies {
@@ -22,11 +25,30 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:4.1.2'
 	testImplementation 'junit:junit:4.12'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
-	testImplementation 'org.mockito:mockito-core:1.+'
+	testImplementation 'org.mockito:mockito-core:3.2.4'
 }
 
 test {
 	finalizedBy jacocoTestReport
+}
+
+task javadocJar(type: Jar) {
+	classifier = 'javadoc'
+	from javadoc
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+artifacts {
+	archives javadocJar, sourcesJar
+}
+
+signing {
+	required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+	sign configurations.archives
 }
 
 jacocoTestReport {
@@ -58,6 +80,51 @@ publishing {
 			credentials {
 				username = System.getenv("GITHUB_ACTOR")
 				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: ossrhUsername, password: ossrhPassword)
+			}
+
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: ossrhUsername, password: ossrhPassword)
+			}
+
+			pom.project {
+				name 'wire-cucumber'
+				packaging 'jar'
+				// optionally artifactId can be defined here
+				description 'The intent of this project is to make mocking external REST calls easier. This is achieved by standardizing how the mocks are configured and reducing the scaffolding needed to create and verify interactions with those mocks.'
+				url 'https://github.com/podnov/wire-cucumber'
+
+				scm {
+					connection 'scm:https://github.com/podnov/wire-cucumber.git'
+					developerConnection 'scm:git://github.com/podnov/wire-cucumber.git'
+					url 'https://github.com/podnov/wire-cucumber'
+				}
+
+				licenses {
+					license {
+						name 'The GNU General Public License v3.0'
+						url 'https://www.gnu.org/licenses/gpl-3.0.html'
+					}
+				}
+
+				developers {
+					developer {
+						id 'podnov'
+						name 'Evan Zeimet'
+						email 'podnov@gmail.com'
+					}
+				}
 			}
 		}
 	}
