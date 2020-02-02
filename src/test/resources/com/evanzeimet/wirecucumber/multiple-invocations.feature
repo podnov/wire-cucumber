@@ -1,6 +1,8 @@
 @multipleInvocations
 Feature: Wire Cucumber Multiple Invocation Tests
 
+# TODO support different responses for multiple invocations
+
 Scenario: Multiple calls on the same mock
 	Given a wire mock named "get-hello-world"
 	And that wire mock handles the GET verb with a url equal to "/hello-world"
@@ -86,4 +88,41 @@ Scenario: Multiple calls verifying specific invocation details
 		"invocationName": "invocation-2"
 	}
 	"""
+	And the request is verified
+
+
+Scenario: Multiple calls verifying specific invocation details
+	Given a wire mock named "post-hello-worlds"
+	And that wire mock handles the POST verb with a url equal to "/hello-worlds"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is "Hello Worlds"
+	And that wire mock is finalized
+	When I POST the hello worlds resource with:
+	"""
+	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
+	"""
+	Then the response status code should be 200
+	And the response body should be "Hello Worlds"
+	# invocation-1, no body:
+	When I POST the hello worlds resource
+	Then the response status code should be 200
+	When I POST the hello worlds resource with:
+	"""
+	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
+	"""
+	Then the response status code should be 200
+	And the response body should be "Hello Worlds"
+	And I want to verify interactions with the wire mock named "post-hello-worlds"
+	And that mock should have been invoked 3 times
+	And the request body of invocation 0 should have been these records:
+	| name          | primaryColor | galaxy    |
+	| given-world-1 | blue         | Milky Way |
+	| given-world-2 | green        | Milky Way |
+	| given-world-2 | grey         | Milky Way |
+	And the request body of invocation 1 should have been empty
+	And the request body of invocation 2 should have been these records:
+	| name          | primaryColor | galaxy    |
+	| given-world-1 | blue         | Milky Way |
+	| given-world-2 | green        | Milky Way |
+	| given-world-2 | grey         | Milky Way |
 	And the request is verified

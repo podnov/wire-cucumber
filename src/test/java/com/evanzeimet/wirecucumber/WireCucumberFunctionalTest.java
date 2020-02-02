@@ -76,6 +76,13 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
+		When("I POST the hello worlds resource", () -> {
+			actualResponse = bootstrapRequest()
+					.port(port)
+					.post(HELLO_WORLDS_URI)
+					.then();
+		});
+
 		When("I POST the hello world resource with:", (requestBody) -> {
 			actualResponse = bootstrapRequest()
 					.port(port)

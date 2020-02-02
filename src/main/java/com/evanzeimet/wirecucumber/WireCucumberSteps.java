@@ -75,12 +75,6 @@ public class WireCucumberSteps
 		return currentResponseBuilder;
 	}
 
-	protected A1<String> addRequestVerifierStringBody() {
-		return (requestBody) -> {
-			currentRequestVerifierBuilder.withRequestBody(equalTo(requestBody));
-		};
-	}
-
 	protected A1<DataTable> addRequestVerifierDataTableBody() {
 		return (dataTable) -> {
 			String requestBody = convertDataTableToJson(dataTable);
@@ -97,6 +91,12 @@ public class WireCucumberSteps
 	protected A2<String, String> addRequestVerifierHeader() {
 		return (name, value) -> {
 			currentRequestVerifierBuilder.withHeader(name, containing(value));
+		};
+	}
+
+	protected A1<String> addRequestVerifierStringBody() {
+		return (requestBody) -> {
+			currentRequestVerifierBuilder.withRequestBody(equalTo(requestBody));
 		};
 	}
 
@@ -152,11 +152,12 @@ public class WireCucumberSteps
 		// TODO I'm not a huge fan of the "the request" language
 		Then("the request body should have been:", addRequestVerifierStringBody());
 		Then("the request body should have been {string}", addRequestVerifierStringBody());
-		Then("the request body should have been these records:", addRequestVerifierDataTableBody());
 		Then("the request body should have been empty", addRequestVerifierEmptyBody());
-		Then("the request body of invocation {int} should have been:", verifyRequestInvocationBody());
-		Then("the request body of invocation {int} should have been {string}", verifyRequestInvocationBody());
+		Then("the request body should have been these records:", addRequestVerifierDataTableBody());
+		Then("the request body of invocation {int} should have been:", verifyRequestInvocationStringBody());
+		Then("the request body of invocation {int} should have been {string}", verifyRequestInvocationStringBody());
 		Then("the request body of invocation {int} should have been empty", verifyRequestInvocationEmptyBody());
+		Then("the request body of invocation {int} should have been these records:", verifyRequestInvocationDataTableBody());
 		Then("the request should have had header {string} {string}", addRequestVerifierHeader());
 		Then("the request is verified", verifyRequest());
 	}
@@ -239,6 +240,13 @@ public class WireCucumberSteps
 		};
 	}
 
+	protected A1<DataTable> setDataTableMockResponseBody() {
+		return (dataTable) -> {
+			String body = convertDataTableToJson(dataTable);
+			currentResponseBuilder.withBody(body);
+		};
+	}
+
 	protected A1<String> setMockAccepts() {
 		return (value) -> {
 			currentRequestBuilder.withHeader(ACCEPT, containing(value));
@@ -257,28 +265,31 @@ public class WireCucumberSteps
 		};
 	}
 
-	protected A1<String> setStringMockResponseBody() {
-		return (responseBody) -> {
-			currentResponseBuilder.withBody(responseBody);
-		};
-	}
-
-	protected A1<DataTable> setDataTableMockResponseBody() {
-		return (dataTable) -> {
-			String body = convertDataTableToJson(dataTable);
-			currentResponseBuilder.withBody(body);
-		};
-	}
-
 	protected A1<Integer> setMockResponseStatus() {
 		return (status) -> {
 			currentResponseBuilder = aResponse().withStatus(200);
 		};
 	}
 
+	protected A1<String> setStringMockResponseBody() {
+		return (responseBody) -> {
+			currentResponseBuilder.withBody(responseBody);
+		};
+	}
+
 	protected A1<Integer> setVerifyMockInvocationCount() {
 		return (count) -> {
 			expectedMockInvocationCount = count;
+		};
+	}
+
+	protected A0 verifyRequest() {
+		return () -> {
+			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
+			verifyRequestCustom();
+			currentRequestVerifierBuilder = null;
+			currentRequestVerifierCustomMatchResults = null;
+			expectedMockInvocationCount = null;
 		};
 	}
 
@@ -298,8 +309,9 @@ public class WireCucumberSteps
 		}
 	}
 
-	protected A2<Integer, String> verifyRequestInvocationBody() {
-		return (invocationIndex, requestBody) -> {
+	protected A2<Integer, DataTable> verifyRequestInvocationDataTableBody() {
+		return (invocationIndex, dataTable) -> {
+			String requestBody = convertDataTableToJson(dataTable);
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
 					.build();
@@ -318,13 +330,14 @@ public class WireCucumberSteps
 		};
 	}
 
-	protected A0 verifyRequest() {
-		return () -> {
-			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
-			verifyRequestCustom();
-			currentRequestVerifierBuilder = null;
-			currentRequestVerifierCustomMatchResults = null;
-			expectedMockInvocationCount = null;
+	protected A2<Integer, String> verifyRequestInvocationStringBody() {
+		return (invocationIndex, requestBody) -> {
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
+					.withRequestBody(equalTo(requestBody))
+					.build();
+			MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
+			currentRequestVerifierCustomMatchResults.add(matchResult);
 		};
 	}
+
 }

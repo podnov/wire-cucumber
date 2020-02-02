@@ -32,27 +32,6 @@ Scenario: GET Hello World
 	And that mock should have been invoked 1 time
 	And the request is verified
 
-Scenario: GET Hello Worlds
-	Given a wire mock named "get-hello-worlds"
-	And that wire mock handles the GET verb with a url equal to "/hello-worlds"
-	And that wire mock will return a response with status 200
-	And that wire mock response body is these records:
-	| name          | primaryColor | galaxy    |
-	| given-world-1 | blue         | Milky Way |
-	| given-world-2 | green        | Milky Way |
-	| given-world-2 | grey         | Milky Way |
-	And that wire mock is finalized
-	When I GET the hello worlds resource
-	Then the response status code should be 200
-	And the response body should be:
-	"""
-	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
-	"""
-	And I want to verify interactions with the wire mock named "get-hello-worlds"
-	And that mock should have been invoked 1 time
-	And the request is verified
-
-
 Scenario: PATCH Hello World
 	Given a wire mock named "patch-hello-world"
 	And that wire mock handles the PATCH verb with a url equal to "/hello-world"
@@ -118,6 +97,27 @@ Scenario: Request with entity
 		"invocationName": "invocation-0"
 	}
 	"""
+	And the request is verified
+
+
+Scenario: Mock data table response
+	Given a wire mock named "get-hello-worlds"
+	And that wire mock handles the GET verb with a url equal to "/hello-worlds"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is these records:
+	| name          | primaryColor | galaxy    |
+	| given-world-1 | blue         | Milky Way |
+	| given-world-2 | green        | Milky Way |
+	| given-world-2 | grey         | Milky Way |
+	And that wire mock is finalized
+	When I GET the hello worlds resource
+	Then the response status code should be 200
+	And the response body should be:
+	"""
+	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
+	"""
+	And I want to verify interactions with the wire mock named "get-hello-worlds"
+	And that mock should have been invoked 1 time
 	And the request is verified
 
 
