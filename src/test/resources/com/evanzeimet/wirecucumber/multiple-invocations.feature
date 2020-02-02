@@ -2,6 +2,8 @@
 Feature: Wire Cucumber Multiple Invocation Tests
 
 # TODO support different responses for multiple invocations
+#      - accept scenario names and map them to invocation index
+#      - change invocation verifier by index to scenario names
 
 Scenario: Multiple calls on the same mock
 	Given a wire mock named "get-hello-world"
