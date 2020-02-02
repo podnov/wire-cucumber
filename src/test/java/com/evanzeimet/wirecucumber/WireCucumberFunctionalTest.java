@@ -21,6 +21,7 @@ import io.restassured.specification.RequestSpecification;
 public class WireCucumberFunctionalTest implements En {
 
 	private static final String HELLO_WORLD_URI = "/hello-world";
+	private static final String HELLO_WORLDS_URI = "/hello-worlds";
 	private static final String HELLO_GALAXY_URI = "/hello-galaxy";
 	private static final String REQUEST_ID_HEADER = "X-request-id";
 
@@ -44,6 +45,13 @@ public class WireCucumberFunctionalTest implements En {
 			actualResponse = bootstrapRequest()
 					.port(port)
 					.get(HELLO_WORLD_URI)
+					.then();
+		});
+
+		When("I GET the hello worlds resource", () -> {
+			actualResponse = bootstrapRequest()
+					.port(port)
+					.get(HELLO_WORLDS_URI)
 					.then();
 		});
 
@@ -75,6 +83,16 @@ public class WireCucumberFunctionalTest implements En {
 					.contentType(JSON)
 					.body((String) requestBody)
 					.post(HELLO_WORLD_URI)
+					.then();
+		});
+
+		When("I POST the hello worlds resource with:", (requestBody) -> {
+			actualResponse = bootstrapRequest()
+					.port(port)
+					.accept(JSON)
+					.contentType(JSON)
+					.body((String) requestBody)
+					.post(HELLO_WORLDS_URI)
 					.then();
 		});
 

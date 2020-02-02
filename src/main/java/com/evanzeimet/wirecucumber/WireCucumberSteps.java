@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.evanzeimet.wirecucumber.verification.MatchInvocationResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.VerificationException;
@@ -42,12 +44,16 @@ import com.github.tomakehurst.wiremock.verification.diff.WireCucumberDiffLine;
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
 import io.cucumber.java8.StepdefBody.A0;
 import io.cucumber.java8.StepdefBody.A1;
 import io.cucumber.java8.StepdefBody.A2;
 
-public class WireCucumberSteps implements En {
+public class WireCucumberSteps
+		implements En {
+
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	protected String currentMockName;
 	protected MappingBuilder currentRequestBuilder;
@@ -69,8 +75,15 @@ public class WireCucumberSteps implements En {
 		return currentResponseBuilder;
 	}
 
-	protected A1<String> addRequestVerifierBody() {
+	protected A1<String> addRequestVerifierStringBody() {
 		return (requestBody) -> {
+			currentRequestVerifierBuilder.withRequestBody(equalTo(requestBody));
+		};
+	}
+
+	protected A1<DataTable> addRequestVerifierDataTableBody() {
+		return (dataTable) -> {
+			String requestBody = convertDataTableToJson(dataTable);
 			currentRequestVerifierBuilder.withRequestBody(equalTo(requestBody));
 		};
 	}
@@ -118,21 +131,28 @@ public class WireCucumberSteps implements En {
 		};
 	}
 
+	protected String convertDataTableToJson(DataTable dataTable) throws JsonProcessingException {
+		List<Map<String, String>> maps = dataTable.asMaps();
+		return objectMapper.writeValueAsString(maps);
+	}
+
 	public void initialize() {
 		Given("a wire mock named {string}", setMockName());
 		Given("that wire mock handles the {word} verb with a url equal to {string}", bootstrapRequestMock());
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
-		Given("that wire mock response body is:", setMockResponseBody());
-		Given("that wire mock response body is {string}", setMockResponseBody());
+		Given("that wire mock response body is:", setStringMockResponseBody());
+		Given("that wire mock response body is {string}", setStringMockResponseBody());
+		Given("that wire mock response body is these records:", setDataTableMockResponseBody());
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 		// TODO I'm not a huge fan of the "the request" language
-		Then("the request body should have been:", addRequestVerifierBody());
-		Then("the request body should have been {string}", addRequestVerifierBody());
+		Then("the request body should have been:", addRequestVerifierStringBody());
+		Then("the request body should have been {string}", addRequestVerifierStringBody());
+		Then("the request body should have been these records:", addRequestVerifierDataTableBody());
 		Then("the request body should have been empty", addRequestVerifierEmptyBody());
 		Then("the request body of invocation {int} should have been:", verifyRequestInvocationBody());
 		Then("the request body of invocation {int} should have been {string}", verifyRequestInvocationBody());
@@ -237,9 +257,16 @@ public class WireCucumberSteps implements En {
 		};
 	}
 
-	protected A1<String> setMockResponseBody() {
+	protected A1<String> setStringMockResponseBody() {
 		return (responseBody) -> {
 			currentResponseBuilder.withBody(responseBody);
+		};
+	}
+
+	protected A1<DataTable> setDataTableMockResponseBody() {
+		return (dataTable) -> {
+			String body = convertDataTableToJson(dataTable);
+			currentResponseBuilder.withBody(body);
 		};
 	}
 
