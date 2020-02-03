@@ -34,79 +34,78 @@ public class WireCucumberFunctionalTest implements En {
 		wireCucumber.initialize();
 		int port = wireCucumber.getWireMockServer().port();
 
-		When("I DELETE the hello world resource", () -> {
+		When("I DELETE the {string} resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.delete(HELLO_WORLD_URI)
+					.delete(path)
 					.then();
 		});
 
-		When("I GET the hello world resource", () -> {
+		When("I GET the {string} resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.get(HELLO_WORLD_URI)
+					.get(path)
 					.then();
 		});
 
-		When("I GET the hello worlds resource", () -> {
+		When("I OPTIONS the {string} resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.get(HELLO_WORLDS_URI)
+					.options(path)
 					.then();
 		});
 
-		When("I PATCH the hello world resource", () -> {
+		When("I PATCH the {string} resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.patch(HELLO_WORLD_URI)
+					.patch(path)
 					.then();
 		});
 
-		When("I PUT the hello world resource", () -> {
+		When("I PUT the {string} resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.put(HELLO_WORLD_URI)
+					.put(path)
 					.then();
 		});
 
-		When("I POST the hello world resource", () -> {
+		When("I POST the {string} resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.post(HELLO_WORLD_URI)
+					.post(path)
 					.then();
 		});
 
-		When("I POST the hello worlds resource", () -> {
+		When("I POST the hello worlds resource", (resource) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.post(HELLO_WORLDS_URI)
+					.post(path)
 					.then();
 		});
 
-		When("I POST the hello world resource with:", (requestBody) -> {
+		When("I POST the {string} resource with:", (resource, requestBody) -> {
+			String path = getPath((String) resource);
+
 			actualResponse = bootstrapRequest()
 					.port(port)
 					.accept(JSON)
 					.contentType(JSON)
 					.body((String) requestBody)
-					.post(HELLO_WORLD_URI)
-					.then();
-		});
-
-		When("I POST the hello worlds resource with:", (requestBody) -> {
-			actualResponse = bootstrapRequest()
-					.port(port)
-					.accept(JSON)
-					.contentType(JSON)
-					.body((String) requestBody)
-					.post(HELLO_WORLDS_URI)
-					.then();
-		});
-
-		When("I GET the hello galaxy resource", () -> {
-			actualResponse = bootstrapRequest()
-					.port(port)
-					.get(HELLO_GALAXY_URI)
+					.post(path)
 					.then();
 		});
 
@@ -132,6 +131,30 @@ public class WireCucumberFunctionalTest implements En {
 			wireCucumber.close();
 		});
 
+	}
+
+	protected String getPath(String resource) {
+		String result;
+
+		switch (resource) {
+		case "hello galaxy":
+			result = HELLO_GALAXY_URI;
+			break;
+
+		case "hello world":
+			result = HELLO_WORLD_URI;
+			break;
+
+		case "hello worlds":
+			result = HELLO_WORLDS_URI;
+			break;
+
+		default:
+			String message = String.format("Resource [%s] unsupported", resource);
+			throw new WireCucumberRuntimeException(message );
+		}
+
+		return result;
 	}
 
 	protected RequestSpecification bootstrapRequest() {

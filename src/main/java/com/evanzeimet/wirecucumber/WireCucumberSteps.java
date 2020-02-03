@@ -4,6 +4,7 @@ import static com.evanzeimet.wirecucumber.verification.VerificationConstants.ACT
 import static com.evanzeimet.wirecucumber.verification.VerificationConstants.EXPECTED;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
+import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -104,24 +105,28 @@ public class WireCucumberSteps
 		return (httpVerb, path) -> {
 			UrlPattern urlPattern = urlEqualTo(path);
 
-			switch (httpVerb) {
-			case "DELETE":
+			switch (httpVerb.toLowerCase()) {
+			case "any":
+				currentRequestBuilder = any(urlPattern);
+				break;
+
+			case "delete":
 				currentRequestBuilder = delete(urlPattern);
 				break;
 
-			case "GET":
+			case "get":
 				currentRequestBuilder = get(urlPattern);
 				break;
 
-			case "PATCH":
+			case "patch":
 				currentRequestBuilder = patch(urlPattern);
 				break;
 
-			case "POST":
+			case "post":
 				currentRequestBuilder = post(urlPattern);
 				break;
 
-			case "PUT":
+			case "put":
 				currentRequestBuilder = put(urlPattern);
 				break;
 
@@ -138,7 +143,7 @@ public class WireCucumberSteps
 
 	public void initialize() {
 		Given("a wire mock named {string}", setMockName());
-		Given("that wire mock handles the {word} verb with a url equal to {string}", bootstrapRequestMock());
+		Given("that wire mock handles (the ){word} verb with a url equal to {string}", bootstrapRequestMock());
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", setMockResponseStatus());

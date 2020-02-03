@@ -9,7 +9,7 @@ The intent of this project is to make mocking external REST calls easier. This i
 ### What steps are provided?
 ```
 Given a wire mock named {string}
-Given that wire mock handles the {word} verb with a url equal to {string}
+Given that wire mock handles (the ){word} verb with a url equal to {string}
 Given that wire mock accepts {string}
 Given that wire mock content type is {string}
 Given that wire mock will return a response with status {int}

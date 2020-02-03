@@ -7,7 +7,7 @@ Scenario: Custom request verifier
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I POST the hello world resource with:
+	When I POST the "hello world" resource with:
 	"""
 	{
 		"invocationName": "invocation-0"

@@ -14,7 +14,7 @@ Scenario: JSON request
 	}
 	"""
 	And that wire mock is finalized
-	When I POST the hello world resource with:
+	When I POST the "hello world" resource with:
 	"""
 	{
 		"invocationName": "invocation-0"
