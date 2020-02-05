@@ -17,6 +17,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.matching.RequestPattern.thatMatch;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static com.google.common.collect.FluentIterable.from;
 import static java.util.Arrays.asList;
 import static org.apache.http.HttpHeaders.ACCEPT;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.client.ScenarioMappingBuilder;
 import com.github.tomakehurst.wiremock.client.VerificationException;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
@@ -45,8 +47,10 @@ import com.github.tomakehurst.wiremock.verification.diff.WireCucumberDiffLine;
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 
+import io.cucumber.core.api.Scenario;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
+import io.cucumber.java8.HookBody;
 import io.cucumber.java8.StepdefBody.A0;
 import io.cucumber.java8.StepdefBody.A1;
 import io.cucumber.java8.StepdefBody.A2;
@@ -56,15 +60,22 @@ public class WireCucumberSteps
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
+	// TODO some context object?
+	// TODO call index across mocks/scenarios?
 	protected String currentMockName;
-	protected MappingBuilder currentRequestBuilder;
+	protected ScenarioMappingBuilder currentRequestBuilder;
 	protected RequestPatternBuilder currentRequestVerifierBuilder;
 	protected List<MatchInvocationResult<?>> currentRequestVerifierCustomMatchResults;
 	protected ResponseDefinitionBuilder currentResponseBuilder;
+	protected Scenario currentScenario;
+	protected String currentScenarioState;
+	protected Integer currentScenarioStateIndex;
 	protected Integer expectedMockInvocationCount;
-	protected Map<String, StubMapping> namedMocks = new HashMap<>();
+	protected Map<RequestBuilderScenarioStateKey, Integer> stateIndices = new HashMap<>();
+	protected Map<RequestBuilderScenarioStateKey, StubMapping> stateMocks = new HashMap<>();
 
-	public MappingBuilder getCurrentRequestBuilder() {
+
+	public ScenarioMappingBuilder getCurrentRequestBuilder() {
 		return currentRequestBuilder;
 	}
 
@@ -74,6 +85,19 @@ public class WireCucumberSteps
 
 	public ResponseDefinitionBuilder getCurrentResponseBuilder() {
 		return currentResponseBuilder;
+	}
+
+	protected Integer getStateIndex(String state) {
+		RequestBuilderScenarioStateKey key = new RequestBuilderScenarioStateKey(currentMockName,
+				state);
+		Integer result = stateIndices.get(key);
+
+		if (result == null) {
+			String message = String.format("Index for mock [%s] and state [%s] not found", currentMockName, state);
+			throw new WireCucumberRuntimeException(message);
+		}
+
+		return result;
 	}
 
 	protected A1<DataTable> addRequestVerifierDataTableBody() {
@@ -101,38 +125,49 @@ public class WireCucumberSteps
 		};
 	}
 
+	protected HookBody beforeScenario() {
+		return (scenario) -> {
+			currentScenario = scenario;
+		};
+	}
+
 	protected A2<String, String> bootstrapRequestMock() {
 		return (httpVerb, path) -> {
 			UrlPattern urlPattern = urlEqualTo(path);
+			MappingBuilder requestBuilder;
 
 			switch (httpVerb.toLowerCase()) {
 			case "any":
-				currentRequestBuilder = any(urlPattern);
+				requestBuilder = any(urlPattern);
 				break;
 
 			case "delete":
-				currentRequestBuilder = delete(urlPattern);
+				requestBuilder = delete(urlPattern);
 				break;
 
 			case "get":
-				currentRequestBuilder = get(urlPattern);
+				requestBuilder = get(urlPattern);
 				break;
 
 			case "patch":
-				currentRequestBuilder = patch(urlPattern);
+				requestBuilder = patch(urlPattern);
 				break;
 
 			case "post":
-				currentRequestBuilder = post(urlPattern);
+				requestBuilder = post(urlPattern);
 				break;
 
 			case "put":
-				currentRequestBuilder = put(urlPattern);
+				requestBuilder = put(urlPattern);
 				break;
 
 			default:
 				throw createUnexpectedHttpVerbException(httpVerb);
 			}
+
+			currentRequestBuilder = requestBuilder.inScenario(currentScenario.getName());
+			currentScenarioState = STARTED;
+			currentScenarioStateIndex = 0;
 		};
 	}
 
@@ -142,6 +177,7 @@ public class WireCucumberSteps
 	}
 
 	public void initialize() {
+		Before(beforeScenario());
 		Given("a wire mock named {string}", setMockName());
 		Given("that wire mock handles (the ){word} verb with a url equal to {string}", bootstrapRequestMock());
 		Given("that wire mock accepts {string}", setMockAccepts());
@@ -150,6 +186,7 @@ public class WireCucumberSteps
 		Given("that wire mock response body is:", setStringMockResponseBody());
 		Given("that wire mock response body is {string}", setStringMockResponseBody());
 		Given("that wire mock response body is these records:", setDataTableMockResponseBody());
+		Given("that wire mock enters state {string}", setRequestBuilderState());
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
@@ -163,6 +200,10 @@ public class WireCucumberSteps
 		Then("the request body of invocation {int} should have been {string}", verifyRequestInvocationStringBody());
 		Then("the request body of invocation {int} should have been empty", verifyRequestInvocationEmptyBody());
 		Then("the request body of invocation {int} should have been these records:", verifyRequestInvocationDataTableBody());
+		Then("the request body of state {string} should have been:", verifyRequestStateStringBody());
+		Then("the request body of state {string} should have been {string}", verifyRequestStateStringBody());
+		Then("the request body of state {string} should have been empty", verifyRequestStateEmptyBody());
+		Then("the request body of state {string} should have been these records:", verifyRequestStateDataTableBody());
 		Then("the request should have had header {string} {string}", addRequestVerifierHeader());
 		Then("the request is verified", verifyRequest());
 	}
@@ -172,21 +213,53 @@ public class WireCucumberSteps
 		return new WireCucumberRuntimeException(message);
 	}
 
+	protected void finalizeRequestBuilder(RequestBuilderScenarioStateKey key) {
+		StubMapping stubMapping = stubFor(currentRequestBuilder);
+		stateMocks.put(key, stubMapping);
+		stateIndices.put(key, currentScenarioStateIndex++);
+	}
+
 	protected A0 finalizeRequestMock() {
 		return () -> {
 			if (currentMockName == null) {
 				throw new WireCucumberRuntimeException("Mock name not set");
 			}
-			if (namedMocks.containsKey(currentMockName)) {
-				String message = String.format("Mock name [%s] already in use", currentMockName);
+			if (currentScenarioState == null) {
+				throw new WireCucumberRuntimeException("Scenario state not set");
+			}
+
+			RequestBuilderScenarioStateKey key = new RequestBuilderScenarioStateKey(currentMockName,
+					currentScenarioState);
+
+			if (stateMocks.containsKey(key)) {
+				String message = String.format("Mock name [%s] and state [%s] already in use",
+						currentMockName,
+						currentScenarioState);
 				throw new WireCucumberRuntimeException(message);
 			}
 
-			StubMapping stubMapping = stubFor(currentRequestBuilder.willReturn(currentResponseBuilder));
-			namedMocks.put(currentMockName, stubMapping);
+			currentRequestBuilder = currentRequestBuilder.whenScenarioStateIs(currentScenarioState)
+					.willReturn(currentResponseBuilder);
+			finalizeRequestBuilder(key);
+
 			currentMockName = null;
 			currentRequestBuilder = null;
 			currentResponseBuilder = null;
+		};
+	}
+
+	protected A1<String> setRequestBuilderState() {
+		return (state) -> {
+			RequestBuilderScenarioStateKey key = new RequestBuilderScenarioStateKey(currentMockName,
+					currentScenarioState);
+			currentRequestBuilder = currentRequestBuilder.whenScenarioStateIs(currentScenarioState)
+					.willReturn(currentResponseBuilder)
+					.willSetStateTo(state);
+			finalizeRequestBuilder(key);
+
+			// TODO do stuff??
+			currentResponseBuilder = null;
+			currentScenarioState = state;
 		};
 	}
 
@@ -233,7 +306,10 @@ public class WireCucumberSteps
 
 	protected A1<String> setCurrentRequestVerifyBuilder() {
 		return (name) -> {
-			StubMapping stubMapping = namedMocks.get(name);
+			currentMockName = name;
+			// TODO how do we want to verify? by mock name? by state name? something else?
+			RequestBuilderScenarioStateKey key = new RequestBuilderScenarioStateKey(name, STARTED);
+			StubMapping stubMapping = stateMocks.get(key);
 			if (stubMapping == null) {
 				String message = String.format("No mock found for name [%s]", name);
 				throw new WireCucumberRuntimeException(message);
@@ -288,6 +364,11 @@ public class WireCucumberSteps
 		};
 	}
 
+	protected void verifyInvocation(Integer invocationIndex, RequestPattern bodyPattern) throws VerificationException {
+		MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
+		currentRequestVerifierCustomMatchResults.add(matchResult);
+	}
+
 	protected A0 verifyRequest() {
 		return () -> {
 			verify(expectedMockInvocationCount, currentRequestVerifierBuilder);
@@ -320,8 +401,7 @@ public class WireCucumberSteps
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
 					.build();
-			MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
-			currentRequestVerifierCustomMatchResults.add(matchResult);
+			verifyInvocation(invocationIndex, bodyPattern);
 		};
 	}
 
@@ -330,8 +410,7 @@ public class WireCucumberSteps
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(absent())
 					.build();
-			MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
-			currentRequestVerifierCustomMatchResults.add(matchResult);
+			verifyInvocation(invocationIndex, bodyPattern);
 		};
 	}
 
@@ -340,8 +419,41 @@ public class WireCucumberSteps
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
 					.build();
-			MatchInvocationResult<Request> matchResult = matchInvocation(invocationIndex, bodyPattern);
-			currentRequestVerifierCustomMatchResults.add(matchResult);
+			verifyInvocation(invocationIndex, bodyPattern);
+		};
+	}
+
+	protected A2<String, DataTable> verifyRequestStateDataTableBody() {
+		return (state, dataTable) -> {
+			String requestBody = convertDataTableToJson(dataTable);
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
+					.withRequestBody(equalTo(requestBody))
+					.build();
+			Integer invocationIndex = getStateIndex(state);
+
+			verifyInvocation(invocationIndex, bodyPattern);
+		};
+	}
+
+	protected A1<String> verifyRequestStateEmptyBody() {
+		return (state) -> {
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
+					.withRequestBody(absent())
+					.build();
+			Integer invocationIndex = getStateIndex(state);
+
+			verifyInvocation(invocationIndex, bodyPattern);
+		};
+	}
+
+	protected A2<String, String> verifyRequestStateStringBody() {
+		return (state, requestBody) -> {
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
+					.withRequestBody(equalTo(requestBody))
+					.build();
+			Integer invocationIndex = getStateIndex(state);
+
+			verifyInvocation(invocationIndex, bodyPattern);
 		};
 	}
 

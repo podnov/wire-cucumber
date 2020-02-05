@@ -16,6 +16,7 @@ Given that wire mock will return a response with status {int}
 Given that wire mock response body is:
 Given that wire mock response body is {string}
 Given that wire mock response body is these records:
+Given that wire mock enters state {string}
 Given that wire mock is finalized
 
 Then I want to verify interactions with the wire mock named {string}
@@ -28,6 +29,10 @@ Then the request body of invocation {int} should have been:
 Then the request body of invocation {int} should have been {string}
 Then the request body of invocation {int} should have been empty
 Then the request body of invocation {int} should have been these records:
+Then the request body of state {string} should have been:
+Then the request body of state {string} should have been {string}
+Then the request body of state {string} should have been empty
+Then the request body of state {string} should have been these records:
 Then the request should have had header {string} {string}
 Then my request is verified
 ```

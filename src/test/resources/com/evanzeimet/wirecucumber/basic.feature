@@ -11,7 +11,7 @@ Scenario: any Hello World
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I OPTIONS the "hello world" resource
+	When I OPTIONS the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "any-hello-world"
@@ -24,7 +24,7 @@ Scenario: DELETE Hello World
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I DELETE the "hello world" resource
+	When I DELETE the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "delete-hello-world"
@@ -38,7 +38,7 @@ Scenario: GET Hello World
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I GET the "hello world" resource
+	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
@@ -51,7 +51,7 @@ Scenario: PATCH Hello World
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I PATCH the "hello world" resource
+	When I PATCH the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "patch-hello-world"
@@ -65,7 +65,7 @@ Scenario: POST Hello World
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I POST the "hello world" resource
+	When I POST the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "post-hello-world"
@@ -80,7 +80,7 @@ Scenario: PUT Hello World
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I PUT the "hello world" resource
+	When I PUT the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "put-hello-world"
@@ -94,7 +94,7 @@ Scenario: Request with entity
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I POST the "hello world" resource with:
+	When I POST the "hello world" resource "default" endpoint with:
 	"""
 	{
 		"invocationName": "invocation-0"
@@ -123,7 +123,7 @@ Scenario: Mock data table response
 	| given-world-2 | green        | Milky Way |
 	| given-world-2 | grey         | Milky Way |
 	And that wire mock is finalized
-	When I GET the "hello worlds" resource
+	When I GET the "hello worlds" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be:
 	"""
@@ -140,7 +140,7 @@ Scenario: Request with entity, verify invocation datatable
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Worlds"
 	And that wire mock is finalized
-	When I POST the "hello worlds" resource with:
+	When I POST the "hello worlds" resource "default" endpoint with:
 	"""
 	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
 	"""

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.runner.RunWith;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -34,8 +35,8 @@ public class WireCucumberFunctionalTest implements En {
 		wireCucumber.initialize();
 		int port = wireCucumber.getWireMockServer().port();
 
-		When("I DELETE the {string} resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I DELETE the {string} resource {string} endpoint", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -43,8 +44,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I GET the {string} resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I GET the {string} resource {string} endpoint", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -52,8 +53,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I OPTIONS the {string} resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I OPTIONS the {string} resource {string} endpoint", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -61,8 +62,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I PATCH the {string} resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I PATCH the {string} resource {string} endpoint", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -70,8 +71,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I PUT the {string} resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I PUT the {string} resource {string} endpoint", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -79,8 +80,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I POST the {string} resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I POST the {string} resource {string} endpoint", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -88,8 +89,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I POST the hello worlds resource", (resource) -> {
-			String path = getPath((String) resource);
+		When("I POST the hello worlds resource", (resource, endpoint) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -97,8 +98,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I POST the {string} resource with:", (resource, requestBody) -> {
-			String path = getPath((String) resource);
+		When("I POST the {string} resource {string} endpoint with:", (resource, endpoint, requestBody) -> {
+			String path = getPath((String) resource, (String) endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -133,7 +134,7 @@ public class WireCucumberFunctionalTest implements En {
 
 	}
 
-	protected String getPath(String resource) {
+	protected String getPath(String resource, String endpoint) {
 		String result;
 
 		switch (resource) {
@@ -152,6 +153,13 @@ public class WireCucumberFunctionalTest implements En {
 		default:
 			String message = String.format("Resource [%s] unsupported", resource);
 			throw new WireCucumberRuntimeException(message );
+		}
+
+		boolean notBlank = StringUtils.isNotBlank(endpoint);
+		boolean notDefault = !"default".equals(endpoint);
+
+		if (notBlank && notDefault) {
+			result = String.format("%s/%s", endpoint);
 		}
 
 		return result;

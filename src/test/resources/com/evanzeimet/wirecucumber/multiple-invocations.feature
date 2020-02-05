@@ -11,13 +11,13 @@ Scenario: Multiple calls on the same mock
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I GET the "hello world" resource
+	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	When I GET the "hello world" resource
+	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	When I GET the "hello world" resource
+	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
@@ -36,10 +36,10 @@ Scenario: Multiple calls to different mocks
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Galaxy"
 	And that wire mock is finalized
-	When I GET the "hello world" resource
+	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	When I GET the "hello galaxy" resource
+	When I GET the "hello galaxy" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello Galaxy"
 	And I want to verify interactions with the wire mock named "get-hello-world"
@@ -56,7 +56,7 @@ Scenario: Multiple calls verifying specific invocation details
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	When I POST the "hello world" resource with:
+	When I POST the "hello world" resource "default" endpoint with:
 	"""
 	{
 		"invocationName": "invocation-0"
@@ -65,9 +65,9 @@ Scenario: Multiple calls verifying specific invocation details
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	# invocation-1, no body:
-	When I POST the "hello world" resource
+	When I POST the "hello world" resource "default" endpoint
 	Then the response status code should be 200
-	When I POST the "hello world" resource with:
+	When I POST the "hello world" resource "default" endpoint with:
 	"""
 	{
 		"invocationName": "invocation-2"
@@ -99,16 +99,16 @@ Scenario: Multiple calls verifying specific invocation details
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Worlds"
 	And that wire mock is finalized
-	When I POST the "hello worlds" resource with:
+	When I POST the "hello worlds" resource "default" endpoint with:
 	"""
 	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
 	"""
 	Then the response status code should be 200
 	And the response body should be "Hello Worlds"
 	# invocation-1, no body:
-	When I POST the "hello worlds" resource
+	When I POST the "hello worlds" resource "default" endpoint
 	Then the response status code should be 200
-	When I POST the "hello worlds" resource with:
+	When I POST the "hello worlds" resource "default" endpoint with:
 	"""
 	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
 	"""
@@ -127,4 +127,63 @@ Scenario: Multiple calls verifying specific invocation details
 	| given-world-1 | blue         | Milky Way |
 	| given-world-2 | green        | Milky Way |
 	| given-world-2 | grey         | Milky Way |
+	And the request is verified
+
+
+Scenario: Multiple calls on the same mock with differing results
+	Given a wire mock named "get-hello-world"
+	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is "Hello World"
+	And that wire mock enters state "call 2"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is "Hello World 2"
+	And that wire mock enters state "call 3"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is "Hello World 3"
+	And that wire mock is finalized
+	When I POST the "hello world" resource "default" endpoint with:
+	"""
+	{
+		"name": "world-1"
+	}
+	"""
+	Then the response status code should be 200
+	And the response body should be "Hello World"
+	When I POST the "hello world" resource "default" endpoint with:
+	"""
+	{
+		"name": "world-2"
+	}
+	"""
+	Then the response status code should be 200
+	And the response body should be "Hello World 2"
+	When I POST the "hello world" resource "default" endpoint with:
+	"""
+	{
+		"name": "world-3"
+	}
+	"""
+	Then the response status code should be 200
+	And the response body should be "Hello World 3"
+	And I want to verify interactions with the wire mock named "get-hello-world"
+	And that mock should have been invoked 3 times
+	And the request body of state "Started" should have been:
+	"""
+	{
+		"name": "world-1"
+	}
+	"""
+	And the request body of state "call 2" should have been:
+	"""
+	{
+		"name": "world-2"
+	}
+	"""
+	And the request body of state "call 3" should have been:
+	"""
+	{
+		"name": "world-3"
+	}
+	"""
 	And the request is verified
