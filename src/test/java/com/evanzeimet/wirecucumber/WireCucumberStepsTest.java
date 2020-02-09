@@ -43,11 +43,11 @@ public class WireCucumberStepsTest {
 	}
 
 	@Test
-	public void bootstrapRequestMock_default() throws Throwable {
+	public void bootstrapUrlEqualToRequestMock_unexpectedHttpVerb() throws Throwable {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			steps.bootstrapRequestMock().accept("FLY", "/fly");
+			steps.bootstrapUrlEqualToRequestMock().accept("FLY", "/fly");
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}

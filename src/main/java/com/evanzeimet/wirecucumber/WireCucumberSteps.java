@@ -15,6 +15,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.matching.RequestPattern.thatMatch;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
@@ -62,6 +63,7 @@ public class WireCucumberSteps
 
 	// TODO some context object?
 	// TODO call index across mocks/scenarios?
+	// TODO multiple calls for a single state?
 	protected String currentMockName;
 	protected ScenarioMappingBuilder currentRequestBuilder;
 	protected RequestPatternBuilder currentRequestVerifierBuilder;
@@ -125,49 +127,66 @@ public class WireCucumberSteps
 		};
 	}
 
+	protected A1<String> addRequestVerifierUrl() {
+		return (url) -> {
+			currentRequestVerifierBuilder.withUrl(url);
+		};
+	}
+
 	protected HookBody beforeScenario() {
 		return (scenario) -> {
 			currentScenario = scenario;
 		};
 	}
 
-	protected A2<String, String> bootstrapRequestMock() {
+	protected void bootstrapRequestMock(String httpVerb, UrlPattern urlPattern) {
+		MappingBuilder requestBuilder;
+
+		switch (httpVerb.toLowerCase()) {
+		case "any":
+			requestBuilder = any(urlPattern);
+			break;
+
+		case "delete":
+			requestBuilder = delete(urlPattern);
+			break;
+
+		case "get":
+			requestBuilder = get(urlPattern);
+			break;
+
+		case "patch":
+			requestBuilder = patch(urlPattern);
+			break;
+
+		case "post":
+			requestBuilder = post(urlPattern);
+			break;
+
+		case "put":
+			requestBuilder = put(urlPattern);
+			break;
+
+		default:
+			throw createUnexpectedHttpVerbException(httpVerb);
+		}
+
+		currentRequestBuilder = requestBuilder.inScenario(currentScenario.getName());
+		currentScenarioState = STARTED;
+		currentScenarioStateIndex = 0;
+	}
+
+	protected A2<String, String> bootstrapUrlEqualToRequestMock() {
 		return (httpVerb, path) -> {
 			UrlPattern urlPattern = urlEqualTo(path);
-			MappingBuilder requestBuilder;
+			bootstrapRequestMock(httpVerb, urlPattern);
+		};
+	}
 
-			switch (httpVerb.toLowerCase()) {
-			case "any":
-				requestBuilder = any(urlPattern);
-				break;
-
-			case "delete":
-				requestBuilder = delete(urlPattern);
-				break;
-
-			case "get":
-				requestBuilder = get(urlPattern);
-				break;
-
-			case "patch":
-				requestBuilder = patch(urlPattern);
-				break;
-
-			case "post":
-				requestBuilder = post(urlPattern);
-				break;
-
-			case "put":
-				requestBuilder = put(urlPattern);
-				break;
-
-			default:
-				throw createUnexpectedHttpVerbException(httpVerb);
-			}
-
-			currentRequestBuilder = requestBuilder.inScenario(currentScenario.getName());
-			currentScenarioState = STARTED;
-			currentScenarioStateIndex = 0;
+	protected A2<String, String> bootstrapUrlMatchingRequestMock() {
+		return (httpVerb, path) -> {
+			UrlPattern urlPattern = urlMatching(path);
+			bootstrapRequestMock(httpVerb, urlPattern);
 		};
 	}
 
@@ -179,7 +198,8 @@ public class WireCucumberSteps
 	public void initialize() {
 		Before(beforeScenario());
 		Given("a wire mock named {string}", setMockName());
-		Given("that wire mock handles (the ){word} verb with a url equal to {string}", bootstrapRequestMock());
+		Given("that wire mock handles (the ){word} verb with a url equal to {string}", bootstrapUrlEqualToRequestMock());
+		Given("that wire mock handles (the ){word} verb with a url matching {string}", bootstrapUrlMatchingRequestMock());
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
@@ -205,6 +225,9 @@ public class WireCucumberSteps
 		Then("the request body of state {string} should have been empty", verifyRequestStateEmptyBody());
 		Then("the request body of state {string} should have been these records:", verifyRequestStateDataTableBody());
 		Then("the request should have had header {string} {string}", addRequestVerifierHeader());
+		Then("the request url should have been {string}", addRequestVerifierUrl());
+		Then("the request url of invocation {int} should have been {string}", verifyRequestInvocationUrl());
+		Then("the request url of state {string} should have been {string}", verifyStateInvocationUrl());
 		Then("the request is verified", verifyRequest());
 	}
 
@@ -257,7 +280,6 @@ public class WireCucumberSteps
 					.willSetStateTo(state);
 			finalizeRequestBuilder(key);
 
-			// TODO do stuff??
 			currentResponseBuilder = null;
 			currentScenarioState = state;
 		};
@@ -283,6 +305,7 @@ public class WireCucumberSteps
 		MatchResult matchResult = matchInvocation(invocation, pattern);
 
 		String requestAttribute = String.format("request-invocation-%d", invocationIndex);
+		// TODO special diff for datatable?
 		WireCucumberDiffLine<Request> diffLine = new WireCucumberDiffLine<Request>(requestAttribute,
 				pattern,
 				invocation,
@@ -401,6 +424,7 @@ public class WireCucumberSteps
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
 					.build();
+			// TODO make datatable verification do data table diff
 			verifyInvocation(invocationIndex, bodyPattern);
 		};
 	}
@@ -418,6 +442,15 @@ public class WireCucumberSteps
 		return (invocationIndex, requestBody) -> {
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
+					.build();
+			verifyInvocation(invocationIndex, bodyPattern);
+		};
+	}
+
+	protected A2<Integer, String> verifyRequestInvocationUrl() {
+		return (invocationIndex, url) -> {
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
+					.withUrl(url)
 					.build();
 			verifyInvocation(invocationIndex, bodyPattern);
 		};
@@ -450,6 +483,17 @@ public class WireCucumberSteps
 		return (state, requestBody) -> {
 			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
 					.withRequestBody(equalTo(requestBody))
+					.build();
+			Integer invocationIndex = getStateIndex(state);
+
+			verifyInvocation(invocationIndex, bodyPattern);
+		};
+	}
+
+	protected A2<String, String> verifyStateInvocationUrl() {
+		return (state, url) -> {
+			RequestPattern bodyPattern = RequestPatternBuilder.like(currentRequestVerifierBuilder.build())
+					.withUrl(url)
 					.build();
 			Integer invocationIndex = getStateIndex(state);
 

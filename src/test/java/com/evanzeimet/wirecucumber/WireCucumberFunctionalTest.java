@@ -159,7 +159,7 @@ public class WireCucumberFunctionalTest implements En {
 		boolean notDefault = !"default".equals(endpoint);
 
 		if (notBlank && notDefault) {
-			result = String.format("%s/%s", endpoint);
+			result = String.format("%s/%s", result, endpoint);
 		}
 
 		return result;

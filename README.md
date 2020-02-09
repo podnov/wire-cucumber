@@ -10,6 +10,7 @@ The intent of this project is to make mocking external REST calls easier. This i
 ```
 Given a wire mock named {string}
 Given that wire mock handles (the ){word} verb with a url equal to {string}
+Given that wire mock handles (the ){word} verb with a url matching {string}
 Given that wire mock accepts {string}
 Given that wire mock content type is {string}
 Given that wire mock will return a response with status {int}
@@ -34,6 +35,9 @@ Then the request body of state {string} should have been {string}
 Then the request body of state {string} should have been empty
 Then the request body of state {string} should have been these records:
 Then the request should have had header {string} {string}
+Then the request url should have been {string}
+Then the request url of invocation {int} should have been {string}
+Then the request url of state {string} should have been {string}
 Then my request is verified
 ```
 
