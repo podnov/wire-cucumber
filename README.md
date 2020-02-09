@@ -103,3 +103,4 @@ CUCUMBER_OPTIONS='--tags @multipleInvocations' ./gradlew clean test
 ./gradlew build
 ./gradlew uploadArchives
 ```
+Visit [sonatype](https://oss.sonatype.org/#stagingRepositories), reference [guide](https://www.albertgao.xyz/2018/01/18/how-to-publish-artifact-to-maven-central-via-gradle/) if needed. 
