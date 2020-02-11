@@ -3,6 +3,8 @@ package com.evanzeimet.wirecucumber;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
 
@@ -28,10 +30,10 @@ public class WireCucumberFunctionalTest implements En {
 
 	private ValidatableResponse actualResponse;
 	private String currentRequestId;
-	private WireCucumber wireCucumber;
+	private TestWireCucumber wireCucumber;
 
 	public WireCucumberFunctionalTest() {
-		wireCucumber = new WireCucumber();
+		wireCucumber = new TestWireCucumber();
 		wireCucumber.initialize();
 		int port = wireCucumber.getWireMockServer().port();
 
@@ -128,10 +130,24 @@ public class WireCucumberFunctionalTest implements En {
 					.withHeader(REQUEST_ID_HEADER, WireMock.equalTo(currentRequestId));
 		});
 
+		Then("verifying my request should yield this exception message:", (expectedExceptionMessage) -> {
+			Throwable actualThrowable = null;
+
+			try {
+				wireCucumber.verifyRequest();
+			} catch (Throwable e) {
+				actualThrowable = e;
+			}
+
+			assertNotNull(actualThrowable);
+
+			String actualExceptionMessage = TestUtils.dos2unix(actualThrowable.getMessage());
+			assertEquals(expectedExceptionMessage, actualExceptionMessage);
+		});
+
 		After(() -> {
 			wireCucumber.close();
 		});
-
 	}
 
 	protected String getPath(String resource, String endpoint) {

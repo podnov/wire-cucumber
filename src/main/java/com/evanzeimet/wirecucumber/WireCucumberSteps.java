@@ -24,6 +24,7 @@ import static java.util.Arrays.asList;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Map;
 import com.evanzeimet.wirecucumber.verification.MatchInvocationResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.ScenarioMappingBuilder;
@@ -47,6 +49,7 @@ import com.github.tomakehurst.wiremock.verification.diff.JUnitStyleDiffRenderer;
 import com.github.tomakehurst.wiremock.verification.diff.WireCucumberDiffLine;
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 
 import io.cucumber.core.api.Scenario;
 import io.cucumber.datatable.DataTable;
@@ -64,6 +67,7 @@ public class WireCucumberSteps
 	// TODO some context object?
 	// TODO call index across mocks/scenarios?
 	// TODO multiple calls for a single state?
+	// TODO match invocation for state should use state name instead of index
 	protected String currentMockName;
 	protected ScenarioMappingBuilder currentRequestBuilder;
 	protected RequestPatternBuilder currentRequestVerifierBuilder;
@@ -188,6 +192,39 @@ public class WireCucumberSteps
 			UrlPattern urlPattern = urlMatching(path);
 			bootstrapRequestMock(httpVerb, urlPattern);
 		};
+	}
+
+	protected Object coalesceActualToExpected(Object actual, Object expected) {
+		ObjectNode expectedNode;
+
+		try {
+			expectedNode = (ObjectNode) objectMapper.readTree((String) expected);
+		} catch (IOException e) {
+			throw new WireCucumberRuntimeException(e);
+		}
+
+		ObjectNode actualNode = (ObjectNode) objectMapper.valueToTree(actual);
+
+		List<String> actualFieldNames = Lists.newArrayList(actualNode.fieldNames());
+		List<String> expectedFieldNames = Lists.newArrayList(expectedNode.fieldNames());
+
+		if (expectedFieldNames.contains("bodyPatterns")) {
+			expectedFieldNames.add("body");
+		}
+
+		actualFieldNames.removeAll(expectedFieldNames);
+		actualFieldNames.forEach(actualNode::remove);
+
+		String result;
+
+		try {
+			result = objectMapper.writerWithDefaultPrettyPrinter()
+					.writeValueAsString(actualNode);
+		} catch (JsonProcessingException e) {
+			throw new WireCucumberRuntimeException(e);
+		}
+
+		return result;
 	}
 
 	protected String convertDataTableToJson(DataTable dataTable) throws JsonProcessingException {
@@ -410,6 +447,7 @@ public class WireCucumberSteps
 			String message = failedMatches.transform(input -> {
 				Object expected = EXPECTED.apply(input.getDiffLine());
 				Object actual = ACTUAL.apply(input.getDiffLine());
+				actual = coalesceActualToExpected(actual, expected);
 				String diffMessage = JUnitStyleDiffRenderer.junitStyleDiffMessage(expected, actual);
 				return String.format("for invocation at index %d,%s", input.getInvocationIndex(), diffMessage);
 			}).join(Joiner.on("\n"));
