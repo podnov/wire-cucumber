@@ -66,7 +66,7 @@ wireCucumber = new WireCucumber();
 wireCucumber.initialize();
 ```
 
-### Call the service that calls mock you configured in your scenario and verify that it behaved correctly:
+### Call the service that calls the mock you configured in your scenario and verify that it behaved correctly:
 ```
 // using REST Assured here to perform service invocation
 
