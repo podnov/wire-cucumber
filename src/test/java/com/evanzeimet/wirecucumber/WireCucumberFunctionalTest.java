@@ -30,15 +30,14 @@ public class WireCucumberFunctionalTest implements En {
 
 	private ValidatableResponse actualResponse;
 	private String currentRequestId;
-	private TestWireCucumber wireCucumber;
 
 	public WireCucumberFunctionalTest() {
-		wireCucumber = new TestWireCucumber();
+		TestWireCucumber wireCucumber = new TestWireCucumber();
 		wireCucumber.initialize();
 		int port = wireCucumber.getWireMockServer().port();
 
-		When("I DELETE the {string} resource {string} endpoint", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I DELETE the {string} resource {string} endpoint", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -46,8 +45,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I GET the {string} resource {string} endpoint", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I GET the {string} resource {string} endpoint", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -55,8 +54,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I OPTIONS the {string} resource {string} endpoint", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I OPTIONS the {string} resource {string} endpoint", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -64,8 +63,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I PATCH the {string} resource {string} endpoint", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I PATCH the {string} resource {string} endpoint", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -73,8 +72,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I PUT the {string} resource {string} endpoint", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I PUT the {string} resource {string} endpoint", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -82,8 +81,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I POST the {string} resource {string} endpoint", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I POST the {string} resource {string} endpoint", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -91,8 +90,8 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I POST the hello worlds resource", (resource, endpoint) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I POST the hello worlds resource", (String resource, String endpoint) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
@@ -100,14 +99,14 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		When("I POST the {string} resource {string} endpoint with:", (resource, endpoint, requestBody) -> {
-			String path = getPath((String) resource, (String) endpoint);
+		When("I POST the {string} resource {string} endpoint with:", (String resource, String endpoint, String requestBody) -> {
+			String path = getPath(resource, endpoint);
 
 			actualResponse = bootstrapRequest()
 					.port(port)
 					.accept(JSON)
 					.contentType(JSON)
-					.body((String) requestBody)
+					.body(requestBody)
 					.post(path)
 					.then();
 		});
@@ -117,11 +116,11 @@ public class WireCucumberFunctionalTest implements En {
 		});
 
 		Then("the response body should be {string}", (expectedResponseBody) -> {
-			actualResponse.body(equalTo((String) expectedResponseBody));
+			actualResponse.body(equalTo(expectedResponseBody));
 		});
 
 		Then("the response body should be:", (expectedResponseBody) -> {
-			actualResponse.body(equalTo((String) expectedResponseBody));
+			actualResponse.body(equalTo(expectedResponseBody));
 		});
 
 		Then("the request should have had my request id header", () -> {
