@@ -1,5 +1,6 @@
 package com.evanzeimet.wirecucumber;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
@@ -33,7 +34,7 @@ public class WireCucumberFunctionalTest implements En {
 
 	public WireCucumberFunctionalTest() {
 		TestWireCucumber wireCucumber = new TestWireCucumber();
-		wireCucumber.initialize();
+		wireCucumber.initialize(options().dynamicPort());
 		int port = wireCucumber.getWireMockServer().port();
 
 		When("I DELETE the {string} resource {string} endpoint", (String resource, String endpoint) -> {
