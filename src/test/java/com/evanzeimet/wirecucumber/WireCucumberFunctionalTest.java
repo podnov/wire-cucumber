@@ -112,8 +112,12 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
-		Then("the response status code should be {int}", (expectedStatusCode) -> {
-			actualResponse.statusCode((int) expectedStatusCode);
+		Then("the response status code should be {int}", (Integer expectedStatusCode) -> {
+			actualResponse.statusCode(expectedStatusCode);
+		});
+
+		Then("the response header {string} is {string}", (String expectedHeaderName, String expectedHeaderValue) -> {
+			actualResponse.header(expectedHeaderName, expectedHeaderValue);
 		});
 
 		Then("the response body should be {string}", (expectedResponseBody) -> {

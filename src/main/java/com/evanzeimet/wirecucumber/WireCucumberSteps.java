@@ -240,9 +240,11 @@ public class WireCucumberSteps
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", setMockResponseStatus());
-		Given("that wire mock response body is:", setStringMockResponseBody());
-		Given("that wire mock response body is {string}", setStringMockResponseBody());
-		Given("that wire mock response body is these records:", setDataTableMockResponseBody());
+		Given("that wire mock response body is:", setMockResponseBodyString());
+		Given("that wire mock response body is {string}", setMockResponseBodyString());
+		Given("that wire mock response body is these records:", setMockResponseBodyDataTable());
+		Given("that wire mock response content type is {string}", setMockResponseContentType());
+		Given("that wire mock response header {string} is {string}", setMockResponseHeaderValue());
 		Given("that wire mock enters state {string}", setRequestBuilderState());
 		Given("that wire mock is finalized", finalizeRequestMock());
 
@@ -308,20 +310,6 @@ public class WireCucumberSteps
 		};
 	}
 
-	protected A1<String> setRequestBuilderState() {
-		return (state) -> {
-			RequestBuilderScenarioStateKey key = new RequestBuilderScenarioStateKey(currentMockName,
-					currentScenarioState);
-			currentRequestBuilder = currentRequestBuilder.whenScenarioStateIs(currentScenarioState)
-					.willReturn(currentResponseBuilder)
-					.willSetStateTo(state);
-			finalizeRequestBuilder(key);
-
-			currentResponseBuilder = null;
-			currentScenarioState = state;
-		};
-	}
-
 	protected List<LoggedRequest> findRequestsForPattern(RequestPatternBuilder pattern) {
 		return findAll(pattern);
 	}
@@ -381,13 +369,6 @@ public class WireCucumberSteps
 		};
 	}
 
-	protected A1<DataTable> setDataTableMockResponseBody() {
-		return (dataTable) -> {
-			String body = convertDataTableToJson(dataTable);
-			currentResponseBuilder.withBody(body);
-		};
-	}
-
 	protected A1<String> setMockAccepts() {
 		return (value) -> {
 			currentRequestBuilder.withHeader(ACCEPT, containing(value));
@@ -406,15 +387,48 @@ public class WireCucumberSteps
 		};
 	}
 
+	protected A1<DataTable> setMockResponseBodyDataTable() {
+		return (dataTable) -> {
+			String body = convertDataTableToJson(dataTable);
+			currentResponseBuilder.withBody(body);
+		};
+	}
+
+	protected A1<String> setMockResponseBodyString() {
+		return (responseBody) -> {
+			currentResponseBuilder.withBody(responseBody);
+		};
+	}
+
+	protected A1<String> setMockResponseContentType() {
+		return (contentType) -> {
+			setMockResponseHeaderValue().accept(CONTENT_TYPE, contentType);
+		};
+	}
+
+	protected A2<String, String> setMockResponseHeaderValue() {
+		return (headerName, headerValue) -> {
+			currentResponseBuilder.withHeader(headerName, headerValue);
+		};
+	}
+
 	protected A1<Integer> setMockResponseStatus() {
 		return (status) -> {
 			currentResponseBuilder = aResponse().withStatus(status);
 		};
 	}
 
-	protected A1<String> setStringMockResponseBody() {
-		return (responseBody) -> {
-			currentResponseBuilder.withBody(responseBody);
+	protected A1<String> setRequestBuilderState() {
+		return (state) -> {
+			RequestBuilderScenarioStateKey key = new RequestBuilderScenarioStateKey(currentMockName,
+					currentScenarioState);
+			currentRequestBuilder = currentRequestBuilder.whenScenarioStateIs(currentScenarioState)
+					.willReturn(currentResponseBuilder)
+					.willSetStateTo(state);
+			finalizeRequestBuilder(key);
+
+			currentResponseBuilder = null;
+			currentScenarioState = state;
 		};
 	}
 

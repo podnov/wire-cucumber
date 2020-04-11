@@ -1,4 +1,4 @@
-@headers
+@requestHeaders
 Feature: Wire Cucumber Headers Tests
 
 
@@ -40,7 +40,7 @@ Scenario: JSON request
 	And the request is verified
 
 
-Scenario: JSON request
+Scenario: JSON request failure
 	Given a wire mock named "post-hello-world"
 	And that wire mock handles the POST verb with a url equal to "/hello-world"
 	And that wire mock accepts "application/json"

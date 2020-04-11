@@ -1,8 +1,7 @@
 @responseGeneric
 Feature: Wire Cucumber Response Entity Tests
 
-
-Scenario: Mock data table response
+Scenario: Reponse status 500
 	Given a wire mock named "get-hello-worlds"
 	And that wire mock handles the GET verb with a url equal to "/hello-worlds"
 	And that wire mock will return a response with status 500
