@@ -408,7 +408,7 @@ public class WireCucumberSteps
 
 	protected A1<Integer> setMockResponseStatus() {
 		return (status) -> {
-			currentResponseBuilder = aResponse().withStatus(200);
+			currentResponseBuilder = aResponse().withStatus(status);
 		};
 	}
 
