@@ -40,7 +40,7 @@ Then the request should have had header {string} {string}
 Then the request url should have been {string}
 Then the request url of invocation {int} should have been {string}
 Then the request url of state {string} should have been {string}
-Then my request is verified
+Then the request is verified
 ```
 
 ### Write a scenario
