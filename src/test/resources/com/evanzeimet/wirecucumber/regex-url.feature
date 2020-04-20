@@ -3,8 +3,7 @@ Feature: Wire Cucumber Regex URL Tests
 
 
 Scenario: Mock based on regex url, default endpoint
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the GET verb with a url matching "/hello-world/?.*"
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -18,8 +17,7 @@ Scenario: Mock based on regex url, default endpoint
 
 
 Scenario: Mock based on regex url, other endpoint
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the GET verb with a url matching "/hello-world/?.*"
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -33,8 +31,7 @@ Scenario: Mock based on regex url, other endpoint
 
 
 Scenario: Wrong url
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the GET verb with a url matching "/hello-world/?.*"
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized

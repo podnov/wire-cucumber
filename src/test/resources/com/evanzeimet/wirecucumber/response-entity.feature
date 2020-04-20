@@ -3,8 +3,7 @@ Feature: Wire Cucumber Response Entity Tests
 
 
 Scenario: Mock data table response
-	Given a wire mock named "get-hello-worlds"
-	And that wire mock handles the GET verb with a url equal to "/hello-worlds"
+	Given a wire mock named "get-hello-worlds" that handles the GET verb with a url equal to "/hello-worlds"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is these records:
 	| name          | primaryColor | galaxy    |

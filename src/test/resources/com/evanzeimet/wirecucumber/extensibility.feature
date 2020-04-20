@@ -2,8 +2,7 @@
 Feature: Wire Cucumber Extensibility Tests
 
 Scenario: Custom request verifier
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized

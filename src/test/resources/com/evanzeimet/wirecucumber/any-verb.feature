@@ -3,8 +3,7 @@ Feature: Wire Cucumber Any Verb Tests
 
 
 Scenario: any Hello World
-	Given a wire mock named "any-hello-world"
-	And that wire mock handles any verb with a url equal to "/hello-world"
+	Given a wire mock named "any-hello-world" that handles any verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -17,8 +16,7 @@ Scenario: any Hello World
 
 
 Scenario: number of invocations
-	Given a wire mock named "any-hello-world"
-	And that wire mock handles any verb with a url equal to "/hello-world"
+	Given a wire mock named "any-hello-world" that handles any verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized

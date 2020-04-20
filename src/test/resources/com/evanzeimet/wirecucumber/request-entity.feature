@@ -3,8 +3,7 @@ Feature: Wire Cucumber Request Entity Tests
 
 
 Scenario: Request with entity
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -28,8 +27,7 @@ Scenario: Request with entity
 
 
 Scenario: Request with entity, verify invocation datatable
-	Given a wire mock named "post-hello-worlds"
-	And that wire mock handles the POST verb with a url equal to "/hello-worlds"
+	Given a wire mock named "post-hello-worlds" that handles the POST verb with a url equal to "/hello-worlds"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Worlds"
 	And that wire mock is finalized
@@ -50,8 +48,7 @@ Scenario: Request with entity, verify invocation datatable
 
 
 Scenario: Wrong entity
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -90,8 +87,7 @@ Scenario: Wrong entity
 
 
 Scenario: Wrong entity datatable
-	Given a wire mock named "post-hello-worlds"
-	And that wire mock handles the POST verb with a url equal to "/hello-worlds"
+	Given a wire mock named "post-hello-worlds" that handles the POST verb with a url equal to "/hello-worlds"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Worlds"
 	And that wire mock is finalized

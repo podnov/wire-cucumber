@@ -130,7 +130,8 @@ public class WireCucumberFunctionalTest implements En {
 
 		Then("the request should have had my request id header", () -> {
 			wireCucumber.getSteps()
-					.getCurrentRequestVerifierBuilder()
+					.getScenarioBuilder()
+					.getInvocationVerifier()
 					.withHeader(REQUEST_ID_HEADER, WireMock.equalTo(currentRequestId));
 		});
 

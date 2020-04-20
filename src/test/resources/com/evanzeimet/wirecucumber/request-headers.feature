@@ -1,10 +1,8 @@
 @requestHeaders
 Feature: Wire Cucumber Headers Tests
 
-
 Scenario: JSON request
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock accepts "application/json"
 	And that wire mock content type is "application/json"
 	And that wire mock will return a response with status 200
@@ -40,9 +38,8 @@ Scenario: JSON request
 	And the request is verified
 
 
-Scenario: JSON request failure
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+Scenario: JSON request
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock accepts "application/json"
 	And that wire mock content type is "application/json"
 	And that wire mock will return a response with status 200

@@ -3,8 +3,7 @@ Feature: Wire Cucumber Post Verb Tests
 
 
 Scenario: PUT Hello World
-	Given a wire mock named "put-hello-world"
-	And that wire mock handles the PUT verb with a url equal to "/hello-world"
+	Given a wire mock named "put-hello-world" that handles the PUT verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -17,8 +16,7 @@ Scenario: PUT Hello World
 
 
 Scenario: Wrong verb
-	Given a wire mock named "put-hello-world"
-	And that wire mock handles the PUT verb with a url equal to "/hello-world"
+	Given a wire mock named "put-hello-world" that handles the PUT verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -39,8 +37,7 @@ Scenario: Wrong verb
 
 
 Scenario: Number of invocations
-	Given a wire mock named "put-hello-world"
-	And that wire mock handles the PUT verb with a url equal to "/hello-world"
+	Given a wire mock named "put-hello-world" that handles the PUT verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized

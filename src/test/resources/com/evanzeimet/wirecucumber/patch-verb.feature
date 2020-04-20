@@ -3,8 +3,7 @@ Feature: Wire Cucumber Patch Verb Tests
 
 
 Scenario: PATCH Hello World
-	Given a wire mock named "patch-hello-world"
-	And that wire mock handles the PATCH verb with a url equal to "/hello-world"
+	Given a wire mock named "patch-hello-world" that handles the PATCH verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -17,8 +16,7 @@ Scenario: PATCH Hello World
 
 
 Scenario: Wrong verb
-	Given a wire mock named "patch-hello-world"
-	And that wire mock handles the PATCH verb with a url equal to "/hello-world"
+	Given a wire mock named "patch-hello-world" that handles the PATCH verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -39,8 +37,7 @@ Scenario: Wrong verb
 
 
 Scenario: Number of invocations
-	Given a wire mock named "patch-hello-world"
-	And that wire mock handles the PATCH verb with a url equal to "/hello-world"
+	Given a wire mock named "patch-hello-world" that handles the PATCH verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized

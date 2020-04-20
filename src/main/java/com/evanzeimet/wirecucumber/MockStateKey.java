@@ -3,16 +3,16 @@ package com.evanzeimet.wirecucumber;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class RequestBuilderScenarioStateKey {
+public class MockStateKey {
 
 	private String mockName;
 	private String scenarioState;
 
-	public RequestBuilderScenarioStateKey() {
+	public MockStateKey() {
 
 	}
 
-	public RequestBuilderScenarioStateKey(String mockName, String scenarioState) {
+	public MockStateKey(String mockName, String scenarioState) {
 		this.mockName = mockName;
 		this.scenarioState = scenarioState;
 	}
@@ -44,7 +44,7 @@ public class RequestBuilderScenarioStateKey {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		RequestBuilderScenarioStateKey rhs = (RequestBuilderScenarioStateKey) obj;
+		MockStateKey rhs = (MockStateKey) obj;
 		return new EqualsBuilder()
 				.append(mockName, rhs.mockName)
 				.append(scenarioState, rhs.scenarioState)

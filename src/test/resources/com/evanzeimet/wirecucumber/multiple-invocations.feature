@@ -6,8 +6,7 @@ Feature: Wire Cucumber Multiple Invocation Tests
 #      - change invocation verifier by index to scenario names
 
 Scenario: Multiple calls on the same mock
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the GET verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -26,13 +25,11 @@ Scenario: Multiple calls on the same mock
 
 
 Scenario: Multiple calls to different mocks
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the GET verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
-	And a wire mock named "get-hello-galaxy"
-	And that wire mock handles the GET verb with a url equal to "/hello-galaxy"
+	And a wire mock named "get-hello-galaxy" that handles the GET verb with a url equal to "/hello-galaxy"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Galaxy"
 	And that wire mock is finalized
@@ -51,8 +48,7 @@ Scenario: Multiple calls to different mocks
 
 
 Scenario: Multiple calls verifying specific invocation index details
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -94,8 +90,7 @@ Scenario: Multiple calls verifying specific invocation index details
 
 
 Scenario: Multiple calls verifying specific invocation index details with data tables
-	Given a wire mock named "post-hello-worlds"
-	And that wire mock handles the POST verb with a url equal to "/hello-worlds"
+	Given a wire mock named "post-hello-worlds" that handles the POST verb with a url equal to "/hello-worlds"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Worlds"
 	And that wire mock is finalized
@@ -131,8 +126,7 @@ Scenario: Multiple calls verifying specific invocation index details with data t
 
 
 Scenario: Multiple calls verifying specific invocation state details
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock enters state "call 2"
@@ -180,8 +174,7 @@ Scenario: Multiple calls verifying specific invocation state details
 
 
 Scenario: Multiple calls verifying specific invocation state details with data tables
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock enters state "call 2"
@@ -223,8 +216,7 @@ Scenario: Multiple calls verifying specific invocation state details with data t
 
 
 Scenario: Multiple calls on the same mock with differing results, urls matching too
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the POST verb with a url matching "/hello-world/?.*"
+	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock enters state "call 2"
@@ -275,8 +267,7 @@ Scenario: Multiple calls on the same mock with differing results, urls matching 
 
 
 Scenario: Invocation index failures
-	Given a wire mock named "post-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
@@ -346,8 +337,7 @@ Scenario: Invocation index failures
 
 
 Scenario: Invocation index details with data tables failures
-	Given a wire mock named "post-hello-worlds"
-	And that wire mock handles the POST verb with a url equal to "/hello-worlds"
+	Given a wire mock named "post-hello-worlds" that handles the POST verb with a url equal to "/hello-worlds"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Worlds"
 	And that wire mock is finalized
@@ -410,8 +400,7 @@ Scenario: Invocation index details with data tables failures
 	"""
 
 Scenario: Invocation state failures
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock enters state "call 2"
@@ -487,8 +476,7 @@ Scenario: Invocation state failures
 
 
 Scenario: Invocation state details with data tables failures
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the POST verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock enters state "call 2"
@@ -558,8 +546,7 @@ Scenario: Invocation state details with data tables failures
 
 
 Scenario: urls matching failures
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the POST verb with a url matching "/hello-world/?.*"
+	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock enters state "call 2"

@@ -4,6 +4,6 @@ public class TestWireCucumber
 		extends WireCucumber {
 
 	public void verifyRequest() throws Throwable {
-		steps.verifyRequest().accept();
+		steps.verifyInvocations().accept();
 	}
 }

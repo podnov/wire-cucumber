@@ -8,9 +8,8 @@ The intent of this project is to make mocking external REST calls easier. This i
 ## How?
 ### What steps are provided?
 ```
-Given a wire mock named {string}
-Given that wire mock handles (the ){word} verb with a url equal to {string}
-Given that wire mock handles (the ){word} verb with a url matching {string}
+Given a wire mock named {string} that handles (the ){word} verb with a url equal to {string}
+Given a wire mock named {string} that handles (the ){word} verb with a url matching {string}
 Given that wire mock accepts {string}
 Given that wire mock content type is {string}
 Given that wire mock will return a response with status {int}
@@ -47,8 +46,7 @@ Then the request is verified
 ```
 Scenario: GET Something That Calls Hello World
 	# provided by wire-cucumber
-	Given a wire mock named "get-hello-world"
-	And that wire mock handles the GET verb with a url equal to "/hello-world"
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
 	And that wire mock is finalized
