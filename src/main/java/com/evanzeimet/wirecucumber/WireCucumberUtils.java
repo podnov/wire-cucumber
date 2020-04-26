@@ -20,7 +20,7 @@ public class WireCucumberUtils {
 		List<Map<String, String>> maps = dataTable.asMaps();
 
 		try {
-			result = objectMapper.writeValueAsString(maps);
+			result = getObjectMapper().writeValueAsString(maps);
 		} catch (JsonProcessingException e) {
 			throw new WireCucumberRuntimeException(e);
 		}
@@ -32,11 +32,11 @@ public class WireCucumberUtils {
 		return Lists.newArrayList(node.fieldNames());
 	}
 
-	public ObjectNode readTree(String expected) {
+	public ObjectNode readTree(String value) {
 		ObjectNode expectedNode;
 
 		try {
-			expectedNode = (ObjectNode) objectMapper.readTree(expected);
+			expectedNode = (ObjectNode) getObjectMapper().readTree(value);
 		} catch (IOException e) {
 			throw new WireCucumberRuntimeException(e);
 		}
@@ -44,15 +44,20 @@ public class WireCucumberUtils {
 		return expectedNode;
 	}
 
+	protected ObjectMapper getObjectMapper() {
+		return objectMapper;
+	}
+
 	protected ObjectNode valueToTree(Object value) {
-		return (ObjectNode) objectMapper.valueToTree(value);
+		return (ObjectNode) getObjectMapper().valueToTree(value);
 	}
 
 	public String writeValueAsPrettyString(Object value) {
 		String result;
 
 		try {
-			result = objectMapper.writerWithDefaultPrettyPrinter()
+			result = getObjectMapper()
+					.writerWithDefaultPrettyPrinter()
 					.writeValueAsString(value);
 		} catch (JsonProcessingException e) {
 			throw new WireCucumberRuntimeException(e);

@@ -16,9 +16,7 @@ import io.cucumber.datatable.DataTable;
 
 public class WireCucumberScenarioBuilder {
 
-	// TODO call index across mocks/scenarios?
-	// TODO multiple calls for a single state?
-	// TODO match invocation for state should use state name instead of index
+	// TODO call index across mocks/scenarios? timestamp comparison?
 
 	protected Scenario currentCucumberScenario;
 	protected String currentMockName;
@@ -26,7 +24,7 @@ public class WireCucumberScenarioBuilder {
 	protected Integer currentMockStateIndex;
 	protected String currentVerifyMockName;
 	protected WireCucumberInvocationsVerifier invocationsVerifier;
-	protected WireCucumberMockBuilder mockBuilder = new WireCucumberMockBuilder();
+	protected WireCucumberMockBuilder mockBuilder;
 	protected Map<MockStateKey, StubMapping> mockStateStubMappings = new HashMap<>();
 	protected Map<MockStateKey, Integer> mockStateIndices = new HashMap<>();
 
@@ -159,7 +157,6 @@ public class WireCucumberScenarioBuilder {
 
 	public void setCurrentRequestVerifyBuilder(String mockName) {
 		currentVerifyMockName = mockName;
-		// TODO how do we want to verify? by mock name? by state name? something else?
 		StubMapping stubMapping = getMockStateMapping(mockName, STARTED);
 
 		if (stubMapping == null) {

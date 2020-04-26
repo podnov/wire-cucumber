@@ -131,17 +131,18 @@ public class WireCucumberInvocationsVerifier {
 		return match(invocationIndex, pattern, invocations);
 	}
 
-	protected MatchInvocationResult<Request> match(Integer invocationIndex, RequestPattern pattern,
+	protected MatchInvocationResult<Request> match(Integer invocationIndex,
+			RequestPattern pattern,
 			List<LoggedRequest> invocations) {
 		LoggedRequest invocation = invocations.get(invocationIndex);
 		MatchResult matchResult = match(invocation, pattern);
-
 		String requestAttribute = String.format("request-invocation-%d", invocationIndex);
-		// TODO special diff for datatable?
+		String printedPatternValue = pattern.getExpected();
+
 		WireCucumberDiffLine<Request> diffLine = new WireCucumberDiffLine<Request>(requestAttribute,
 				pattern,
 				invocation,
-				pattern.getExpected());
+				printedPatternValue);
 
 		MatchInvocationResult<Request> result = new MatchInvocationResult<>();
 
