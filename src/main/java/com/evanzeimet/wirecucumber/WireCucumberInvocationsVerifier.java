@@ -159,10 +159,6 @@ public class WireCucumberInvocationsVerifier {
 		return MatchResult.of(!empty);
 	}
 
-	public RequestPatternBuilder patternBuilder() {
-		return RequestPatternBuilder.like(requestPatternBuilder.build());
-	}
-
 	public void verify() {
 		verifyCount();
 		verifyCustom();
