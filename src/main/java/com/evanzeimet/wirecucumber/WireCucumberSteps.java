@@ -172,6 +172,7 @@ public class WireCucumberSteps
 		Then("the request body of state {string} should have been these records:", addInvocationStateDataTableBodyVerification());
 		Then("the request should have had header {string} {string}", addInvocationVerifierHeader());
 		Then("the request url should have been {string}", addInvocationVerifierUrl());
+		// TODO change these to "of invocation index" and "of invocation state"
 		Then("the request url of invocation {int} should have been {string}", addInvocationIndexUrlVerification());
 		Then("the request url of state {string} should have been {string}", addInvocationStateUrlVerification());
 		Then("the request is verified", verifyInvocations());
