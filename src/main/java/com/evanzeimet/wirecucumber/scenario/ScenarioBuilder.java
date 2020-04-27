@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
@@ -7,6 +7,8 @@ import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
+import com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -14,7 +16,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.datatable.DataTable;
 
-public class WireCucumberScenarioBuilder {
+public class ScenarioBuilder {
 
 	// TODO call index across mocks/scenarios? timestamp comparison?
 
@@ -23,8 +25,8 @@ public class WireCucumberScenarioBuilder {
 	protected String currentMockState;
 	protected Integer currentMockStateIndex;
 	protected String currentVerifyMockName;
-	protected WireCucumberInvocationsVerifier invocationsVerifier;
-	protected WireCucumberMockBuilder mockBuilder;
+	protected InvocationsVerifier invocationsVerifier;
+	protected MockBuilder mockBuilder;
 	protected Map<MockStateKey, StubMapping> mockStateStubMappings = new HashMap<>();
 	protected Map<MockStateKey, Integer> mockStateIndices = new HashMap<>();
 
@@ -40,11 +42,11 @@ public class WireCucumberScenarioBuilder {
 		return currentMockStateIndex;
 	}
 
-	public WireCucumberInvocationsVerifier getInvocationVerifier() {
+	public InvocationsVerifier getInvocationVerifier() {
 		return invocationsVerifier;
 	}
 
-	public WireCucumberMockBuilder getMockBuilder() {
+	public MockBuilder getMockBuilder() {
 		return mockBuilder;
 	}
 
@@ -73,7 +75,7 @@ public class WireCucumberScenarioBuilder {
 		currentMockName = mockName;
 		currentMockState = STARTED;
 		currentMockStateIndex = 0;
-		mockBuilder = WireCucumberMockBuilder.create(currentCucumberScenario, httpVerb, urlPattern);
+		mockBuilder = MockBuilder.create(currentCucumberScenario, httpVerb, urlPattern);
 	}
 
 	public void bootstrapUrlEqualToRequestMock(String mockName, String httpVerb, String path) {
@@ -158,7 +160,7 @@ public class WireCucumberScenarioBuilder {
 		}
 
 		RequestPattern request = stubMapping.getRequest();
-		invocationsVerifier = WireCucumberInvocationsVerifier.forRequestPattern(request);
+		invocationsVerifier = InvocationsVerifier.forRequestPattern(request);
 	}
 
 	public void transitionMock(String nextState) {

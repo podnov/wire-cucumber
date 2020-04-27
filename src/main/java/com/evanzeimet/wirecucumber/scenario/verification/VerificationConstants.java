@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber.verification;
+package com.evanzeimet.wirecucumber.scenario.verification;
 
 import com.github.tomakehurst.wiremock.verification.diff.WireCucumberDiffLine;
 import com.google.common.base.Function;

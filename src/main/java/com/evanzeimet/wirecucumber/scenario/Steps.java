@@ -1,6 +1,8 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+
+import com.evanzeimet.wirecucumber.WireCucumberUtils;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
@@ -10,14 +12,14 @@ import io.cucumber.java8.StepdefBody.A1;
 import io.cucumber.java8.StepdefBody.A2;
 import io.cucumber.java8.StepdefBody.A3;
 
-public class WireCucumberSteps
+public class Steps
 		implements En {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	protected WireCucumberScenarioBuilder scenarioBuilder = new WireCucumberScenarioBuilder();
+	protected ScenarioBuilder scenarioBuilder = new ScenarioBuilder();
 
-	public WireCucumberScenarioBuilder getScenarioBuilder() {
+	public ScenarioBuilder getScenarioBuilder() {
 		return scenarioBuilder;
 	}
 

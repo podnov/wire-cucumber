@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

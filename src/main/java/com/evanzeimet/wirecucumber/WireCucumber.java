@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.evanzeimet.wirecucumber.scenario.Steps;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.Options;
 
@@ -14,14 +15,14 @@ public class WireCucumber implements En, AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
-	protected WireCucumberSteps steps;
+	protected Steps steps;
 	protected WireMockServer wireMockServer;
 
 	public WireMockServer getWireMockServer() {
 		return wireMockServer;
 	}
 
-	public WireCucumberSteps getSteps() {
+	public Steps getSteps() {
 		return steps;
 	}
 
@@ -34,7 +35,7 @@ public class WireCucumber implements En, AutoCloseable {
 	}
 
 	protected void createSteps() {
-		steps = new WireCucumberSteps();
+		steps = new Steps();
 		steps.initialize();
 	}
 

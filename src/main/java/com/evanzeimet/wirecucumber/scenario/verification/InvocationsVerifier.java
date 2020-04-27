@@ -1,7 +1,7 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario.verification;
 
-import static com.evanzeimet.wirecucumber.verification.VerificationConstants.ACTUAL;
-import static com.evanzeimet.wirecucumber.verification.VerificationConstants.EXPECTED;
+import static com.evanzeimet.wirecucumber.scenario.verification.VerificationConstants.ACTUAL;
+import static com.evanzeimet.wirecucumber.scenario.verification.VerificationConstants.EXPECTED;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -13,7 +13,8 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.evanzeimet.wirecucumber.verification.MatchInvocationResult;
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
+import com.evanzeimet.wirecucumber.WireCucumberUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.client.VerificationException;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -31,7 +32,7 @@ import com.google.common.collect.FluentIterable;
 
 import io.cucumber.datatable.DataTable;
 
-public class WireCucumberInvocationsVerifier {
+public class InvocationsVerifier {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
@@ -104,8 +105,8 @@ public class WireCucumberInvocationsVerifier {
 		return utils.writeValueAsPrettyString(actualNode);
 	}
 
-	public static WireCucumberInvocationsVerifier forRequestPattern(RequestPattern requestPattern) {
-		WireCucumberInvocationsVerifier result = new WireCucumberInvocationsVerifier();
+	public static InvocationsVerifier forRequestPattern(RequestPattern requestPattern) {
+		InvocationsVerifier result = new InvocationsVerifier();
 
 		result.requestPatternBuilder = RequestPatternBuilder.like(requestPattern);
 

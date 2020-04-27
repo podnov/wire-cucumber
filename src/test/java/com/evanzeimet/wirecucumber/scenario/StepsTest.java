@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -11,17 +11,19 @@ import static org.mockito.Mockito.spy;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
+import com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
-public class WireCucumberStepsTest {
+public class StepsTest {
 
-	private WireCucumberSteps steps;
+	private Steps steps;
 
 	@Before
 	public void setUp() {
 		bootstrapWireMock();
 
-		steps = spy(new WireCucumberSteps());
+		steps = spy(new Steps());
 	}
 
 	@Test
@@ -67,7 +69,7 @@ public class WireCucumberStepsTest {
 
 	@Test
 	public void verifyRequest() throws Throwable {
-		steps.scenarioBuilder.invocationsVerifier = mock(WireCucumberInvocationsVerifier.class);
+		steps.scenarioBuilder.invocationsVerifier = mock(InvocationsVerifier.class);
 
 		steps.verifyInvocations().accept();
 

@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.any;
@@ -13,20 +13,21 @@ import static org.mockito.Mockito.spy;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
-public class WireCucumberMockBuilderTest {
+public class MockBuilderTest {
 
-	private WireCucumberMockBuilder builder;
+	private MockBuilder builder;
 
 	@Before
 	public void setUp() {
-		builder = spy(new WireCucumberMockBuilder());
+		builder = spy(new MockBuilder());
 	}
 
 	@Test
 	public void createUnexpectedHttpVerbException() {
-		WireCucumberRuntimeException actual = WireCucumberMockBuilder.createUnexpectedHttpVerbException("FLY");
+		WireCucumberRuntimeException actual = MockBuilder.createUnexpectedHttpVerbException("FLY");
 
 		assertNotNull(actual);
 

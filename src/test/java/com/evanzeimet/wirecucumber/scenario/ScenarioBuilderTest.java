@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,15 +13,16 @@ import static org.mockito.Mockito.spy;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
-public class WireCucumberScenarioBuilderTest {
+public class ScenarioBuilderTest {
 
-	private WireCucumberScenarioBuilder builder;
+	private ScenarioBuilder builder;
 
 	@Before
 	public void setUp() {
-		builder = spy(new WireCucumberScenarioBuilder());
+		builder = spy(new ScenarioBuilder());
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class WireCucumberScenarioBuilderTest {
 		String givenCurrentScenarioState = "given-current-scenario-state";
 		Integer givenCurrentScenarioStateIndex = 42;
 		StubMapping givenStubMapping = mock(StubMapping.class);
-		WireCucumberMockBuilder givenMockBuilder = spy(new WireCucumberMockBuilder());
+		MockBuilder givenMockBuilder = spy(new MockBuilder());
 
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentScenarioState;
@@ -87,7 +88,7 @@ public class WireCucumberScenarioBuilderTest {
 		StubMapping givenStubmapping = mock(StubMapping.class);
 		String givenCurrentMockName = "given-current-mock-name";
 		String givenCurrentScenarioState = "given-current-scenario-state";
-		WireCucumberMockBuilder givenMockBuilder = spy(new WireCucumberMockBuilder());
+		MockBuilder givenMockBuilder = spy(new MockBuilder());
 
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentScenarioState;
@@ -135,7 +136,7 @@ public class WireCucumberScenarioBuilderTest {
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentMockState;
 		builder.currentMockStateIndex = 0;
-		builder.mockBuilder = mock(WireCucumberMockBuilder.class);
+		builder.mockBuilder = mock(MockBuilder.class);
 		builder.transitionMock(givenNextMockState);
 		builder.putCurrentMockStateStubMapping(null);
 
@@ -277,7 +278,7 @@ public class WireCucumberScenarioBuilderTest {
 		Integer givenCurrentScenarioStateIndex = 42;
 		String givenNextMockState = "given-next-state";
 		StubMapping givenStubMapping = mock(StubMapping.class);
-		WireCucumberMockBuilder givenMockBuilder = mock(WireCucumberMockBuilder.class);
+		MockBuilder givenMockBuilder = mock(MockBuilder.class);
 
 
 		builder.currentMockName = givenCurrentMockName;

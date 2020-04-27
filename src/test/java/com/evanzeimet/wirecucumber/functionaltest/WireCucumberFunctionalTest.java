@@ -142,7 +142,7 @@ public class WireCucumberFunctionalTest implements En {
 			Throwable actualThrowable = null;
 
 			try {
-				wireCucumber.verifyRequest();
+				wireCucumber.verifyInvocations();
 			} catch (Throwable e) {
 				actualThrowable = e;
 			}

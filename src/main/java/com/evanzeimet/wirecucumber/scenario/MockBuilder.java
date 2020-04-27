@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.any;
@@ -11,6 +11,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
+import com.evanzeimet.wirecucumber.WireCucumberUtils;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.ScenarioMappingBuilder;
@@ -21,7 +23,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.datatable.DataTable;
 
-public class WireCucumberMockBuilder {
+public class MockBuilder {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
@@ -52,7 +54,7 @@ public class WireCucumberMockBuilder {
 		return new WireCucumberRuntimeException(message);
 	}
 
-	public static WireCucumberMockBuilder create(Scenario scenario,
+	public static MockBuilder create(Scenario scenario,
 			String httpVerb,
 			UrlPattern urlPattern) {
 		MappingBuilder requestBuilder;
@@ -86,7 +88,7 @@ public class WireCucumberMockBuilder {
 			throw createUnexpectedHttpVerbException(httpVerb);
 		}
 
-		WireCucumberMockBuilder result = new WireCucumberMockBuilder();
+		MockBuilder result = new MockBuilder();
 		result.requestBuilder = requestBuilder.inScenario(scenario.getName());
 
 		return result;
