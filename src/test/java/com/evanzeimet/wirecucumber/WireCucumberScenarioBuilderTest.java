@@ -305,7 +305,7 @@ public class WireCucumberScenarioBuilderTest {
 	}
 
 	@Test
-	public void validateScenarioState() {
+	public void validateMockStateConfigured() {
 		String givenCurrentMockName = "given-current-mock-name";
 		String givenCurrentScenarioState = "given-current-scenario-state";
 
@@ -316,7 +316,7 @@ public class WireCucumberScenarioBuilderTest {
 		WireCucumberRuntimeException actual = null;
 
 		try {
-			builder.validateMockState();
+			builder.validateMockStateConfigured();
 		} catch (WireCucumberRuntimeException e) {
 			actual = e;
 		}
@@ -325,33 +325,7 @@ public class WireCucumberScenarioBuilderTest {
 	}
 
 	@Test
-	public void validateScenarioState_duplicate() {
-		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentScenarioState = "given-current-scenario-state";
-
-		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentScenarioState;
-		MockStateKey givenKey = builder.createCurrentMockStateKey();
-		builder.mockStateStubMappings.put(givenKey, mock(StubMapping.class));
-
-		WireCucumberRuntimeException actual = null;
-
-		try {
-			builder.validateMockState();
-		} catch (WireCucumberRuntimeException e) {
-			actual = e;
-		}
-
-		assertNotNull(actual);
-
-		String actualMessage = actual.getMessage();
-		String expectedMessage = "Mock name [given-current-mock-name] and state [given-current-scenario-state] already in use";
-
-		assertEquals(expectedMessage, actualMessage);
-	}
-
-	@Test
-	public void validateScenarioState_nullMockName() {
+	public void validateMockStateConfigured_nullMockName() {
 		String givenCurrentMockName = null;
 		String givenCurrentScenarioState = "given-current-scenario-state";
 
@@ -362,7 +336,7 @@ public class WireCucumberScenarioBuilderTest {
 		WireCucumberRuntimeException actual = null;
 
 		try {
-			builder.validateMockState();
+			builder.validateMockStateConfigured();
 		} catch (WireCucumberRuntimeException e) {
 			actual = e;
 		}
@@ -376,7 +350,7 @@ public class WireCucumberScenarioBuilderTest {
 	}
 
 	@Test
-	public void validateScenarioState_nullMockState() {
+	public void validateMockStateConfigured_nullMockState() {
 		String givenCurrentMockName = "given-current-mock-name";
 		String givenCurrentScenarioState = null;
 
@@ -387,7 +361,7 @@ public class WireCucumberScenarioBuilderTest {
 		WireCucumberRuntimeException actual = null;
 
 		try {
-			builder.validateMockState();
+			builder.validateMockStateConfigured();
 		} catch (WireCucumberRuntimeException e) {
 			actual = e;
 		}
@@ -398,6 +372,52 @@ public class WireCucumberScenarioBuilderTest {
 		String expectedMessage = "Scenario state not set";
 
 		assertEquals(expectedMessage, actualMessage);
+	}
+
+	@Test
+	public void validateMockStateUnused_unused() {
+		String givenCurrentMockName = "given-current-mock-name";
+		String givenCurrentScenarioState = "given-current-scenario-state";
+
+		builder.currentMockName = givenCurrentMockName;
+		builder.currentMockState = givenCurrentScenarioState;
+		MockStateKey givenKey = builder.createCurrentMockStateKey();
+		builder.mockStateStubMappings.put(givenKey, mock(StubMapping.class));
+
+		WireCucumberRuntimeException actual = null;
+
+		try {
+			builder.validateMockStateUnused();
+		} catch (WireCucumberRuntimeException e) {
+			actual = e;
+		}
+
+		assertNotNull(actual);
+
+		String actualMessage = actual.getMessage();
+		String expectedMessage = "Mock name [given-current-mock-name] and state [given-current-scenario-state] already in use";
+
+		assertEquals(expectedMessage, actualMessage);
+	}
+
+	@Test
+	public void validateMockStateUnused_used() {
+		String givenCurrentMockName = "given-current-mock-name";
+		String givenCurrentScenarioState = "given-current-scenario-state";
+
+		builder.currentMockName = givenCurrentMockName;
+		builder.currentMockState = givenCurrentScenarioState;
+		builder.mockStateStubMappings.clear();
+
+		WireCucumberRuntimeException actual = null;
+
+		try {
+			builder.validateMockStateUnused();
+		} catch (WireCucumberRuntimeException e) {
+			actual = e;
+		}
+
+		assertNull(actual);
 	}
 
 }

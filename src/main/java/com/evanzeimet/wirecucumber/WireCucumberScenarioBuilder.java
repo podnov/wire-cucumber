@@ -96,11 +96,12 @@ public class WireCucumberScenarioBuilder {
 	}
 
 	protected MockStateKey createCurrentMockStateKey() {
+		validateMockStateConfigured();
 		return new MockStateKey(currentMockName, currentMockState);
 	}
 
 	public void finalizeRequestMock() {
-		validateMockState(); // TODO DO WE NEED MORE OF THIS OUTSIDE OF FINALIZE?!
+		validateMockStateUnused();
 
 		StubMapping stubMapping = mockBuilder.finalizeMock(currentMockState);
 		putCurrentMockStateStubMapping(stubMapping);
@@ -138,15 +139,7 @@ public class WireCucumberScenarioBuilder {
 	}
 
 	protected void putCurrentMockStateStubMapping(StubMapping stubMapping) {
-		MockStateKey key = createCurrentMockStateKey();
-
-		if (containsMockState(key)) {
-			String message = String.format("Mock name [%s] and state [%s] already in use",
-					currentMockName,
-					currentMockState);
-			throw new WireCucumberRuntimeException(message);
-		}
-
+		MockStateKey key = validateMockStateUnused();
 		mockStateStubMappings.put(key, stubMapping);
 		mockStateIndices.put(key, currentMockStateIndex++);
 	}
@@ -174,7 +167,7 @@ public class WireCucumberScenarioBuilder {
 		currentMockState = nextState;
 	}
 
-	protected void validateMockState() {
+	protected void validateMockStateConfigured() {
 		if (currentMockName == null) {
 			throw new WireCucumberRuntimeException("Mock name not set");
 		}
@@ -182,14 +175,19 @@ public class WireCucumberScenarioBuilder {
 		if (currentMockState == null) {
 			throw new WireCucumberRuntimeException("Scenario state not set");
 		}
+	}
 
+	protected MockStateKey validateMockStateUnused() {
 		MockStateKey key = createCurrentMockStateKey();
 
 		if (mockStateStubMappings.containsKey(key)) {
-			String message = String.format("Mock name [%s] and state [%s] already in use", key.getMockName(),
+			String message = String.format("Mock name [%s] and state [%s] already in use",
+					key.getMockName(),
 					key.getScenarioState());
 			throw new WireCucumberRuntimeException(message);
 		}
+
+		return key;
 	}
 
 	public void verifyInvocations() {
