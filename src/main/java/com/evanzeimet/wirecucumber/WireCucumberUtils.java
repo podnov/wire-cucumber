@@ -48,7 +48,7 @@ public class WireCucumberUtils {
 		return objectMapper;
 	}
 
-	protected ObjectNode valueToTree(Object value) {
+	public ObjectNode valueToTree(Object value) {
 		return (ObjectNode) getObjectMapper().valueToTree(value);
 	}
 

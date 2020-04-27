@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber;
+package com.evanzeimet.wirecucumber.functionaltest;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static io.restassured.RestAssured.given;
@@ -12,6 +12,9 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.runner.RunWith;
 
+import com.evanzeimet.wirecucumber.TestUtils;
+import com.evanzeimet.wirecucumber.TestWireCucumber;
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import io.cucumber.java8.En;

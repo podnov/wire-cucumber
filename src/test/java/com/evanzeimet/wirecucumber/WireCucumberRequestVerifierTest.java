@@ -33,7 +33,7 @@ public class WireCucumberRequestVerifierTest {
 	}
 
 	@Test
-	public void matchInvocation_false() {
+	public void match_false() {
 		String givenHeadername = "given-header-name";
 		String givenPatternHeaderValue = "given-pattern-header-value";
 		RequestPattern givenPattern = RequestPatternBuilder.newRequestPattern()
@@ -47,7 +47,7 @@ public class WireCucumberRequestVerifierTest {
 	}
 
 	@Test
-	public void verifyInvocation_invalidInvocationIndex() {
+	public void match_invalidInvocationIndex() {
 		Integer givenInvocationIndex = 42;
 		RequestPattern givenPattern = mock(RequestPattern.class);
 
