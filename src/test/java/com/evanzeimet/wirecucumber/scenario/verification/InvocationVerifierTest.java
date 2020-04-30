@@ -21,6 +21,7 @@ import org.junit.Test;
 import com.evanzeimet.wirecucumber.TestUtils;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
+import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
@@ -44,8 +45,8 @@ public class InvocationVerifierTest {
 		Map<String, String> givenExpectedHeaders = new HashMap<>();
 		givenExpectedHeaders.put("given-expected-header-name-1", "given-expected-header-value-1");
 
-		Map<String, String> givenActualheaders = new HashMap<>();
-		givenActualheaders.put("given-actual-header-name-1", "given-actual-header-value-1");
+		HttpHeaders givenActualHeaders = new HttpHeaders();
+		givenActualHeaders = givenActualHeaders.plus(new HttpHeader("given-actual-header-name-1", "given-actual-header-value-1"));
 
 		RequestPatternPojo givenRequestPattern = new RequestPatternPojo();
 		givenRequestPattern.setBodyPatterns("given-expected-body-patterns");
@@ -54,12 +55,13 @@ public class InvocationVerifierTest {
 
 		String givenExpected = TestUtils.stringify(givenRequestPattern);
 
-		RequestPojo givenActual = new RequestPojo();
-		givenActual.setBody("given-actual-body");
-		givenActual.setHeaders(givenActualheaders);
-		givenActual.setUrl("given-actual-url");
+		LoggedRequest givenActual = mock(LoggedRequest.class);
+		doReturn("given-actual-body".getBytes()).when(givenActual).getBody();
+		doReturn(givenActualHeaders).when(givenActual).getHeaders();
+		doReturn("given-actual-url").when(givenActual).getUrl();
+		givenActual = LoggedRequest.createFrom(givenActual);
 
-		String actual = verifier.coalesceActualToExpected(givenActual, givenExpected);
+		String actual = verifier.coalesceActualRequestToExpectedRequestPattern(givenActual, givenExpected);
 
 		String actualJson = TestUtils.dos2unix(actual);
 		String expectedJson = TestUtils.readRelativeResource(getClass(),

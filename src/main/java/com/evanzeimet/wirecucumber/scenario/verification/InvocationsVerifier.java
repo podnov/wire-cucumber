@@ -54,7 +54,7 @@ public class InvocationsVerifier {
 
 	public void addDataTableBodyVerification(Integer invocationIndex, DataTable dataTable) {
 		String requestBody = utils.convertDataTableToJson(dataTable);
-		RequestPattern bodyPattern = RequestPatternBuilder.like(requestPatternBuilder.build())
+		RequestPattern bodyPattern = cloneRequestPatterBuilder()
 				.withRequestBody(equalTo(requestBody))
 				.build();
 		// TODO make datatable verification do data table diff
@@ -62,21 +62,21 @@ public class InvocationsVerifier {
 	}
 
 	public void addEmptyBodyVerification(Integer invocationIndex) {
-		RequestPattern bodyPattern = RequestPatternBuilder.like(requestPatternBuilder.build())
+		RequestPattern bodyPattern = cloneRequestPatterBuilder()
 				.withRequestBody(absent())
 				.build();
 		addVerification(invocationIndex, bodyPattern);
 	}
 
 	public void addStringBodyVerification(Integer invocationIndex, String requestBody) {
-		RequestPattern bodyPattern = RequestPatternBuilder.like(requestPatternBuilder.build())
+		RequestPattern bodyPattern = cloneRequestPatterBuilder()
 				.withRequestBody(equalTo(requestBody))
 				.build();
 		addVerification(invocationIndex, bodyPattern);
 	}
 
 	public void addUrlVerification(Integer invocationIndex, String url) {
-		RequestPattern bodyPattern = RequestPatternBuilder.like(requestPatternBuilder.build())
+		RequestPattern bodyPattern = cloneRequestPatterBuilder()
 				.withUrl(url)
 				.build();
 		addVerification(invocationIndex, bodyPattern);
@@ -88,21 +88,37 @@ public class InvocationsVerifier {
 		customMatchResults.add(matchResult);
 	}
 
-	protected String coalesceActualToExpected(Object actual, String expected) {
-		ObjectNode expectedNode = utils.readTree(expected);
-		ObjectNode actualNode = utils.valueToTree(actual);
+	protected RequestPatternBuilder cloneRequestPatterBuilder() {
+		return RequestPatternBuilder.like(requestPatternBuilder.build());
+	}
 
-		List<String> actualFieldNames = utils.getNodeFieldNames(actualNode);
+	protected String coalesceActualRequestToExpectedRequestPattern(Request actual, String printedPatternValue) {
+		ObjectNode actualNode = utils.valueToTree(actual);
+		ObjectNode expectedNode = utils.readTree(printedPatternValue);
+
 		List<String> expectedFieldNames = utils.getNodeFieldNames(expectedNode);
 
-		if (expectedFieldNames.contains("bodyPatterns")) {
-			expectedFieldNames.add("body");
-		}
-
-		actualFieldNames.removeAll(expectedFieldNames);
-		actualFieldNames.forEach(actualNode::remove);
+		coalesceRequestPatternToRequestFieldNames(expectedFieldNames);
+		removeUnexpectedFieldNames(actualNode, expectedFieldNames);
 
 		return utils.writeValueAsPrettyString(actualNode);
+	}
+
+	protected void coalesceRequestPatternToRequestFieldNames(List<String> fieldNames) {
+		if (fieldNames.contains("bodyPatterns")) {
+			fieldNames.add("body");
+		}
+	}
+
+	protected String createFailedInvocationMessage(MatchInvocationResult<Request> input) {
+		String printedPatternValue = (String) EXPECTED.apply(input.getDiffLine());
+		Request actual = (Request) ACTUAL.apply(input.getDiffLine());
+		String actualJson = coalesceActualRequestToExpectedRequestPattern(actual, printedPatternValue);
+
+		String diffMessage = JUnitStyleDiffRenderer.junitStyleDiffMessage(printedPatternValue, actualJson);
+		int invocationIndex = input.getInvocationIndex();
+
+		return String.format("for invocation at index %d,%s", invocationIndex, diffMessage);
 	}
 
 	public static InvocationsVerifier forRequestPattern(RequestPattern requestPattern) {
@@ -161,6 +177,14 @@ public class InvocationsVerifier {
 		return MatchResult.of(!empty);
 	}
 
+	protected void removeUnexpectedFieldNames(ObjectNode actualNode,
+			List<String> expectedFieldNames) {
+		List<String> actualFieldNames = utils.getNodeFieldNames(actualNode);
+
+		actualFieldNames.removeAll(expectedFieldNames);
+		actualFieldNames.forEach(actualNode::remove);
+	}
+
 	public void verify() {
 		verifyCount();
 		verifyCustom();
@@ -172,11 +196,7 @@ public class InvocationsVerifier {
 
 		if (!failedMatches.isEmpty()) {
 			String message = failedMatches.transform(input -> {
-				String expected = (String) EXPECTED.apply(input.getDiffLine());
-				Object actual = ACTUAL.apply(input.getDiffLine());
-				actual = coalesceActualToExpected(actual, expected);
-				String diffMessage = JUnitStyleDiffRenderer.junitStyleDiffMessage(expected, actual);
-				return String.format("for invocation at index %d,%s", input.getInvocationIndex(), diffMessage);
+				return createFailedInvocationMessage(input);
 			}).join(Joiner.on("\n"));
 
 			throw new VerificationException(message);
