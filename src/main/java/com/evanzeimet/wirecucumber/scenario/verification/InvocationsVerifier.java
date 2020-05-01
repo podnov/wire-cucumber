@@ -34,6 +34,9 @@ import io.cucumber.datatable.DataTable;
 
 public class InvocationsVerifier {
 
+	protected static final String BODY_FIELD_NAME = "body";
+	protected static final String BODY_PATTERNS_FIELD_NAME = "bodyPatterns";
+
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
 	protected Integer expectedMockInvocationCount;
@@ -105,8 +108,8 @@ public class InvocationsVerifier {
 	}
 
 	protected void coalesceRequestPatternToRequestFieldNames(List<String> fieldNames) {
-		if (fieldNames.contains("bodyPatterns")) {
-			fieldNames.add("body");
+		if (fieldNames.contains(BODY_PATTERNS_FIELD_NAME)) {
+			fieldNames.add(BODY_FIELD_NAME);
 		}
 	}
 

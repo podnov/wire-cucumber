@@ -1,9 +1,13 @@
 package com.evanzeimet.wirecucumber.scenario.verification;
 
+import static com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier.BODY_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -68,6 +72,28 @@ public class InvocationVerifierTest {
 				"InvocationVerifierTest_coalesceActualToExpected.expected.json");
 
 		assertEquals(expectedJson, actualJson);
+	}
+
+	@Test
+	public void coalesceRequestPatternToRequestFieldNames_bodyPatterns_notPresent() {
+		String givenFieldName = "givenFieldName";
+
+		List<String> givenFieldNames = new ArrayList<String>();
+		givenFieldNames.add(givenFieldName);
+
+		verifier.coalesceRequestPatternToRequestFieldNames(givenFieldNames);
+
+		assertThat(givenFieldNames, containsInAnyOrder(givenFieldName));
+	}
+
+	@Test
+	public void coalesceRequestPatternToRequestFieldNames_bodyPatterns_present() {
+		List<String> givenFieldNames = new ArrayList<String>();
+		givenFieldNames.add(BODY_PATTERNS_FIELD_NAME);
+
+		verifier.coalesceRequestPatternToRequestFieldNames(givenFieldNames);
+
+		assertThat(givenFieldNames, containsInAnyOrder(BODY_FIELD_NAME, BODY_PATTERNS_FIELD_NAME));
 	}
 
 	@Test
