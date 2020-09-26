@@ -59,7 +59,7 @@ public class WireCucumberUtilsTest {
 	@Test
 	public void getNodeFieldNames() {
 		Pojo givenValue = new Pojo();
-		ObjectNode givenNode = utils.valueToTree(givenValue);
+		ObjectNode givenNode = utils.valueToObject(givenValue);
 
 		List<String> actual = utils.getNodeFieldNames(givenNode);
 
@@ -67,7 +67,7 @@ public class WireCucumberUtilsTest {
 	}
 
 	@Test
-	public void readTree_exception() throws IOException {
+	public void readObject_exception() throws IOException {
 		String givenValue = "given-value";
 
 		ObjectMapper givenObjectMapper = mock(ObjectMapper.class);
@@ -82,7 +82,7 @@ public class WireCucumberUtilsTest {
 		WireCucumberRuntimeException actual = null;
 
 		try {
-			utils.readTree(givenValue);
+			utils.readObject(givenValue);
 		} catch (WireCucumberRuntimeException e) {
 			actual = e;
 		}

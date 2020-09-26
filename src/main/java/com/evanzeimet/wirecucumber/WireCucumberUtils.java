@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
@@ -32,24 +33,24 @@ public class WireCucumberUtils {
 		return Lists.newArrayList(node.fieldNames());
 	}
 
-	public ObjectNode readTree(String value) {
-		ObjectNode expectedNode;
+	protected ObjectMapper getObjectMapper() {
+		return objectMapper;
+	}
+
+	public ObjectNode readObject(String value) {
+		return (ObjectNode) readTree(value);
+	}
+
+	public JsonNode readTree(String value) {
+		JsonNode expectedNode;
 
 		try {
-			expectedNode = (ObjectNode) getObjectMapper().readTree(value);
+			expectedNode = getObjectMapper().readTree(value);
 		} catch (IOException e) {
 			throw new WireCucumberRuntimeException(e);
 		}
 
 		return expectedNode;
-	}
-
-	protected ObjectMapper getObjectMapper() {
-		return objectMapper;
-	}
-
-	public ObjectNode valueToTree(Object value) {
-		return (ObjectNode) getObjectMapper().valueToTree(value);
 	}
 
 	public String writeValueAsPrettyString(Object value) {
@@ -64,6 +65,14 @@ public class WireCucumberUtils {
 		}
 
 		return result;
+	}
+
+	public ObjectNode valueToObject(Object value) {
+		return (ObjectNode) valueToTree(value);
+	}
+
+	public JsonNode valueToTree(Object value) {
+		return getObjectMapper().valueToTree(value);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.evanzeimet.wirecucumber;
 
-public class WireCucumberRuntimeException extends RuntimeException {
+public class WireCucumberRuntimeException
+		extends RuntimeException {
 
 	private static final long serialVersionUID = -2113855321921961338L;
 

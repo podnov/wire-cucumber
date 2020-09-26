@@ -9,14 +9,16 @@ import com.evanzeimet.wirecucumber.scenario.Steps;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.Options;
 
-import io.cucumber.java8.En;
+public class WireCucumber
+		implements AutoCloseable {
 
-public class WireCucumber implements En, AutoCloseable {
+	protected static final String host = "localhost";
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
 	protected Steps steps;
 	protected WireMockServer wireMockServer;
+
 
 	public WireMockServer getWireMockServer() {
 		return wireMockServer;
@@ -45,10 +47,9 @@ public class WireCucumber implements En, AutoCloseable {
 	}
 
 	protected void startWireMockServer(Options options) {
-		String host = "localhost";
-
 		wireMockServer = new WireMockServer(options);
 		wireMockServer.start();
+
 		int port = wireMockServer.port();
 		configureFor(host, port);
 

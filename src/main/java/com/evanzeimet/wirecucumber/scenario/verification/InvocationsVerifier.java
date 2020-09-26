@@ -96,8 +96,8 @@ public class InvocationsVerifier {
 	}
 
 	protected String coalesceActualRequestToExpectedRequestPattern(Request actual, String printedPatternValue) {
-		ObjectNode actualNode = utils.valueToTree(actual);
-		ObjectNode expectedNode = utils.readTree(printedPatternValue);
+		ObjectNode actualNode = utils.valueToObject(actual);
+		ObjectNode expectedNode = utils.readObject(printedPatternValue);
 
 		List<String> expectedFieldNames = utils.getNodeFieldNames(expectedNode);
 
