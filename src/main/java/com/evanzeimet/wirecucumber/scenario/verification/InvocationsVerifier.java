@@ -218,7 +218,6 @@ public class InvocationsVerifier {
 		return withHeader(name, containing(value));
 	}
 
-
 	public RequestPatternBuilder withRequestBody(ContentPattern<?> valuePattern) {
 		return requestPatternBuilder.withRequestBody(valuePattern);
 	}

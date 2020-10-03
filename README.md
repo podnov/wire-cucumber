@@ -18,7 +18,7 @@ Given that wire mock response body is {string}
 Given that wire mock response body is these recordsqu:
 Given that wire mock response content type is {string}
 Given that wire mock response header {string} is {string}
-Given that wire mock enters state {string}
+Given that wire mock enters invocation state {string}
 Given that wire mock is finalized
 
 Then I want to verify interactions with the wire mock named {string}
@@ -27,18 +27,18 @@ Then the request body should have been:
 Then the request body should have been {string}
 Then the request body should have been empty
 Then the request body should have been these records:
-Then the request body of invocation {int} should have been:
-Then the request body of invocation {int} should have been {string}
-Then the request body of invocation {int} should have been empty
-Then the request body of invocation {int} should have been these records:
-Then the request body of state {string} should have been:
-Then the request body of state {string} should have been {string}
-Then the request body of state {string} should have been empty
-Then the request body of state {string} should have been these records:
+Then the request body of invocation index {int} should have been:
+Then the request body of invocation index {int} should have been {string}
+Then the request body of invocation index {int} should have been empty
+Then the request body of invocation index {int} should have been these records:
+Then the request body of invocation state {string} should have been:
+Then the request body of invocation state {string} should have been {string}
+Then the request body of invocation state {string} should have been empty
+Then the request body of invocation state {string} should have been these records:
 Then the request should have had header {string} {string}
 Then the request url should have been {string}
-Then the request url of invocation {int} should have been {string}
-Then the request url of state {string} should have been {string}
+Then the request url of invocation index {int} should have been {string}
+Then the request url of invocation state {string} should have been {string}
 Then the request is verified
 ```
 

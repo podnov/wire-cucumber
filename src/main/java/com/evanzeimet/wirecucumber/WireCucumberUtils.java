@@ -1,6 +1,7 @@
 package com.evanzeimet.wirecucumber;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,8 @@ public class WireCucumberUtils {
 	}
 
 	public List<String> getNodeFieldNames(ObjectNode node) {
-		return Lists.newArrayList(node.fieldNames());
+		Iterator<String> fieldNames = node.fieldNames();
+		return Lists.newArrayList(fieldNames);
 	}
 
 	protected ObjectMapper getObjectMapper() {

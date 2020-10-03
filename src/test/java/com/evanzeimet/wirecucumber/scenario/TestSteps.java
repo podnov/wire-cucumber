@@ -11,7 +11,7 @@ public class TestSteps {
 	}
 
 	public A0 verifyInvocations() {
-		return this.steps.verifyInvocations();
+		return steps.verifyInvocations();
 	}
 
 }

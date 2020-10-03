@@ -154,29 +154,32 @@ public class Steps
 		Given("that wire mock response body is these records:", setMockResponseBodyDataTable());
 		Given("that wire mock response content type is {string}", setMockResponseContentType());
 		Given("that wire mock response header {string} is {string}", setMockResponseHeaderValue());
-		Given("that wire mock enters state {string}", setRequestBuilderState());
+		Given("that wire mock enters invocation state {string}", setRequestBuilderState());
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
+
 		// TODO I'm not a huge fan of the "the request" language
 		Then("the request body should have been:", addInvocationVerifierStringBody());
 		Then("the request body should have been {string}", addInvocationVerifierStringBody());
 		Then("the request body should have been empty", addInvocationVerifierEmptyBody());
 		Then("the request body should have been these records:", addInvocationVerifierDataTableBody());
-		Then("the request body of invocation {int} should have been:", addInvocationIndexStringBodyVerification());
-		Then("the request body of invocation {int} should have been {string}", addInvocationIndexStringBodyVerification());
-		Then("the request body of invocation {int} should have been empty", addInvocationIndexEmptyBodyVerification());
-		Then("the request body of invocation {int} should have been these records:", addInvocationIndexDataTableBodyVerification());
-		Then("the request body of state {string} should have been:", addInvocationStateStringBodyVerification());
-		Then("the request body of state {string} should have been {string}", addInvocationStateStringBodyVerification());
-		Then("the request body of state {string} should have been empty", addInvocationStateEmptyBodyVerification());
-		Then("the request body of state {string} should have been these records:", addInvocationStateDataTableBodyVerification());
+
+		Then("the request body of invocation index {int} should have been:", addInvocationIndexStringBodyVerification());
+		Then("the request body of invocation index {int} should have been {string}", addInvocationIndexStringBodyVerification());
+		Then("the request body of invocation index {int} should have been empty", addInvocationIndexEmptyBodyVerification());
+		Then("the request body of invocation index {int} should have been these records:", addInvocationIndexDataTableBodyVerification());
+		Then("the request body of invocation state {string} should have been:", addInvocationStateStringBodyVerification());
+		Then("the request body of invocation state {string} should have been {string}", addInvocationStateStringBodyVerification());
+		Then("the request body of invocation state {string} should have been empty", addInvocationStateEmptyBodyVerification());
+		Then("the request body of invocation state {string} should have been these records:", addInvocationStateDataTableBodyVerification());
+
 		Then("the request should have had header {string} {string}", addInvocationVerifierHeader());
 		Then("the request url should have been {string}", addInvocationVerifierUrl());
-		// TODO change these to "of invocation index" and "of invocation state"
-		Then("the request url of invocation {int} should have been {string}", addInvocationIndexUrlVerification());
-		Then("the request url of state {string} should have been {string}", addInvocationStateUrlVerification());
+
+		Then("the request url of invocation index {int} should have been {string}", addInvocationIndexUrlVerification());
+		Then("the request url of invocation state {string} should have been {string}", addInvocationStateUrlVerification());
 		Then("the request is verified", verifyInvocations());
 	}
 

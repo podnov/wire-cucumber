@@ -9,7 +9,15 @@ public class VerificationConstants {
 
 		@Override
 		public Object apply(WireCucumberDiffLine<?> line) {
-			return line.isForNonMatch() ? line.getPrintedPatternValue() : line.getActual();
+			Object result;
+
+			if (line.isForNonMatch()) {
+				result = line.getPrintedPatternValue();
+			} else {
+				result = line.getActual();
+			}
+
+			return result;
 		}
 
 	};
