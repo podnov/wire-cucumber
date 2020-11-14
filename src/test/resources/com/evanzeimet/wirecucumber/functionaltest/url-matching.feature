@@ -1,5 +1,5 @@
-@regexUrl
-Feature: Wire Cucumber Regex URL Tests
+@urlMatching
+Feature: Wire Cucumber URL Matching Tests
 
 
 Scenario: Mock based on regex url, default endpoint

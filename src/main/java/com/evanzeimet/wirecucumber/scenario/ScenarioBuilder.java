@@ -2,6 +2,8 @@ package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
 import java.util.HashMap;
@@ -85,6 +87,16 @@ public class ScenarioBuilder {
 
 	public void bootstrapUrlMatchingRequestMock(String mockName, String httpVerb, String path) {
 		UrlPattern urlPattern = urlMatching(path);
+		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+	}
+
+	public void bootstrapUrlPathEqualToRequestMock(String mockName, String httpVerb, String path) {
+		UrlPattern urlPattern = urlPathEqualTo(path);
+		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+	}
+
+	public void bootstrapUrlPathMatchingRequestMock(String mockName, String httpVerb, String path) {
+		UrlPattern urlPattern = urlPathMatching(path);
 		bootstrapRequestMock(mockName, httpVerb, urlPattern);
 	}
 

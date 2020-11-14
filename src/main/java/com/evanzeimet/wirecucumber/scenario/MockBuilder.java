@@ -115,6 +115,10 @@ public class MockBuilder {
 		return requestBuilder.withHeader(headerName, headerValuePattern);
 	}
 
+	public ScenarioMappingBuilder requestBuilderWithQueryParam(String key, StringValuePattern pattern) {
+		return requestBuilder.withQueryParam(key, pattern);
+	}
+
 	public ResponseDefinitionBuilder responseBuilderWithContentType(String contentType) {
 		return responseBuilderWithHeader(CONTENT_TYPE, contentType);
 	}

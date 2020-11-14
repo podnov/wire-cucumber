@@ -79,7 +79,6 @@ Scenario: Multiple calls verifying specific invocation index details with data t
 	| given-world-3 | grey         | Milky Way |
 	And the request is verified
 
-@current
 Scenario: Multiple calls on the same mock with differing results, invocation index urls matching too
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
@@ -264,7 +263,6 @@ Scenario: Invocation index details with data tables failures
 	}>
 	"""
 
-@current
 Scenario: invocation index urls matching failures
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200

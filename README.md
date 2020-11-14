@@ -10,6 +10,10 @@ The intent of this project is to make mocking external REST calls easier. This i
 ```
 Given a wire mock named {string} that handles (the ){word} verb with a url equal to {string}
 Given a wire mock named {string} that handles (the ){word} verb with a url matching {string}
+Given a wire mock named {string} that handles (the ){word} verb with a url path equal to {string}
+Given a wire mock named {string} that handles (the ){word} verb with a url path matching {string}
+Given that wire mock expects a url query string parameter {string} equal to {string}
+Given that wire mock expects a url query string parameter {string} matching {string}
 Given that wire mock accepts {string}
 Given that wire mock content type is {string}
 Given that wire mock will return a response with status {int}
@@ -22,6 +26,7 @@ Given that wire mock enters invocation state {string}
 Given that wire mock is finalized
 
 Then I want to verify interactions with the wire mock named {string}
+Then that mock should not have been invoked
 Then that mock should have been invoked {int} time(s)
 Then the request body should have been:
 Then the request body should have been {string}
@@ -98,10 +103,10 @@ Example cucumber features consuming the this library can be [found in this proje
 
 ## How do I run specific cucumber tests?
 ```
-CUCUMBER_OPTIONS='--tags @getVerb' ./gradlew clean test
-CUCUMBER_OPTIONS='--tags @extensibility' ./gradlew clean test
-CUCUMBER_OPTIONS='--tags @headers' ./gradlew clean test
-CUCUMBER_OPTIONS='--tags @multipleInvocations' ./gradlew clean test
+CUCUMBER_OPTIONS='--tags @getVerb' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_OPTIONS='--tags @extensibility' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_OPTIONS='--tags @headers' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_OPTIONS='--tags @multipleInvocations' ./gradlew clean test --tests **WireCucumberFunctionalTest
 ```
 
 ## How do I publish to sonatype?
