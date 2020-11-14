@@ -58,6 +58,15 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
+		When("I GET the {string} resource {string} endpoint and query string {string}", (String resource, String endpoint, String queryString) -> {
+			String path = getPath(resource, endpoint, queryString);
+
+			actualResponse = bootstrapRequest()
+					.port(port)
+					.get(path)
+					.then();
+		});
+
 		When("I OPTIONS the {string} resource {string} endpoint", (String resource, String endpoint) -> {
 			String path = getPath(resource, endpoint);
 
@@ -159,6 +168,10 @@ public class WireCucumberFunctionalTest implements En {
 	}
 
 	protected String getPath(String resource, String endpoint) {
+		return getPath(resource, endpoint, null);
+	}
+
+	protected String getPath(String resource, String endpoint, String queryString) {
 		String result;
 
 		switch (resource) {
@@ -184,6 +197,10 @@ public class WireCucumberFunctionalTest implements En {
 
 		if (notBlank && notDefault) {
 			result = String.format("%s/%s", result, endpoint);
+		}
+
+		if (StringUtils.isNotBlank(queryString)) {
+			result = String.format("%s?%s", result, queryString);
 		}
 
 		return result;

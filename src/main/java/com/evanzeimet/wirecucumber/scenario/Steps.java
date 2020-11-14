@@ -1,6 +1,8 @@
 package com.evanzeimet.wirecucumber.scenario;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
 
@@ -136,6 +138,18 @@ public class Steps
 		};
 	}
 
+	protected A3<String, String, String> bootstrapUrlPathEqualToRequestMock() {
+		return (mockName, httpVerb, path) -> {
+			scenarioBuilder.bootstrapUrlPathEqualToRequestMock(mockName, httpVerb, path);
+		};
+	}
+
+	protected A3<String, String, String> bootstrapUrlPathMatchingRequestMock() {
+		return (mockName, httpVerb, path) -> {
+			scenarioBuilder.bootstrapUrlPathMatchingRequestMock(mockName, httpVerb, path);
+		};
+	}
+
 	protected A0 finalizeRequestMock() {
 		return () -> {
 			scenarioBuilder.finalizeRequestMock();
@@ -146,6 +160,10 @@ public class Steps
 		Before(beforeScenario());
 		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapUrlEqualToRequestMock());
 		Given("a wire mock named {string} that handles (the ){word} verb with a url matching {string}", bootstrapUrlMatchingRequestMock());
+		Given("a wire mock named {string} that handles (the ){word} verb with a url path equal to {string}", bootstrapUrlPathEqualToRequestMock());
+		Given("a wire mock named {string} that handles (the ){word} verb with a url path matching {string}", bootstrapUrlPathMatchingRequestMock());
+		Given("that wire mock expects a url query string parameter {string} equal to {string}", setMockQueryParamEqualTo());
+		Given("that wire mock expects a url query string parameter {string} matching {string}", setMockQueryParamMatching());
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", bootstrapResponseBuilder());
@@ -158,6 +176,7 @@ public class Steps
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
+		Then("that mock should not have been invoked", setVerifyMockNotInvoked());
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 
 		// TODO I'm not a huge fan of the "the request" language
@@ -198,14 +217,28 @@ public class Steps
 	protected A1<String> setMockAccepts() {
 		return (value) -> {
 			scenarioBuilder.getMockBuilder()
-					.requestBuilderWithAccept(containing(value));
+				.requestBuilderWithAccept(containing(value));
+		};
+	}
+
+	protected A2<String, String> setMockQueryParamEqualTo() {
+		return (key, value) -> {
+			scenarioBuilder.getMockBuilder()
+				.requestBuilderWithQueryParam(key, equalTo(value));
+		};
+	}
+
+	protected A2<String, String> setMockQueryParamMatching() {
+		return (key, value) -> {
+			scenarioBuilder.getMockBuilder()
+				.requestBuilderWithQueryParam(key, matching(value));
 		};
 	}
 
 	protected A1<String> setMockContentType() {
 		return (value) -> {
 			scenarioBuilder.getMockBuilder()
-					.requestBuilderWithContentType(containing(value));
+				.requestBuilderWithContentType(containing(value));
 		};
 	}
 
@@ -241,6 +274,13 @@ public class Steps
 		return (count) -> {
 			scenarioBuilder.getInvocationVerifier()
 				.setExpectedMockInvocationCount(count);
+		};
+	}
+
+	protected A0 setVerifyMockNotInvoked() {
+		return () -> {
+			scenarioBuilder.getInvocationVerifier()
+				.setExpectedMockInvocationCount(0);
 		};
 	}
 
