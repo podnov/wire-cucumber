@@ -19,7 +19,7 @@ Given that wire mock content type is {string}
 Given that wire mock will return a response with status {int}
 Given that wire mock response body is:
 Given that wire mock response body is {string}
-Given that wire mock response body is these recordsqu:
+Given that wire mock response body is these records:
 Given that wire mock response content type is {string}
 Given that wire mock response header {string} is {string}
 Given that wire mock enters invocation state {string}
