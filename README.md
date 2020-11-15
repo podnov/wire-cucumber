@@ -82,12 +82,12 @@ When("I GET the something that calls hello world resource", () -> {
 		.then();
 });
 
-Then("the response status code should be {int}", (expectedStatusCode) -> {
-	actualResponse.statusCode((int) expectedStatusCode);
+Then("the response status code should be {int}", (Integer expectedStatusCode) -> {
+	actualResponse.statusCode(expectedStatusCode);
 });
 
-Then("the response body should be {string}", (expectedResponseBody) -> {
-	actualResponse.body(equalTo((String) expectedResponseBody));
+Then("the response body should be {string}", (String expectedResponseBody) -> {
+	actualResponse.body(equalTo(expectedResponseBody));
 });
 ```
 
