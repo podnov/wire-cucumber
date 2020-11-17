@@ -10,6 +10,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +27,44 @@ public class ScenarioBuilderTest {
 	@Before
 	public void setUp() {
 		builder = spy(new ScenarioBuilder());
+	}
+
+	@Test
+	public void closeScenario_unverifiedMocks_empty() {
+		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
+		builder.mockNames = givenMockNames;
+		builder.verifiedMockNames = givenMockNames;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario();
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_unverifiedMocks_notEmpty() {
+		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
+		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario();
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNotNull(actualException);
+
+		String actualExceptionMessage = actualException.getMessage();
+		String expectedExceptionMessage = "Found [2] unverified mocks [b, d]";
+
+		assertEquals(expectedExceptionMessage, actualExceptionMessage);
 	}
 
 	@Test

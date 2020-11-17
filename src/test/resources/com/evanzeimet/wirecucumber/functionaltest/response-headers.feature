@@ -9,6 +9,9 @@ Scenario: Response content-type
 	When I GET the "hello worlds" resource "default" endpoint
 	Then the response status code should be 200
 	And the response header "Content-Type" is "application/json"
+	And I want to verify interactions with the wire mock named "get-hello-worlds"
+	And that mock should have been invoked 1 times
+	And the request is verified
 
 Scenario: Response header generic
 	Given a wire mock named "get-hello-worlds" that handles the GET verb with a url equal to "/hello-worlds"
@@ -18,4 +21,7 @@ Scenario: Response header generic
 	When I GET the "hello worlds" resource "default" endpoint
 	Then the response status code should be 200
 	And the response header "Content-Type" is "application/json"
+	And I want to verify interactions with the wire mock named "get-hello-worlds"
+	And that mock should have been invoked 1 times
+	And the request is verified
 	

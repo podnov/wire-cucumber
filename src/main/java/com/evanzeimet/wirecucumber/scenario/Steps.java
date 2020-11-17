@@ -113,6 +113,12 @@ public class Steps
 		};
 	}
 
+	protected HookBody afterScenario() {
+		return (scenario) -> {
+			scenarioBuilder.closeScenario();
+		};
+	}
+
 	protected HookBody beforeScenario() {
 		return (scenario) -> {
 			scenarioBuilder.setCurrentCucumberScenario(scenario);
@@ -158,24 +164,33 @@ public class Steps
 
 	public void initialize() {
 		Before(beforeScenario());
+
 		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapUrlEqualToRequestMock());
 		Given("a wire mock named {string} that handles (the ){word} verb with a url matching {string}", bootstrapUrlMatchingRequestMock());
+
 		Given("a wire mock named {string} that handles (the ){word} verb with a url path equal to {string}", bootstrapUrlPathEqualToRequestMock());
 		Given("a wire mock named {string} that handles (the ){word} verb with a url path matching {string}", bootstrapUrlPathMatchingRequestMock());
+
 		Given("that wire mock expects a url query string parameter {string} equal to {string}", setMockQueryParamEqualTo());
 		Given("that wire mock expects a url query string parameter {string} matching {string}", setMockQueryParamMatching());
+
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
 		Given("that wire mock will return a response with status {int}", bootstrapResponseBuilder());
+
 		Given("that wire mock response body is:", setMockResponseBodyString());
 		Given("that wire mock response body is {string}", setMockResponseBodyString());
 		Given("that wire mock response body is these records:", setMockResponseBodyDataTable());
+
 		Given("that wire mock response content type is {string}", setMockResponseContentType());
 		Given("that wire mock response header {string} is {string}", setMockResponseHeaderValue());
+
 		Given("that wire mock enters invocation state {string}", setRequestBuilderState());
+
 		Given("that wire mock is finalized", finalizeRequestMock());
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
+
 		Then("that mock should not have been invoked", setVerifyMockNotInvoked());
 		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 
@@ -189,6 +204,7 @@ public class Steps
 		Then("the request body of invocation index {int} should have been {string}", addInvocationIndexStringBodyVerification());
 		Then("the request body of invocation index {int} should have been empty", addInvocationIndexEmptyBodyVerification());
 		Then("the request body of invocation index {int} should have been these records:", addInvocationIndexDataTableBodyVerification());
+
 		Then("the request body of invocation state {string} should have been:", addInvocationStateStringBodyVerification());
 		Then("the request body of invocation state {string} should have been {string}", addInvocationStateStringBodyVerification());
 		Then("the request body of invocation state {string} should have been empty", addInvocationStateEmptyBodyVerification());
@@ -199,7 +215,10 @@ public class Steps
 
 		Then("the request url of invocation index {int} should have been {string}", addInvocationIndexUrlVerification());
 		Then("the request url of invocation state {string} should have been {string}", addInvocationStateUrlVerification());
+
 		Then("the request is verified", verifyInvocations());
+
+		After(afterScenario());
 	}
 
 	protected A1<String> setRequestBuilderState() {

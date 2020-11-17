@@ -7,7 +7,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier;
@@ -29,8 +31,10 @@ public class ScenarioBuilder {
 	protected String currentVerifyMockName;
 	protected InvocationsVerifier invocationsVerifier;
 	protected MockBuilder mockBuilder;
+	protected Set<String> mockNames = new HashSet<String>();
 	protected Map<MockStateKey, StubMapping> mockStateStubMappings = new HashMap<>();
 	protected Map<MockStateKey, Integer> mockStateIndices = new HashMap<>();
+	protected Set<String> verifiedMockNames = new HashSet<>();
 
 	public String getCurrentMockName() {
 		return currentMockName;
@@ -75,6 +79,7 @@ public class ScenarioBuilder {
 
 	protected void bootstrapRequestMock(String mockName, String httpVerb, UrlPattern urlPattern) {
 		currentMockName = mockName;
+		mockNames.add(mockName);
 		currentMockState = STARTED;
 		currentMockStateIndex = 0;
 		mockBuilder = MockBuilder.create(currentCucumberScenario, httpVerb, urlPattern);
@@ -98,6 +103,20 @@ public class ScenarioBuilder {
 	public void bootstrapUrlPathMatchingRequestMock(String mockName, String httpVerb, String path) {
 		UrlPattern urlPattern = urlPathMatching(path);
 		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+	}
+
+	public void closeScenario() {
+		Set<String> unverifiedMocks = new HashSet<>(mockNames);
+		unverifiedMocks.removeAll(verifiedMockNames);
+
+		int unverifiedMockCount = unverifiedMocks.size();
+
+		if (unverifiedMockCount > 0) {
+			String message = String.format("Found [%s] unverified mocks %s",
+					unverifiedMockCount,
+					unverifiedMocks);
+			throw new WireCucumberRuntimeException(message);
+		}
 	}
 
 	public boolean containsMockState(String mockName, String state) {
@@ -162,6 +181,10 @@ public class ScenarioBuilder {
 		currentCucumberScenario = scenario;
 	}
 
+	public void setCurrentRequestVerified() {
+		verifiedMockNames.add(currentVerifyMockName);
+	}
+
 	public void setCurrentRequestVerifyBuilder(String mockName) {
 		currentVerifyMockName = mockName;
 		StubMapping stubMapping = getMockStateMapping(mockName, STARTED);
@@ -207,6 +230,9 @@ public class ScenarioBuilder {
 	public void verifyInvocations() {
 		invocationsVerifier.verify();
 		invocationsVerifier = null;
+
+		setCurrentRequestVerified();
+		currentVerifyMockName = null;
 	}
 
 }

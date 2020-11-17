@@ -15,6 +15,7 @@ Scenario: Request without entity
 	And I want to verify interactions with the wire mock named "post-hello-world"
 	And that mock should have been invoked 1 time
 	And the request body should have been empty
+	And the request is verified
 
 Scenario: Request with entity
 	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"

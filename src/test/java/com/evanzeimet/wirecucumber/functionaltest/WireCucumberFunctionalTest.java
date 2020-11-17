@@ -160,6 +160,10 @@ public class WireCucumberFunctionalTest implements En {
 
 			String actualExceptionMessage = TestUtils.dos2unix(actualThrowable.getMessage());
 			assertEquals(expectedExceptionMessage, actualExceptionMessage);
+
+			wireCucumber.getSteps()
+				.getScenarioBuilder()
+				.setCurrentRequestVerified();
 		});
 
 		After(() -> {
