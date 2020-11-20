@@ -11,9 +11,9 @@ Scenario: Mock based on url path equal to, no query params
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on url path equal to, single query param equality
@@ -26,9 +26,9 @@ Scenario: Mock based on url path equal to, single query param equality
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world?a=1"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on url path equal to, multiple query params equality
@@ -43,9 +43,9 @@ Scenario: Mock based on url path equal to, multiple query params equality
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world?a=1&b=2&c=3"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on url path equal to, single query param equality failure
@@ -57,8 +57,8 @@ Scenario: Mock based on url path equal to, single query param equality failure
 	When I GET the "hello world" resource "default" endpoint and query string "a=2"
 	Then the response status code should be 404
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should not have been invoked
-	And the request is verified
+	And that wire mock should not have been invoked
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on url path equal to, single query param matching
@@ -71,9 +71,9 @@ Scenario: Mock based on url path equal to, single query param matching
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world?a=1"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on url path equal to, multiple query params matching
@@ -88,9 +88,9 @@ Scenario: Mock based on url path equal to, multiple query params matching
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world?a=1&b=2&c=3"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on url path equal to, multiple query params matching failure
@@ -104,5 +104,5 @@ Scenario: Mock based on url path equal to, multiple query params matching failur
 	When I GET the "hello world" resource "default" endpoint and query string "a=2&b=3&c=1"
 	Then the response status code should be 404
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should not have been invoked
-	And the request is verified
+	And that wire mock should not have been invoked
+	And the interactions with that wire mock are verified

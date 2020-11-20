@@ -191,8 +191,8 @@ public class Steps
 
 		Then("I want to verify interactions with the wire mock named {string}", setCurrentRequestVerifyBuilder());
 
-		Then("that mock should not have been invoked", setVerifyMockNotInvoked());
-		Then("that mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
+		Then("that wire mock should not have been invoked", setVerifyMockNotInvoked());
+		Then("that wire mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 
 		// TODO I'm not a huge fan of the "the request" language
 		Then("the request body should have been:", addInvocationVerifierStringBody());
@@ -216,7 +216,7 @@ public class Steps
 		Then("the request url of invocation index {int} should have been {string}", addInvocationIndexUrlVerification());
 		Then("the request url of invocation state {string} should have been {string}", addInvocationStateUrlVerification());
 
-		Then("the request is verified", verifyInvocations());
+		Then("the interactions with that wire mock are verified", verifyInvocations());
 
 		After(afterScenario());
 	}

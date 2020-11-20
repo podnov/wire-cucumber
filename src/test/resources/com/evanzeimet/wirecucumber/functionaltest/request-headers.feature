@@ -27,7 +27,7 @@ Scenario: JSON request
 	}
 	"""
 	And I want to verify interactions with the wire mock named "post-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
 	{
@@ -35,7 +35,7 @@ Scenario: JSON request
 	}
 	"""
 	And the request should have had header "Content-Type" "application/json"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: JSON request
@@ -64,7 +64,7 @@ Scenario: JSON request
 	}
 	"""
 	And I want to verify interactions with the wire mock named "post-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
 	{

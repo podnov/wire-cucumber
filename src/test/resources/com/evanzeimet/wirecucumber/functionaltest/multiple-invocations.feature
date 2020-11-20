@@ -16,8 +16,8 @@ Scenario: Multiple calls on the same mock
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
-	And the request is verified
+	And that wire mock should have been invoked 3 times
+	And the interactions with that wire mock are verified
 
 
 Scenario: Multiple calls to different mocks
@@ -36,8 +36,8 @@ Scenario: Multiple calls to different mocks
 	Then the response status code should be 200
 	And the response body should be "Hello Galaxy"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
-	And the request is verified
+	And that wire mock should have been invoked 1 time
+	And the interactions with that wire mock are verified
 	And I want to verify interactions with the wire mock named "get-hello-galaxy"
-	And that mock should have been invoked 1 time
-	And the request is verified
+	And that wire mock should have been invoked 1 time
+	And the interactions with that wire mock are verified

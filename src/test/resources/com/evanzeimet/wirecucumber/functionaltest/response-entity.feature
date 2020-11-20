@@ -18,6 +18,6 @@ Scenario: Mock data table response
 	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
 	"""
 	And I want to verify interactions with the wire mock named "get-hello-worlds"
-	And that mock should have been invoked 1 time
-	And the request is verified
+	And that wire mock should have been invoked 1 time
+	And the interactions with that wire mock are verified
 

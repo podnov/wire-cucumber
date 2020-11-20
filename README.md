@@ -26,8 +26,8 @@ Given that wire mock enters invocation state {string}
 Given that wire mock is finalized
 
 Then I want to verify interactions with the wire mock named {string}
-Then that mock should not have been invoked
-Then that mock should have been invoked {int} time(s)
+Then that wire mock should not have been invoked
+Then that wire mock should have been invoked {int} time(s)
 Then the request body should have been:
 Then the request body should have been {string}
 Then the request body should have been empty
@@ -44,7 +44,7 @@ Then the request should have had header {string} {string}
 Then the request url should have been {string}
 Then the request url of invocation index {int} should have been {string}
 Then the request url of invocation state {string} should have been {string}
-Then the request is verified
+Then the interactions with that wire mock are verified
 ```
 
 ### Write a scenario
@@ -61,7 +61,7 @@ Scenario: GET Something That Calls Hello World
 	And the response body should be "Something Called Hello World"
 	# provided by wire-cucumber
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And my request is verified
 ```
 

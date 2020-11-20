@@ -27,7 +27,7 @@ Scenario: Multiple calls verifying specific invocation index details
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "post-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation index 0 should have been:
 	"""
 	{
@@ -41,7 +41,7 @@ Scenario: Multiple calls verifying specific invocation index details
 		"invocationName": "invocation-2"
 	}
 	"""
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Multiple calls verifying specific invocation index details with data tables
@@ -65,7 +65,7 @@ Scenario: Multiple calls verifying specific invocation index details with data t
 	Then the response status code should be 200
 	And the response body should be "Hello Worlds"
 	And I want to verify interactions with the wire mock named "post-hello-worlds"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation index 0 should have been these records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
@@ -77,7 +77,7 @@ Scenario: Multiple calls verifying specific invocation index details with data t
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | yellow       | Milky Way |
 	| given-world-3 | grey         | Milky Way |
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 Scenario: Multiple calls on the same mock with differing results, invocation index urls matching too
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
@@ -110,7 +110,7 @@ Scenario: Multiple calls on the same mock with differing results, invocation ind
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request url of invocation index 0 should have been "/hello-world"
 	And the request body of invocation index 0 should have been:
 	"""
@@ -127,7 +127,7 @@ Scenario: Multiple calls on the same mock with differing results, invocation ind
 		"invocationName": "invocation-2"
 	}
 	"""
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Invocation index failures
@@ -155,7 +155,7 @@ Scenario: Invocation index failures
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "post-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation index 0 should have been:
 	"""
 	{
@@ -221,7 +221,7 @@ Scenario: Invocation index details with data tables failures
 	Then the response status code should be 200
 	And the response body should be "Hello Worlds"
 	And I want to verify interactions with the wire mock named "post-hello-worlds"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation index 0 should have been these records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
@@ -294,7 +294,7 @@ Scenario: invocation index urls matching failures
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request url of invocation index 0 should have been "/hello-world"
 	And the request body of invocation index 0 should have been:
 	"""

@@ -11,9 +11,9 @@ Scenario: Mock based on regex url, default endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Mock based on regex url, other endpoint
@@ -25,9 +25,9 @@ Scenario: Mock based on regex url, other endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world/abc-def/hij"
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Wrong url
@@ -39,7 +39,7 @@ Scenario: Wrong url
 	Then the response status code should be 200
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 1 time
+	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world/abc-def/bad"
 	And verifying my request should yield this exception message:
 	"""

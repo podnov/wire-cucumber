@@ -32,7 +32,7 @@ Scenario: Multiple calls verifying specific invocation state details
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation state "Started" should have been:
 	"""
 	{
@@ -46,7 +46,7 @@ Scenario: Multiple calls verifying specific invocation state details
 		"invocationName": "invocation-2"
 	}
 	"""
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Multiple calls verifying specific invocation state details with data tables
@@ -76,7 +76,7 @@ Scenario: Multiple calls verifying specific invocation state details with data t
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation state "Started" should have been these records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
@@ -88,7 +88,7 @@ Scenario: Multiple calls verifying specific invocation state details with data t
 	| given-world-1 | blue         | Milky Way |
 	| given-world-2 | yellow       | Milky Way |
 	| given-world-3 | grey         | Milky Way |
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Multiple calls on the same mock with differing results, invocation state urls matching too
@@ -122,7 +122,7 @@ Scenario: Multiple calls on the same mock with differing results, invocation sta
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request url of invocation state "Started" should have been "/hello-world"
 	And the request body of invocation state "Started" should have been:
 	"""
@@ -139,7 +139,7 @@ Scenario: Multiple calls on the same mock with differing results, invocation sta
 		"invocationName": "invocation-2"
 	}
 	"""
-	And the request is verified
+	And the interactions with that wire mock are verified
 
 
 Scenario: Invocation state failures
@@ -173,7 +173,7 @@ Scenario: Invocation state failures
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation state "Started" should have been:
 	"""
 	{
@@ -245,7 +245,7 @@ Scenario: Invocation state details with data tables failures
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request body of invocation state "Started" should have been these records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
@@ -319,7 +319,7 @@ Scenario: invocation state urls matching failures
 	Then the response status code should be 200
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
-	And that mock should have been invoked 3 times
+	And that wire mock should have been invoked 3 times
 	And the request url of invocation state "Started" should have been "/hello-world"
 	And the request body of invocation state "Started" should have been:
 	"""
