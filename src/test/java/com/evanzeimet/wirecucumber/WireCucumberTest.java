@@ -1,7 +1,11 @@
 package com.evanzeimet.wirecucumber;
 
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.notNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
@@ -15,7 +19,7 @@ public class WireCucumberTest {
 
 	@Before
 	public void setUp() {
-		wireCucumber = new WireCucumber();
+		wireCucumber = spy(new WireCucumber());
 	}
 
 	@Test
@@ -45,4 +49,16 @@ public class WireCucumberTest {
 		assertNull(actualException);
 	}
 
+	@Test
+	public void initialize_nullOptions() {
+		WireCucumberOptions givenOptions = null;
+
+		doNothing().when(wireCucumber).startWireMockServer(any());
+		doNothing().when(wireCucumber).createSteps(any());
+
+		wireCucumber.initialize(givenOptions);
+
+		verify(wireCucumber).startWireMockServer(notNull());
+		verify(wireCucumber).createSteps(notNull());
+	}
 }

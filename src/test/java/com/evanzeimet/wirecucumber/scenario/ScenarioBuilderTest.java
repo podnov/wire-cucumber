@@ -17,6 +17,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
@@ -30,7 +31,12 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_unverifiedMocks_empty() {
+	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_empty() {
+		boolean givenRequireMockInteractionsVerification = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
 		builder.mockNames = givenMockNames;
 		builder.verifiedMockNames = givenMockNames;
@@ -38,7 +44,7 @@ public class ScenarioBuilderTest {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario();
+			builder.closeScenario(givenOptions);
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -47,14 +53,62 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_unverifiedMocks_notEmpty() {
+	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_notEmpty() {
+		boolean givenRequireMockInteractionsVerification = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
 		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario();
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_requireMockInteractionsVerification_true_unverifiedMocks_empty() {
+		boolean givenRequireMockInteractionsVerification = true;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
+		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
+		builder.mockNames = givenMockNames;
+		builder.verifiedMockNames = givenMockNames;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_requireMockInteractionsVerification_true_unverifiedMocks_notEmpty() {
+		boolean givenRequireMockInteractionsVerification = true;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
+		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
+		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}

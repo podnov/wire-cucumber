@@ -36,18 +36,23 @@ public class WireCucumber
 		}
 	}
 
-	protected void createSteps() {
+	protected void createSteps(WireCucumberOptions options) {
 		steps = new Steps();
-		steps.initialize();
+		steps.initialize(options);
 	}
 
-	public void initialize(Options options) {
+	public void initialize(WireCucumberOptions options) {
+		if (options == null) {
+			options = new WireCucumberOptions();
+		}
+
 		startWireMockServer(options);
-		createSteps();
+		createSteps(options);
 	}
 
-	protected void startWireMockServer(Options options) {
-		wireMockServer = new WireMockServer(options);
+	protected void startWireMockServer(WireCucumberOptions options) {
+		Options wireMockOptions = options.getWireMockOptions();
+		wireMockServer = new WireMockServer(wireMockOptions);
 		wireMockServer.start();
 
 		int port = wireMockServer.port();

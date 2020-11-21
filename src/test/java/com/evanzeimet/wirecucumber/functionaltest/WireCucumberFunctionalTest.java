@@ -14,8 +14,10 @@ import org.junit.runner.RunWith;
 
 import com.evanzeimet.wirecucumber.TestUtils;
 import com.evanzeimet.wirecucumber.TestWireCucumber;
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 import io.cucumber.java8.En;
 import io.cucumber.junit.Cucumber;
@@ -36,8 +38,14 @@ public class WireCucumberFunctionalTest implements En {
 	private String currentRequestId;
 
 	public WireCucumberFunctionalTest() {
+		WireMockConfiguration wireMockConfiguration = options().dynamicPort();
+
+		WireCucumberOptions options = new WireCucumberOptions();
+		options.setWireMockOptions(wireMockConfiguration);
+
 		TestWireCucumber wireCucumber = new TestWireCucumber();
-		wireCucumber.initialize(options().dynamicPort());
+		wireCucumber.initialize(options);
+
 		int port = wireCucumber.getWireMockServer().port();
 
 		When("I DELETE the {string} resource {string} endpoint", (String resource, String endpoint) -> {

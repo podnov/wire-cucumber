@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
@@ -105,17 +106,9 @@ public class ScenarioBuilder {
 		bootstrapRequestMock(mockName, httpVerb, urlPattern);
 	}
 
-	public void closeScenario() {
-		Set<String> unverifiedMocks = new HashSet<>(mockNames);
-		unverifiedMocks.removeAll(verifiedMockNames);
-
-		int unverifiedMockCount = unverifiedMocks.size();
-
-		if (unverifiedMockCount > 0) {
-			String message = String.format("Found [%s] unverified mocks %s",
-					unverifiedMockCount,
-					unverifiedMocks);
-			throw new WireCucumberRuntimeException(message);
+	public void closeScenario(WireCucumberOptions options) {
+		if (options.getRequireMockInteractionsVerification()) {
+			verifyMockInteractionsVerified();
 		}
 	}
 
@@ -233,6 +226,20 @@ public class ScenarioBuilder {
 
 		setCurrentRequestVerified();
 		currentVerifyMockName = null;
+	}
+
+	protected void verifyMockInteractionsVerified() {
+		Set<String> unverifiedMocks = new HashSet<>(mockNames);
+		unverifiedMocks.removeAll(verifiedMockNames);
+
+		int unverifiedMockCount = unverifiedMocks.size();
+
+		if (unverifiedMockCount > 0) {
+			String message = String.format("Found [%s] unverified mocks %s",
+					unverifiedMockCount,
+					unverifiedMocks);
+			throw new WireCucumberRuntimeException(message);
+		}
 	}
 
 }

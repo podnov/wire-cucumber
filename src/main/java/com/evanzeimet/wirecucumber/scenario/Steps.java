@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
 
 import io.cucumber.datatable.DataTable;
@@ -113,9 +114,9 @@ public class Steps
 		};
 	}
 
-	protected HookBody afterScenario() {
+	protected HookBody afterScenario(WireCucumberOptions options) {
 		return (scenario) -> {
-			scenarioBuilder.closeScenario();
+			scenarioBuilder.closeScenario(options);
 		};
 	}
 
@@ -162,7 +163,7 @@ public class Steps
 		};
 	}
 
-	public void initialize() {
+	public void initialize(WireCucumberOptions options) {
 		Before(beforeScenario());
 
 		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapUrlEqualToRequestMock());
@@ -218,7 +219,7 @@ public class Steps
 
 		Then("the interactions with that wire mock are verified", verifyInvocations());
 
-		After(afterScenario());
+		After(afterScenario(options));
 	}
 
 	protected A1<String> setRequestBuilderState() {
