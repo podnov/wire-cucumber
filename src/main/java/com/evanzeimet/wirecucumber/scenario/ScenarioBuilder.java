@@ -57,6 +57,10 @@ public class ScenarioBuilder {
 		return mockBuilder;
 	}
 
+	public Set<String> getMockNames() {
+		return mockNames;
+	}
+
 	public void addInvocationStateDataTableBodyVerification(String state, DataTable dataTable) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
 		invocationsVerifier.addDataTableBodyVerification(invocationIndex, dataTable);
