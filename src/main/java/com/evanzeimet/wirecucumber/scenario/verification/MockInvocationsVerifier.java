@@ -32,7 +32,7 @@ import com.google.common.collect.FluentIterable;
 
 import io.cucumber.datatable.DataTable;
 
-public class InvocationsVerifier {
+public class MockInvocationsVerifier {
 
 	protected static final String BODY_FIELD_NAME = "body";
 	protected static final String BODY_PATTERNS_FIELD_NAME = "bodyPatterns";
@@ -124,8 +124,8 @@ public class InvocationsVerifier {
 		return String.format("for invocation at index %d,%s", invocationIndex, diffMessage);
 	}
 
-	public static InvocationsVerifier forRequestPattern(RequestPattern requestPattern) {
-		InvocationsVerifier result = new InvocationsVerifier();
+	public static MockInvocationsVerifier forRequestPattern(RequestPattern requestPattern) {
+		MockInvocationsVerifier result = new MockInvocationsVerifier();
 
 		result.requestPatternBuilder = RequestPatternBuilder.like(requestPattern);
 

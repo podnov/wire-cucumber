@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
-import com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier;
+import com.evanzeimet.wirecucumber.scenario.verification.MockInvocationsVerifier;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -26,35 +26,35 @@ public class ScenarioBuilder {
 	// TODO call index across mocks/scenarios? timestamp comparison?
 
 	protected Scenario currentCucumberScenario;
+	protected MockBuilder currentMockBuilder;
 	protected String currentMockName;
 	protected String currentMockState;
 	protected Integer currentMockStateIndex;
 	protected String currentVerifyMockName;
-	protected InvocationsVerifier invocationsVerifier;
-	protected MockBuilder mockBuilder;
+	protected MockInvocationsVerifier currentMockVerifier;
 	protected Set<String> mockNames = new HashSet<String>();
 	protected Map<MockStateKey, StubMapping> mockStateStubMappings = new HashMap<>();
 	protected Map<MockStateKey, Integer> mockStateIndices = new HashMap<>();
 	protected Set<String> verifiedMockNames = new HashSet<>();
 
+	public MockBuilder getCurrentMockBuilder() {
+		return currentMockBuilder;
+	}
+
 	public String getCurrentMockName() {
 		return currentMockName;
 	}
 
-	public String getCurrentScenarioState() {
+	public String getCurrentMockState() {
 		return currentMockState;
 	}
 
-	public Integer getCurrentScenarioStateIndex() {
+	public Integer getCurrentMockStateIndex() {
 		return currentMockStateIndex;
 	}
 
-	public InvocationsVerifier getInvocationVerifier() {
-		return invocationsVerifier;
-	}
-
-	public MockBuilder getMockBuilder() {
-		return mockBuilder;
+	public MockInvocationsVerifier getCurrentMockVerifier() {
+		return currentMockVerifier;
 	}
 
 	public Set<String> getMockNames() {
@@ -63,51 +63,51 @@ public class ScenarioBuilder {
 
 	public void addInvocationStateDataTableBodyVerification(String state, DataTable dataTable) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		invocationsVerifier.addDataTableBodyVerification(invocationIndex, dataTable);
+		currentMockVerifier.addDataTableBodyVerification(invocationIndex, dataTable);
 	}
 
 	public void addInvocationStateEmptyBodyVerification(String state) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		invocationsVerifier.addEmptyBodyVerification(invocationIndex);
+		currentMockVerifier.addEmptyBodyVerification(invocationIndex);
 	}
 
 	public void addInvocationStateStringBodyVerification(String state,
 			String requestBody) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		invocationsVerifier.addStringBodyVerification(invocationIndex, requestBody);
+		currentMockVerifier.addStringBodyVerification(invocationIndex, requestBody);
 	}
 
 	public void addInvocationStateUrlVerification(String state, String url) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		invocationsVerifier.addUrlVerification(invocationIndex, url);
+		currentMockVerifier.addUrlVerification(invocationIndex, url);
 	}
 
-	protected void bootstrapRequestMock(String mockName, String httpVerb, UrlPattern urlPattern) {
+	protected void bootstrapMock(String mockName, String httpVerb, UrlPattern urlPattern) {
 		currentMockName = mockName;
 		mockNames.add(mockName);
 		currentMockState = STARTED;
 		currentMockStateIndex = 0;
-		mockBuilder = MockBuilder.create(currentCucumberScenario, httpVerb, urlPattern);
+		currentMockBuilder = MockBuilder.create(currentCucumberScenario, httpVerb, urlPattern);
 	}
 
-	public void bootstrapUrlEqualToRequestMock(String mockName, String httpVerb, String path) {
+	public void bootstrapMockWithUrlEqualTo(String mockName, String httpVerb, String path) {
 		UrlPattern urlPattern = urlEqualTo(path);
-		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+		bootstrapMock(mockName, httpVerb, urlPattern);
 	}
 
-	public void bootstrapUrlMatchingRequestMock(String mockName, String httpVerb, String path) {
+	public void bootstrapMockWithUrlMatching(String mockName, String httpVerb, String path) {
 		UrlPattern urlPattern = urlMatching(path);
-		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+		bootstrapMock(mockName, httpVerb, urlPattern);
 	}
 
-	public void bootstrapUrlPathEqualToRequestMock(String mockName, String httpVerb, String path) {
+	public void bootstrapMockWithUrlPathEqualTo(String mockName, String httpVerb, String path) {
 		UrlPattern urlPattern = urlPathEqualTo(path);
-		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+		bootstrapMock(mockName, httpVerb, urlPattern);
 	}
 
-	public void bootstrapUrlPathMatchingRequestMock(String mockName, String httpVerb, String path) {
+	public void bootstrapMockWithUrlPathMatching(String mockName, String httpVerb, String path) {
 		UrlPattern urlPattern = urlPathMatching(path);
-		bootstrapRequestMock(mockName, httpVerb, urlPattern);
+		bootstrapMock(mockName, httpVerb, urlPattern);
 	}
 
 	public void closeScenario(WireCucumberOptions options) {
@@ -130,10 +130,10 @@ public class ScenarioBuilder {
 		return new MockStateKey(currentMockName, currentMockState);
 	}
 
-	public void finalizeRequestMock() {
+	public void finalizeMock() {
 		validateMockStateUnused();
 
-		StubMapping stubMapping = mockBuilder.finalizeMock(currentMockState);
+		StubMapping stubMapping = currentMockBuilder.finalizeMock(currentMockState);
 		putCurrentMockStateStubMapping(stubMapping);
 
 		currentMockName = null;
@@ -174,15 +174,25 @@ public class ScenarioBuilder {
 		mockStateIndices.put(key, currentMockStateIndex++);
 	}
 
+	/**
+	 * This can be used to override internal mock verification tracking in order to
+	 * consider all mocks verified.
+	 */
+	public void setAllMocksVerified() {
+		for (String mockName : mockNames) {
+			verifiedMockNames.add(mockName);
+		}
+	}
+
 	public void setCurrentCucumberScenario(Scenario scenario) {
 		currentCucumberScenario = scenario;
 	}
 
-	public void setCurrentRequestVerified() {
+	public void setCurrentMockVerified() {
 		verifiedMockNames.add(currentVerifyMockName);
 	}
 
-	public void setCurrentRequestVerifyBuilder(String mockName) {
+	public void setMockToBeVerified(String mockName) {
 		currentVerifyMockName = mockName;
 		StubMapping stubMapping = getMockStateMapping(mockName, STARTED);
 
@@ -192,11 +202,11 @@ public class ScenarioBuilder {
 		}
 
 		RequestPattern request = stubMapping.getRequest();
-		invocationsVerifier = InvocationsVerifier.forRequestPattern(request);
+		currentMockVerifier = MockInvocationsVerifier.forRequestPattern(request);
 	}
 
-	public void transitionMock(String nextState) {
-		StubMapping stubMapping = mockBuilder.setRequestBuilderState(currentMockState, nextState);
+	public void transitionMockState(String nextState) {
+		StubMapping stubMapping = currentMockBuilder.setRequestBuilderState(currentMockState, nextState);
 		putCurrentMockStateStubMapping(stubMapping);
 		currentMockState = nextState;
 	}
@@ -224,11 +234,11 @@ public class ScenarioBuilder {
 		return key;
 	}
 
-	public void verifyInvocations() {
-		invocationsVerifier.verify();
-		invocationsVerifier = null;
+	public void verifyMockInvocations() {
+		currentMockVerifier.verify();
+		currentMockVerifier = null;
 
-		setCurrentRequestVerified();
+		setCurrentMockVerified();
 		currentVerifyMockName = null;
 	}
 

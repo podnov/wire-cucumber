@@ -1,7 +1,7 @@
 package com.evanzeimet.wirecucumber.scenario.verification;
 
-import static com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier.BODY_FIELD_NAME;
-import static com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.verification.MockInvocationsVerifier.BODY_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.verification.MockInvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
@@ -33,15 +33,15 @@ import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 
-public class InvocationVerifierTest {
+public class MockInvocationsVerifierTest {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	private InvocationsVerifier verifier;
+	private MockInvocationsVerifier verifier;
 
 	@Before
 	public void setUp() {
-		verifier = spy(new InvocationsVerifier());
+		verifier = spy(new MockInvocationsVerifier());
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class InvocationVerifierTest {
 
 		String actualJson = TestUtils.dos2unix(actual);
 		String expectedJson = TestUtils.readRelativeResource(getClass(),
-				"InvocationVerifierTest_coalesceActualToExpected.expected.json");
+				"MockInvocationsVerifierTest_coalesceActualToExpected.expected.json");
 
 		assertEquals(expectedJson, actualJson);
 	}

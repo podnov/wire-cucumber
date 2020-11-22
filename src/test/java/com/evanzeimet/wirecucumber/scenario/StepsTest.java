@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
-import com.evanzeimet.wirecucumber.scenario.verification.InvocationsVerifier;
+import com.evanzeimet.wirecucumber.scenario.verification.MockInvocationsVerifier;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 public class StepsTest {
@@ -55,7 +55,7 @@ public class StepsTest {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			steps.setCurrentRequestVerifyBuilder().accept(givenName);
+			steps.setMockToBeVerified().accept(givenName);
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -69,11 +69,11 @@ public class StepsTest {
 
 	@Test
 	public void verifyRequest() throws Throwable {
-		steps.scenarioBuilder.invocationsVerifier = mock(InvocationsVerifier.class);
+		steps.scenarioBuilder.currentMockVerifier = mock(MockInvocationsVerifier.class);
 
-		steps.verifyInvocations().accept();
+		steps.verifyMockInvocations().accept();
 
-		assertNull(steps.scenarioBuilder.invocationsVerifier);
+		assertNull(steps.scenarioBuilder.currentMockVerifier);
 	}
 
 	protected void bootstrapWireMock() {

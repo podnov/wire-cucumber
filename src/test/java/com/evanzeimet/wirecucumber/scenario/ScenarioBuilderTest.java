@@ -158,14 +158,14 @@ public class ScenarioBuilderTest {
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentScenarioState;
 		builder.currentMockStateIndex = givenCurrentScenarioStateIndex;
-		builder.mockBuilder = givenMockBuilder;
+		builder.currentMockBuilder = givenMockBuilder;
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 
 		doReturn(givenStubMapping)
 			.when(givenMockBuilder)
 			.createStubForBuilders(anyString());
 
-		builder.finalizeRequestMock();
+		builder.finalizeMock();
 
 		assertNull(builder.currentMockName);
 		assertNull(builder.currentMockState);
@@ -189,13 +189,13 @@ public class ScenarioBuilderTest {
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentScenarioState;
 		builder.currentMockStateIndex = 42;
-		builder.mockBuilder = givenMockBuilder;
+		builder.currentMockBuilder = givenMockBuilder;
 
 		doReturn(givenStubmapping)
 			.when(givenMockBuilder)
 			.createStubForBuilders(anyString());
 
-		builder.finalizeRequestMock();
+		builder.finalizeMock();
 
 		StubMapping actualStubMapping = builder.getMockStateMapping(givenCurrentMockName, givenCurrentScenarioState);
 
@@ -211,7 +211,7 @@ public class ScenarioBuilderTest {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.finalizeRequestMock();
+			builder.finalizeMock();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -232,14 +232,14 @@ public class ScenarioBuilderTest {
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentMockState;
 		builder.currentMockStateIndex = 0;
-		builder.mockBuilder = mock(MockBuilder.class);
-		builder.transitionMock(givenNextMockState);
+		builder.currentMockBuilder = mock(MockBuilder.class);
+		builder.transitionMockState(givenNextMockState);
 		builder.putCurrentMockStateStubMapping(null);
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.finalizeRequestMock();
+			builder.finalizeMock();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -368,6 +368,24 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
+	public void setAllMocksVerified() {
+		Set<String> givenMockNames = new HashSet<>(Arrays.asList("given-mock-name-1",
+				"given-mock-name-2",
+				"given-mock-name-3"));
+		Set<String> givenVerifiedMockNames = new HashSet<>();
+
+		builder.mockNames = givenMockNames;
+		builder.verifiedMockNames = givenVerifiedMockNames;
+
+		builder.setAllMocksVerified();
+
+		Set<String> actual = builder.verifiedMockNames;
+		Set<String> expected = givenMockNames;
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void transitionMock() {
 		String givenCurrentMockName = "given-current-mock-name";
 		String givenCurrentMockState = "given-current-scenario-state";
@@ -380,13 +398,13 @@ public class ScenarioBuilderTest {
 		builder.currentMockName = givenCurrentMockName;
 		builder.currentMockState = givenCurrentMockState;
 		builder.currentMockStateIndex = givenCurrentScenarioStateIndex;
-		builder.mockBuilder = givenMockBuilder;
+		builder.currentMockBuilder = givenMockBuilder;
 
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 		doReturn(givenStubMapping).when(givenMockBuilder).setRequestBuilderState(givenCurrentMockState,
 				givenNextMockState);
 
-		builder.transitionMock(givenNextMockState);
+		builder.transitionMockState(givenNextMockState);
 
 		assertEquals(givenCurrentMockName, builder.currentMockName);
 		Integer expectedCurrentScenarioStateIndex = givenCurrentScenarioStateIndex + 1;
