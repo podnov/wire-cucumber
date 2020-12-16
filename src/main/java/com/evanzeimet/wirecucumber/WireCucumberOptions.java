@@ -8,6 +8,15 @@ public class WireCucumberOptions {
 
 	private boolean requireMockInteractionsVerification = true;
 	private Options wireMockOptions = options();
+	private boolean requireMockFinalization = true;
+
+	public boolean getRequireMockFinalization() {
+		return requireMockFinalization;
+	}
+
+	public void setRequireMockFinalization(boolean requireMockFinalization) {
+		this.requireMockFinalization = requireMockFinalization;
+	}
 
 	public boolean getRequireMockInteractionsVerification() {
 		return requireMockInteractionsVerification;

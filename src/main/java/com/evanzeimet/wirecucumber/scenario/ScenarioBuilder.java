@@ -83,6 +83,13 @@ public class ScenarioBuilder {
 	}
 
 	protected void bootstrapMock(String mockName, String httpVerb, UrlPattern urlPattern) {
+		boolean isCurrentMockUnfinalized = getIsCurrentMockUnfinalized();
+
+		if (isCurrentMockUnfinalized) {
+			String message = String.format("There was an attempt to bootstrap a new mock while mock [%s] remains unfinalized", currentMockName);
+			throw new WireCucumberRuntimeException(message);
+		}
+
 		currentMockName = mockName;
 		mockNames.add(mockName);
 		currentMockState = STARTED;
@@ -111,6 +118,10 @@ public class ScenarioBuilder {
 	}
 
 	public void closeScenario(WireCucumberOptions options) {
+		if (options.getRequireMockFinalization()) {
+			verifyMocksFinalized();
+		}
+
 		if (options.getRequireMockInteractionsVerification()) {
 			verifyMockInteractionsVerified();
 		}
@@ -139,6 +150,10 @@ public class ScenarioBuilder {
 		currentMockName = null;
 		currentMockState = null;
 		currentMockStateIndex = -1;
+	}
+
+	protected boolean getIsCurrentMockUnfinalized() {
+		return (currentMockName != null);
 	}
 
 	public Integer getMockStateIndex(String mockName, String state) {
@@ -240,6 +255,15 @@ public class ScenarioBuilder {
 
 		setCurrentMockVerified();
 		currentVerifyMockName = null;
+	}
+
+	protected void verifyMocksFinalized() {
+		boolean isCurrentMockUnfinalized = getIsCurrentMockUnfinalized();
+
+		if (isCurrentMockUnfinalized) {
+			String message = String.format("Found unfinalized mock [%s]", currentMockName);
+			throw new WireCucumberRuntimeException(message);
+		}
 	}
 
 	protected void verifyMockInteractionsVerified() {

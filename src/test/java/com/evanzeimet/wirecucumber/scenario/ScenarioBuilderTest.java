@@ -1,5 +1,6 @@
 package com.evanzeimet.wirecucumber.scenario;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,6 +20,7 @@ import org.junit.Test;
 
 import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 public class ScenarioBuilderTest {
@@ -31,10 +33,135 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_empty() {
+	public void bootstrapMock_existingMockUnfinalized() {
+		String givenUnfinalizedMockName = "given-unfinalized-mock-name";
+
+		String givenNewMockName = "given-new-mock-name";
+		String givenNewHttpVerb = "given-http-verb";
+		UrlPattern givenNewPattern = urlEqualTo("given-url-pattern");
+
+		builder.currentMockName = givenUnfinalizedMockName;
+
+		WireCucumberRuntimeException actual = null;
+
+		try {
+			builder.bootstrapMock(givenNewMockName, givenNewHttpVerb, givenNewPattern);
+		} catch (WireCucumberRuntimeException e) {
+			actual = e;
+		}
+
+		assertNotNull(actual);
+
+		String actualExceptionMessage = actual.getMessage();
+		String expectedExceptionMessage = "There was an attempt to bootstrap a new mock while mock [given-unfinalized-mock-name] remains unfinalized";
+
+		assertEquals(expectedExceptionMessage, actualExceptionMessage);
+	}
+
+	@Test
+	public void closeScenario_requireMockFinalization_false_currentMockFinalized() {
+		String givenCurrentMockName = null;
+		boolean givenRequireMockFinalization = false;
 		boolean givenRequireMockInteractionsVerification = false;
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
+		builder.currentMockName = givenCurrentMockName;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_requireMockFinalization_false_currentMockUnfinalized() {
+		String givenCurrentMockName = "given-current-mock-name";
+		boolean givenRequireMockFinalization = false;
+		boolean givenRequireMockInteractionsVerification = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
+		builder.currentMockName = givenCurrentMockName;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_requireMockFinalization_true_currentMockFinalized() {
+		String givenCurrentMockName = null;
+		boolean givenRequireMockFinalization = true;
+		boolean givenRequireMockInteractionsVerification = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
+		builder.currentMockName = givenCurrentMockName;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_requireMockFinalization_true_currentMockUnfinalized() {
+		String givenCurrentMockName = "given-current-mock-name";
+		boolean givenRequireMockFinalization = true;
+		boolean givenRequireMockInteractionsVerification = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
+		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+
+		builder.currentMockName = givenCurrentMockName;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNotNull(actualException);
+
+		String actualExceptionMessage = actualException.getMessage();
+		String expectedExceptionMessage = "Found unfinalized mock [given-current-mock-name]";
+
+		assertEquals(expectedExceptionMessage, actualExceptionMessage);
+	}
+
+	@Test
+	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_empty() {
+		boolean givenRequireMockFinalization = false;
+		boolean givenRequireMockInteractionsVerification = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
@@ -54,9 +181,11 @@ public class ScenarioBuilderTest {
 
 	@Test
 	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_notEmpty() {
+		boolean givenRequireMockFinalization = false;
 		boolean givenRequireMockInteractionsVerification = false;
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
@@ -75,9 +204,11 @@ public class ScenarioBuilderTest {
 
 	@Test
 	public void closeScenario_requireMockInteractionsVerification_true_unverifiedMocks_empty() {
+		boolean givenRequireMockFinalization = false;
 		boolean givenRequireMockInteractionsVerification = true;
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
@@ -97,9 +228,11 @@ public class ScenarioBuilderTest {
 
 	@Test
 	public void closeScenario_requireMockInteractionsVerification_true_unverifiedMocks_notEmpty() {
+		boolean givenRequireMockFinalization = false;
 		boolean givenRequireMockInteractionsVerification = true;
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
