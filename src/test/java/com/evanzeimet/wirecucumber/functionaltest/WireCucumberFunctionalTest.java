@@ -34,8 +34,10 @@ public class WireCucumberFunctionalTest implements En {
 	private static final String HELLO_GALAXY_URI = "/hello-galaxy";
 	private static final String REQUEST_ID_HEADER = "X-request-id";
 
+	private Exception actualCloseScenarioException;
 	private ValidatableResponse actualResponse;
 	private String currentRequestId;
+	private boolean isManuallyClosedScenario;
 
 	public WireCucumberFunctionalTest() {
 		WireMockConfiguration wireMockConfiguration = options().dynamicPort();
@@ -132,6 +134,16 @@ public class WireCucumberFunctionalTest implements En {
 					.then();
 		});
 
+		When("I close my scenario", () -> {
+			isManuallyClosedScenario = true;
+
+			try {
+				wireCucumber.closeScenario();
+			} catch (Exception e) {
+				actualCloseScenarioException = e;
+			}
+		});
+
 		Then("the response status code should be {int}", (Integer expectedStatusCode) -> {
 			actualResponse.statusCode(expectedStatusCode);
 		});
@@ -155,11 +167,16 @@ public class WireCucumberFunctionalTest implements En {
 					.withHeader(REQUEST_ID_HEADER, WireMock.equalTo(currentRequestId));
 		});
 
+		Then("I should receive this exception message:", (String expected) -> {
+			String actual = actualCloseScenarioException.getMessage();
+			assertEquals(expected, actual);
+		});
+
 		Then("verifying my request should yield this exception message:", (expectedExceptionMessage) -> {
 			Throwable actualThrowable = null;
 
 			try {
-				wireCucumber.verifyInvocations();
+				wireCucumber.verifyMockInvocations();
 			} catch (Throwable e) {
 				actualThrowable = e;
 			}
@@ -175,6 +192,11 @@ public class WireCucumberFunctionalTest implements En {
 		});
 
 		After(() -> {
+			if (isManuallyClosedScenario) {
+				wireCucumber.finalizeCurrentMockIfNecessary();
+				wireCucumber.getSteps().getScenarioBuilder().setAllMocksVerified();
+			}
+
 			wireCucumber.close();
 		});
 	}

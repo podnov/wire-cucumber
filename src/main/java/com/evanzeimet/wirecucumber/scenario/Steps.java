@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
 import com.evanzeimet.wirecucumber.WireCucumberOptions;
+import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
 
 import io.cucumber.datatable.DataTable;
@@ -20,7 +21,9 @@ public class Steps
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	protected ScenarioBuilder scenarioBuilder = new ScenarioBuilder();
+	protected boolean isInitialized;
+	protected WireCucumberOptions options;
+	protected ScenarioBuilder scenarioBuilder;
 
 	public ScenarioBuilder getScenarioBuilder() {
 		return scenarioBuilder;
@@ -93,11 +96,12 @@ public class Steps
 		};
 	}
 
-	protected HookBody afterScenario(WireCucumberOptions options) {
+	protected HookBody afterScenario() {
 		return (scenario) -> {
-			scenarioBuilder.closeScenario(options);
+			closeScenario();
 		};
 	}
+
 
 	protected HookBody beforeScenario() {
 		return (scenario) -> {
@@ -136,6 +140,10 @@ public class Steps
 		};
 	}
 
+	protected void closeScenario() {
+		scenarioBuilder.closeScenario();
+	}
+
 	protected A0 finalizeMock() {
 		return () -> {
 			scenarioBuilder.finalizeMock();
@@ -143,6 +151,14 @@ public class Steps
 	}
 
 	public void initialize(WireCucumberOptions options) {
+		if (isInitialized) {
+			throw new WireCucumberRuntimeException("Initialization has already completed");
+		}
+
+		this.isInitialized = true;
+		this.options = options;
+		this.scenarioBuilder = new ScenarioBuilder(options);
+
 		Before(beforeScenario());
 
 		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapUrlEqualToRequestMock());
@@ -196,7 +212,7 @@ public class Steps
 
 		Then("the interactions with that wire mock are verified", verifyMockInvocations());
 
-		After(afterScenario(options));
+		After(afterScenario());
 	}
 
 	protected A1<String> setMockState() {

@@ -29,7 +29,29 @@ public class ScenarioBuilderTest {
 
 	@Before
 	public void setUp() {
-		builder = spy(new ScenarioBuilder());
+		builder = spy(new ScenarioBuilder(new WireCucumberOptions()));
+	}
+
+	@Test
+	public void bootstrapMock_nullMockName() throws Throwable {
+		String givenMockName = null;
+		String givenHttpVerb = "given-http-verb";
+		UrlPattern givenUrlPattern = urlEqualTo("given-url-pattern");
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.bootstrapMock(givenMockName, givenHttpVerb, givenUrlPattern);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNotNull(actualException);
+
+		String actualExceptionMessage = actualException.getMessage();
+		String expectedExceptionMessage = "Mock name cannot be null";
+
+		assertEquals(expectedExceptionMessage, actualExceptionMessage);
 	}
 
 	@Test
@@ -69,11 +91,12 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		builder.currentMockName = givenCurrentMockName;
+		builder.options = givenOptions;
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -91,12 +114,13 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
+		builder.options = givenOptions;
 		builder.currentMockName = givenCurrentMockName;
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -114,12 +138,13 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
+		builder.options = givenOptions;
 		builder.currentMockName = givenCurrentMockName;
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -137,12 +162,13 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
+		builder.options = givenOptions;
 		builder.currentMockName = givenCurrentMockName;
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -165,13 +191,15 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
+
+		builder.options = givenOptions;
 		builder.mockNames = givenMockNames;
 		builder.verifiedMockNames = givenMockNames;
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -188,13 +216,14 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
+		builder.options = givenOptions;
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
 		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -212,13 +241,15 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
+
+		builder.options = givenOptions;
 		builder.mockNames = givenMockNames;
 		builder.verifiedMockNames = givenMockNames;
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -235,13 +266,14 @@ public class ScenarioBuilderTest {
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
 		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
 
+		builder.options = givenOptions;
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
 		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.closeScenario(givenOptions);
+			builder.closeScenario();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -336,27 +368,6 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void finalizeRequestMock_currentMockName_null() throws Throwable {
-		String givenCurrentMockName = null;
-
-		builder.currentMockName = givenCurrentMockName;
-
-		WireCucumberRuntimeException actualException = null;
-
-		try {
-			builder.finalizeMock();
-		} catch (WireCucumberRuntimeException e) {
-			actualException = e;
-		}
-
-		assertNotNull(actualException);
-
-		String actualExceptionMessage = actualException.getMessage();
-		String expectedExceptionMessage = "Mock name not set";
-		assertEquals(expectedExceptionMessage, actualExceptionMessage);
-	}
-
-	@Test
 	public void finalizeRequestMock_currentMockName_used() throws Throwable {
 		String givenCurrentMockName = "given-current-mock-name";
 		String givenCurrentMockState = "given-current-mock-state";
@@ -381,6 +392,28 @@ public class ScenarioBuilderTest {
 
 		String actualExceptionMessage = actualException.getMessage();
 		String expectedExceptionMessage = "Mock name [given-current-mock-name] and state [given-next-mock-state] already in use";
+		assertEquals(expectedExceptionMessage, actualExceptionMessage);
+	}
+
+	@Test
+	public void finalizeRequestMock_notUnfinalized() {
+		String givenCurrentMockName = null;
+
+		builder.currentMockName = givenCurrentMockName;
+
+		WireCucumberRuntimeException actual = null;
+
+		try {
+			builder.finalizeMock();
+		} catch (WireCucumberRuntimeException e) {
+			actual = e;
+		}
+
+		assertNotNull(actual);
+
+		String actualExceptionMessage = actual.getMessage();
+		String expectedExceptionMessage = "Did not find unfinalized mock";
+
 		assertEquals(expectedExceptionMessage, actualExceptionMessage);
 	}
 

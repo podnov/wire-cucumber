@@ -35,7 +35,12 @@ public class ScenarioBuilder {
 	protected Set<String> mockNames = new HashSet<String>();
 	protected Map<MockStateKey, StubMapping> mockStateStubMappings = new HashMap<>();
 	protected Map<MockStateKey, Integer> mockStateIndices = new HashMap<>();
+	protected WireCucumberOptions options;
 	protected Set<String> verifiedMockNames = new HashSet<>();
+
+	public ScenarioBuilder(WireCucumberOptions options) {
+		this.options = options;
+	}
 
 	public MockBuilder getCurrentMockBuilder() {
 		return currentMockBuilder;
@@ -83,11 +88,17 @@ public class ScenarioBuilder {
 	}
 
 	protected void bootstrapMock(String mockName, String httpVerb, UrlPattern urlPattern) {
-		boolean isCurrentMockUnfinalized = getIsCurrentMockUnfinalized();
+		if (mockName == null) {
+			throw new WireCucumberRuntimeException("Mock name cannot be null");
+		}
 
-		if (isCurrentMockUnfinalized) {
-			String message = String.format("There was an attempt to bootstrap a new mock while mock [%s] remains unfinalized", currentMockName);
-			throw new WireCucumberRuntimeException(message);
+		if (options.getRequireMockFinalization()) {
+			boolean isCurrentMockUnfinalized = getIsCurrentMockUnfinalized();
+
+			if (isCurrentMockUnfinalized) {
+				String message = String.format("There was an attempt to bootstrap a new mock while mock [%s] remains unfinalized", currentMockName);
+				throw new WireCucumberRuntimeException(message);
+			}
 		}
 
 		currentMockName = mockName;
@@ -117,7 +128,7 @@ public class ScenarioBuilder {
 		bootstrapMock(mockName, httpVerb, urlPattern);
 	}
 
-	public void closeScenario(WireCucumberOptions options) {
+	public void closeScenario() {
 		if (options.getRequireMockFinalization()) {
 			verifyMocksFinalized();
 		}
@@ -142,6 +153,11 @@ public class ScenarioBuilder {
 	}
 
 	public void finalizeMock() {
+		boolean isCurrentMockUnfinalized = getIsCurrentMockUnfinalized();
+		if (!isCurrentMockUnfinalized) {
+			throw new WireCucumberRuntimeException("Did not find unfinalized mock");
+		}
+
 		validateMockStateUnused();
 
 		StubMapping stubMapping = currentMockBuilder.finalizeMock(currentMockState);

@@ -10,7 +10,15 @@ public class TestSteps {
 		this.steps = steps;
 	}
 
-	public A0 verifyInvocations() {
+	public Steps getSteps() {
+		return steps;
+	}
+
+	public void closeScenario() {
+		steps.closeScenario();
+	}
+
+	public A0 verifyMockInvocations() {
 		return steps.verifyMockInvocations();
 	}
 
