@@ -1,6 +1,6 @@
 # wire-cucumber
 
-[<img src="https://github.com/podnov/wire-cucumber/workflows/java-ci/badge.svg">](https://github.com/podnov/wire-cucumber/actions?query=workflow%3A%22java-ci%22) [<img src="https://codecov.io/gh/podnov/wire-cucumber/branch/master/graph/badge.svg">](https://codecov.io/gh/podnov/wire-cucumber/branch/master)
+[![Maven Central](https://img.shields.io/maven-central/v/com.evanzeimet.wirecucumber/wire-cucumber.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.evanzeimet.wirecucumber%22%20AND%20a:%22wire-cucumber%22) [<img src="https://github.com/podnov/wire-cucumber/workflows/java-ci/badge.svg">](https://github.com/podnov/wire-cucumber/actions?query=workflow%3A%22java-ci%22) [<img src="https://codecov.io/gh/podnov/wire-cucumber/branch/master/graph/badge.svg">](https://codecov.io/gh/podnov/wire-cucumber/branch/master)
 
 ## Why?
 The intent of this project is to make mocking external REST calls easier. This is achieved by standardizing how the mocks are configured and reducing the scaffolding needed to create and verify interactions with those mocks.
