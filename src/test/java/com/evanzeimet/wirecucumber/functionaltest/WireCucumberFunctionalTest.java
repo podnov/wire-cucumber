@@ -140,11 +140,11 @@ public class WireCucumberFunctionalTest implements En {
 			actualResponse.header(expectedHeaderName, expectedHeaderValue);
 		});
 
-		Then("the response body should be {string}", (expectedResponseBody) -> {
+		Then("the response body should be {string}", (String expectedResponseBody) -> {
 			actualResponse.body(equalTo(expectedResponseBody));
 		});
 
-		Then("the response body should be:", (expectedResponseBody) -> {
+		Then("the response body should be:", (String expectedResponseBody) -> {
 			actualResponse.body(equalTo(expectedResponseBody));
 		});
 
@@ -155,7 +155,7 @@ public class WireCucumberFunctionalTest implements En {
 					.withHeader(REQUEST_ID_HEADER, WireMock.equalTo(currentRequestId));
 		});
 
-		Then("verifying my request should yield this exception message:", (expectedExceptionMessage) -> {
+		Then("verifying my request should yield this exception message:", (String expectedExceptionMessage) -> {
 			Throwable actualThrowable = null;
 
 			try {
@@ -170,8 +170,8 @@ public class WireCucumberFunctionalTest implements En {
 			assertEquals(expectedExceptionMessage, actualExceptionMessage);
 
 			wireCucumber.getSteps()
-				.getScenarioBuilder()
-				.setCurrentMockVerified();
+					.getScenarioBuilder()
+					.setCurrentMockVerified();
 		});
 
 		After(() -> {
@@ -201,7 +201,7 @@ public class WireCucumberFunctionalTest implements En {
 
 		default:
 			String message = String.format("Resource [%s] unsupported", resource);
-			throw new WireCucumberRuntimeException(message );
+			throw new WireCucumberRuntimeException(message);
 		}
 
 		boolean notBlank = StringUtils.isNotBlank(endpoint);

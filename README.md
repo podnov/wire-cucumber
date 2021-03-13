@@ -103,10 +103,10 @@ Example cucumber features consuming the this library can be [found in this proje
 
 ## How do I run specific cucumber tests?
 ```
-CUCUMBER_OPTIONS='--tags @getVerb' ./gradlew clean test --tests **WireCucumberFunctionalTest
-CUCUMBER_OPTIONS='--tags @extensibility' ./gradlew clean test --tests **WireCucumberFunctionalTest
-CUCUMBER_OPTIONS='--tags @headers' ./gradlew clean test --tests **WireCucumberFunctionalTest
-CUCUMBER_OPTIONS='--tags @multipleInvocations' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_FILTER_TAGS='@getVerb' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_FILTER_TAGS='@extensibility' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_FILTER_TAGS='@headers' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireCucumberFunctionalTest
 ```
 
 ## How do I publish to sonatype?

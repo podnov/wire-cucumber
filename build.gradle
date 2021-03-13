@@ -11,7 +11,7 @@ repositories {
 }
 
 ext {
-	cucumberVersion = "4.7.4"
+	cucumberVersion = "6.3.0"
 	isReleaseVersion = !version.endsWith("SNAPSHOT")
 }
 
@@ -21,7 +21,7 @@ compileJava {
 }
 
 dependencies {
-	implementation 'com.github.tomakehurst:wiremock-jre8:2.25.1'
+	implementation 'com.github.tomakehurst:wiremock-jre8:2.26.3'
 	implementation 'io.cucumber:cucumber-java8:' + cucumberVersion
 	implementation 'io.cucumber:cucumber-junit:' + cucumberVersion
 	implementation 'org.slf4j:slf4j-api:1.7.30'

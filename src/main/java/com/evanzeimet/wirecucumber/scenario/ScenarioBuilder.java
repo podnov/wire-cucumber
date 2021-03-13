@@ -18,8 +18,8 @@ import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
-import io.cucumber.core.api.Scenario;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java8.Scenario;
 
 public class ScenarioBuilder {
 

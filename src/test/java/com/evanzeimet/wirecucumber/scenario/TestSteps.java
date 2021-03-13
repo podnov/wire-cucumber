@@ -1,6 +1,6 @@
 package com.evanzeimet.wirecucumber.scenario;
 
-import io.cucumber.java8.StepdefBody.A0;
+import io.cucumber.java8.StepDefinitionBody.A0;
 
 public class TestSteps {
 

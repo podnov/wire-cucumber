@@ -1,8 +1,8 @@
 package com.evanzeimet.wirecucumber;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -71,7 +71,7 @@ public class WireCucumberUtilsTest {
 		String givenValue = "given-value";
 
 		ObjectMapper givenObjectMapper = mock(ObjectMapper.class);
-		doThrow(IOException.class)
+		doThrow(JsonProcessingException.class)
 				.when(givenObjectMapper)
 				.readTree(any(String.class));
 

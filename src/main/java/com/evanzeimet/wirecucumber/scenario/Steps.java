@@ -10,10 +10,10 @@ import com.evanzeimet.wirecucumber.WireCucumberUtils;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
 import io.cucumber.java8.HookBody;
-import io.cucumber.java8.StepdefBody.A0;
-import io.cucumber.java8.StepdefBody.A1;
-import io.cucumber.java8.StepdefBody.A2;
-import io.cucumber.java8.StepdefBody.A3;
+import io.cucumber.java8.StepDefinitionBody.A0;
+import io.cucumber.java8.StepDefinitionBody.A1;
+import io.cucumber.java8.StepDefinitionBody.A2;
+import io.cucumber.java8.StepDefinitionBody.A3;
 
 public class Steps
 		implements En {
@@ -156,6 +156,7 @@ public class Steps
 
 		Given("that wire mock accepts {string}", setMockAccepts());
 		Given("that wire mock content type is {string}", setMockContentType());
+		// TODO opportunity, what makes this special (bootstrap)?
 		Given("that wire mock will return a response with status {int}", bootstrapResponseBuilder());
 
 		Given("that wire mock response body is:", setMockResponseBodyString());
