@@ -101,7 +101,8 @@ After(() -> {
 ### Details
 Example cucumber features consuming the this library can be [found in this project](src/test/resources/com/evanzeimet/wirecucumber/). The steps defined in this test for this project only define a [few steps](src/test/java/com/evanzeimet/wirecucumber/WireCucumberFunctionalTest.java). The steps that create the REST mocks and verify interactions with them are defined [in the library itself](src/main/java/com/evanzeimet/wirecucumber/WireCucumberSteps.java) in the `initialize` method.
 
-## How do I run specific cucumber tests?
+## Maintainer's Corner
+### How do I run specific cucumber tests?
 ```
 CUCUMBER_FILTER_TAGS='@getVerb' ./gradlew clean test --tests **WireCucumberFunctionalTest
 CUCUMBER_FILTER_TAGS='@extensibility' ./gradlew clean test --tests **WireCucumberFunctionalTest
@@ -109,7 +110,7 @@ CUCUMBER_FILTER_TAGS='@headers' ./gradlew clean test --tests **WireCucumberFunct
 CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireCucumberFunctionalTest
 ```
 
-## How do I publish to sonatype?
+### How do I publish to sonatype?
 ```
 # update gradle.properties version
 ./gradlew build
