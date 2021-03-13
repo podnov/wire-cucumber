@@ -113,6 +113,7 @@ CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireC
 ```
 # update gradle.properties version
 ./gradlew build
+# Update CHANGELOG.md
 # commit
 # tag
 ./gradlew uploadArchives
