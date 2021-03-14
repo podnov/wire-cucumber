@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.Scenario;
+import io.cucumber.java8.Status;
 
 public class ScenarioBuilder {
 
@@ -118,12 +119,15 @@ public class ScenarioBuilder {
 	}
 
 	public void closeScenario(WireCucumberOptions options) {
-		if (options.getRequireMockFinalization()) {
-			verifyMocksFinalized();
-		}
+		Status scenarioStatus = currentCucumberScenario.getStatus();
+		if (Status.PASSED.equals(scenarioStatus)) {
+			if (options.getRequireMockFinalization()) {
+				verifyMocksFinalized();
+			}
 
-		if (options.getRequireMockInteractionsVerification()) {
-			verifyMockInteractionsVerified();
+			if (options.getRequireMockInteractionsVerification()) {
+				verifyMockInteractionsVerified();
+			}
 		}
 	}
 

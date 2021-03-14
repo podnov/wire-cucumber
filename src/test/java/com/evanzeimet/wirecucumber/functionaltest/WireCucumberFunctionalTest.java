@@ -26,7 +26,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(strict = true)
+@CucumberOptions
 public class WireCucumberFunctionalTest implements En {
 
 	private static final String HELLO_WORLD_URI = "/hello-world";

@@ -1,7 +1,6 @@
 @anyVerb
 Feature: Wire Cucumber Any Verb Tests
 
-
 Scenario: any Hello World
 	Given a wire mock named "any-hello-world" that handles any verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
