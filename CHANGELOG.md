@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [0.9.1]
 - Don't do close scenario verifications if the scenario is not PASSED
 
 ## [0.9.0]
