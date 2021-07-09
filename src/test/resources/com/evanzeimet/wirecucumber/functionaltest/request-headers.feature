@@ -88,7 +88,7 @@ Scenario: JSON request
 	/hello-world
 
 	Accept: application/json, application/javascript, text/javascript, text/json
-	Content-Type: application/json; charset=UTF-8
+	Content-Type: application/json
 
 	{
 		"invocationName": "invocation-0"

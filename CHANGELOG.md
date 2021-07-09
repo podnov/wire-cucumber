@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Update various dependencies
 
 ## [0.9.2]
 - Add support for body file name

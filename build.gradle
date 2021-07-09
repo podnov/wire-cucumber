@@ -11,7 +11,7 @@ repositories {
 }
 
 ext {
-	cucumberVersion = "6.3.0"
+	cucumberVersion = "6.10.4"
 	isReleaseVersion = !version.endsWith("SNAPSHOT")
 }
 
@@ -21,17 +21,17 @@ compileJava {
 }
 
 dependencies {
-	implementation 'com.github.tomakehurst:wiremock-jre8:2.26.3'
+	implementation 'com.github.tomakehurst:wiremock-jre8:2.29.0'
 	implementation 'io.cucumber:cucumber-java8:' + cucumberVersion
 	implementation 'io.cucumber:cucumber-junit:' + cucumberVersion
-	implementation 'org.slf4j:slf4j-api:1.7.30'
+	implementation 'org.slf4j:slf4j-api:1.7.31'
 
 	testImplementation 'ch.qos.logback:logback-classic:1.2.3'
-	testImplementation 'io.rest-assured:rest-assured:4.1.2'
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'io.rest-assured:rest-assured:4.4.0'
+	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
-	testImplementation 'org.mockito:mockito-core:3.2.4'
-	testImplementation 'org.mockito:mockito-inline:3.2.4'
+	testImplementation 'org.mockito:mockito-core:3.11.2'
+	testImplementation 'org.mockito:mockito-inline:3.11.2'
 }
 
 test {
