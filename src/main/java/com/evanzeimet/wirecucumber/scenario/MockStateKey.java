@@ -41,7 +41,7 @@ public class MockStateKey {
 		if (obj == this) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof MockStateKey)) {
 			return false;
 		}
 		MockStateKey rhs = (MockStateKey) obj;
