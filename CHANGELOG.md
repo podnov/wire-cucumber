@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [0.10.0]
 - Update various dependencies
 
 ## [0.9.2]
