@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.9.2]
+- Add support for body file name
+
 ## [0.9.1]
 - Don't do close scenario verifications if the scenario is not PASSED
 
