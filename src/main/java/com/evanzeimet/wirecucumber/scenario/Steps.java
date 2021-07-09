@@ -160,6 +160,7 @@ public class Steps
 		Given("that wire mock will return a response with status {int}", bootstrapResponseBuilder());
 
 		Given("that wire mock response body is:", setMockResponseBodyString());
+		Given("that wire mock response body is the contents of file {string}", setMockResponseBodyFileName());
 		Given("that wire mock response body is {string}", setMockResponseBodyString());
 		Given("that wire mock response body is these records:", setMockResponseBodyDataTable());
 
@@ -245,6 +246,13 @@ public class Steps
 		return (responseBody) -> {
 			scenarioBuilder.getCurrentMockBuilder()
 				.responseBuilderWithBody(responseBody);
+		};
+	}
+
+	protected A1<String> setMockResponseBodyFileName() {
+		return (responseBody) -> {
+			scenarioBuilder.getCurrentMockBuilder()
+				.responseBuilderWithBodyFileName(responseBody);
 		};
 	}
 

@@ -119,6 +119,14 @@ public class MockBuilder {
 		return requestBuilder.withQueryParam(key, pattern);
 	}
 
+	public ResponseDefinitionBuilder responseBuilderWithBody(String body) {
+		return responseBuilder.withBody(body);
+	}
+
+	public ResponseDefinitionBuilder responseBuilderWithBodyFileName(String fileName) {
+		return responseBuilder.withBodyFile(fileName);
+	}
+
 	public ResponseDefinitionBuilder responseBuilderWithContentType(String contentType) {
 		return responseBuilderWithHeader(CONTENT_TYPE, contentType);
 	}
@@ -130,10 +138,6 @@ public class MockBuilder {
 	public ResponseDefinitionBuilder responseBuilderWithDataTableBody(DataTable dataTable) {
 		String body = utils.convertDataTableToJson(dataTable);
 		return responseBuilderWithBody(body);
-	}
-
-	public ResponseDefinitionBuilder responseBuilderWithBody(String body) {
-		return responseBuilder.withBody(body);
 	}
 
 	public StubMapping setRequestBuilderState(String currentState, String newState) {

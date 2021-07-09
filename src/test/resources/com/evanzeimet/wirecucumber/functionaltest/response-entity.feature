@@ -21,3 +21,18 @@ Scenario: Mock data table response
 	And that wire mock should have been invoked 1 time
 	And the interactions with that wire mock are verified
 
+
+Scenario: Body file name
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url equal to "/hello-world"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is the contents of file "hello-world.json"
+	And that wire mock is finalized
+	When I GET the "hello world" resource "default" endpoint
+	Then the response status code should be 200
+	Then the response body should be:
+	"""
+	{"hello":"world"}
+	"""
+	And I want to verify interactions with the wire mock named "get-hello-world"
+	And that wire mock should have been invoked 1 time
+	And the interactions with that wire mock are verified
