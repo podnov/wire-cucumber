@@ -132,9 +132,11 @@ CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireC
 # Update CHANGELOG.md
 # commit
 # tag
+# push main and tag
+# check github build results
 ./gradlew uploadArchives
 # update gradle.properties version
 # commit
-# push master and tag
+# push main and tag
 ```
 Visit [sonatype](https://oss.sonatype.org/#stagingRepositories), reference [guide](https://www.albertgao.xyz/2018/01/18/how-to-publish-artifact-to-maven-central-via-gradle/) if needed. 

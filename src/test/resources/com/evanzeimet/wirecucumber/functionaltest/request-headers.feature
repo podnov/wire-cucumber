@@ -186,7 +186,6 @@ Scenario: Header containing, multiple requests, bad match
 	  "headers" : {
 	    "Accept" : "*/*",
 	    "Connection" : "keep-alive",
-	    "User-Agent" : "Apache-HttpClient/4.5.13 (Java/11.0.11)",
 	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
 	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
@@ -382,7 +381,6 @@ Scenario: Header present, multiple requests, bad match
 	  "headers" : {
 	    "Accept" : "*/*",
 	    "Connection" : "keep-alive",
-	    "User-Agent" : "Apache-HttpClient/4.5.13 (Java/11.0.11)",
 	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
 	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
@@ -577,7 +575,6 @@ Scenario: Header absent, multiple requests, bad match
 	  "headers" : {
 	    "Accept" : "*/*",
 	    "Connection" : "keep-alive",
-	    "User-Agent" : "Apache-HttpClient/4.5.13 (Java/11.0.11)",
 	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
 	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
@@ -599,7 +596,6 @@ Scenario: Header absent, multiple requests, bad match
 	  "headers" : {
 	    "Accept" : "*/*",
 	    "Connection" : "keep-alive",
-	    "User-Agent" : "Apache-HttpClient/4.5.13 (Java/11.0.11)",
 	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
 	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"

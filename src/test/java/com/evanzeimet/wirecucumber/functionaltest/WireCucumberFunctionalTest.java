@@ -184,8 +184,9 @@ public class WireCucumberFunctionalTest implements En {
 		String result = actualExceptionMessage;
 
 		// scrub elements expected to be uniq per run
-		result = result.replaceAll("    \"X-request-id\" : \"[^\"]+\",\\n", "");
 		result = result.replaceAll("    \"Host\" : \"[^\"]+\",\\n", "");
+		result = result.replaceAll("    \"X-request-id\" : \"[^\"]+\",\\n", "");
+		result = result.replaceAll("    \"User-Agent\" : \"[^\"]+\",\\n", "");
 
 		return result;
 	}
