@@ -226,7 +226,6 @@ public class Steps
 		Then("the request at invocation state {string} should have had header {string} present", addInvocationStateHeaderPresentVerification());
 
 		Then("the request url should have been {string}", setVerifyMockUrl());
-		// TODO request at
 		Then("the request at invocation index {int} should have had url {string}", addInvocationIndexUrlVerification());
 		Then("the request at invocation state {string} should have had url {string}", addInvocationStateUrlVerification());
 
