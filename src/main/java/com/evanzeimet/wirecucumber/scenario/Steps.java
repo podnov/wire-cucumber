@@ -26,70 +26,95 @@ public class Steps
 		return scenarioBuilder;
 	}
 
-	protected A2<Integer, DataTable> addInvocationIndexDataTableBodyVerification() {
-		return (invocationIndex, dataTable) -> {
-			scenarioBuilder.getCurrentMockVerifier()
-				.addDataTableBodyVerification(invocationIndex, dataTable);
-		};
-	}
-
-	protected A1<Integer> addInvocationIndexEmptyBodyVerification() {
+	protected A1<Integer> addInvocationIndexBodyAbsentVerification() {
 		return (invocationIndex) -> {
 			scenarioBuilder.getCurrentMockVerifier()
-				.addEmptyBodyVerification(invocationIndex);
+					.addBodyAbsentVerification(invocationIndex);
 		};
 	}
 
-	protected A2<Integer, String> addInvocationIndexStringBodyVerification() {
+	protected A2<Integer, DataTable> addInvocationIndexBodyEqualToDataTableVerification() {
+		return (invocationIndex, dataTable) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.addBodyEqualToVerification(invocationIndex, dataTable);
+		};
+	}
+
+	protected A2<Integer, String> addInvocationIndexBodyEqualToStringVerification() {
 		return (invocationIndex, requestBody) -> {
 			scenarioBuilder.getCurrentMockVerifier()
-				.addStringBodyVerification(invocationIndex, requestBody);
+					.addBodyEqualToVerification(invocationIndex, requestBody);
+		};
+	}
+
+	protected A2<Integer, String> addInvocationIndexHeaderAbsentVerification() {
+		return (invocationIndex, headerName) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.addHeaderAbsentVerification(invocationIndex, headerName);
+		};
+	}
+
+	protected A3<Integer, String, String> addInvocationIndexHeaderContainingVerification() {
+		return (invocationIndex, headerName, headerValue) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.addHeaderContainingVerification(invocationIndex, headerName, headerValue);
+		};
+	}
+
+	protected A2<Integer, String> addInvocationIndexHeaderPresentVerification() {
+		return (invocationIndex, headerName) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.addHeaderPresentVerification(invocationIndex, headerName);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexUrlVerification() {
 		return (invocationIndex, url) -> {
 			scenarioBuilder.getCurrentMockVerifier()
-				.addUrlVerification(invocationIndex, url);
+					.addUrlVerification(invocationIndex, url);
 		};
 	}
 
-	protected A2<String, DataTable> addInvocationStateDataTableBodyVerification() {
+	protected A1<String> addInvocationStateBodyAbsentVerification() {
+		return (state) -> {
+			scenarioBuilder.addInvocationStateBodyAbsentVerification(state);
+		};
+	}
+
+	protected A2<String, DataTable> addInvocationStateBodyEqualToDataTableVerification() {
 		return (state, dataTable) -> {
-			scenarioBuilder.addInvocationStateDataTableBodyVerification(state,
+			scenarioBuilder.addInvocationStateBodyEqualToVerification(state,
 					dataTable);
 		};
 	}
 
-	protected A1<String> addInvocationStateEmptyBodyVerification() {
-		return (state) -> {
-			scenarioBuilder.addInvocationStateEmptyBodyVerification(state);
+	protected A2<String, String> addInvocationStateBodyEqualToStringVerification() {
+		return (state, requestBody) -> {
+			scenarioBuilder.addInvocationStateBodyEqualToVerification(state, requestBody);
 		};
 	}
 
-	protected A2<String, String> addInvocationStateStringBodyVerification() {
-		return (state, requestBody) -> {
-			scenarioBuilder.addInvocationStateStringBodyVerification(state, requestBody);
+	protected A2<String, String> addInvocationStateHeaderAbsentVerification() {
+		return (state, headerName) -> {
+			scenarioBuilder.addInvocationStateHeaderAbsentVerification(state, headerName);
+		};
+	}
+
+	protected A3<String, String, String> addInvocationStateHeaderContainingVerification() {
+		return (state, headerName, headerValue) -> {
+			scenarioBuilder.addInvocationStateHeaderContainingVerification(state, headerName, headerName);
+		};
+	}
+
+	protected A2<String, String> addInvocationStateHeaderPresentVerification() {
+		return (state, headerName) -> {
+			scenarioBuilder.addInvocationStateHeaderPresentVerification(state, headerName);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateUrlVerification() {
 		return (state, url) -> {
 			scenarioBuilder.addInvocationStateUrlVerification(state, url);
-		};
-	}
-
-	protected A2<String, String> setVerifyMockHeader() {
-		return (name, value) -> {
-			scenarioBuilder.getCurrentMockVerifier()
-					.withHeaderContaining(name, value);
-		};
-	}
-
-	protected A1<String> setVerifyMockUrl() {
-		return (url) -> {
-			scenarioBuilder.getCurrentMockVerifier()
-				.withUrl(url);
 		};
 	}
 
@@ -112,25 +137,25 @@ public class Steps
 		};
 	}
 
-	protected A3<String, String, String> bootstrapUrlEqualToRequestMock() {
+	protected A3<String, String, String> bootstrapMockWithUrlEqualTo() {
 		return (mockName, httpVerb, path) -> {
 			scenarioBuilder.bootstrapMockWithUrlEqualTo(mockName, httpVerb, path);
 		};
 	}
 
-	protected A3<String, String, String> bootstrapUrlMatchingRequestMock() {
+	protected A3<String, String, String> bootstrapMockWithUrlMatching() {
 		return (mockName, httpVerb, path) -> {
 			scenarioBuilder.bootstrapMockWithUrlMatching(mockName, httpVerb, path);
 		};
 	}
 
-	protected A3<String, String, String> bootstrapUrlPathEqualToRequestMock() {
+	protected A3<String, String, String> bootstrapMockWithUrlPathEqualTo() {
 		return (mockName, httpVerb, path) -> {
 			scenarioBuilder.bootstrapMockWithUrlPathEqualTo(mockName, httpVerb, path);
 		};
 	}
 
-	protected A3<String, String, String> bootstrapUrlPathMatchingRequestMock() {
+	protected A3<String, String, String> bootstrapMockWithUrlPathMatching() {
 		return (mockName, httpVerb, path) -> {
 			scenarioBuilder.bootstrapMockWithUrlPathMatching(mockName, httpVerb, path);
 		};
@@ -145,27 +170,27 @@ public class Steps
 	public void initialize(WireCucumberOptions options) {
 		Before(beforeScenario());
 
-		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapUrlEqualToRequestMock());
-		Given("a wire mock named {string} that handles (the ){word} verb with a url matching {string}", bootstrapUrlMatchingRequestMock());
+		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapMockWithUrlEqualTo());
+		Given("a wire mock named {string} that handles (the ){word} verb with a url matching {string}", bootstrapMockWithUrlMatching());
 
-		Given("a wire mock named {string} that handles (the ){word} verb with a url path equal to {string}", bootstrapUrlPathEqualToRequestMock());
-		Given("a wire mock named {string} that handles (the ){word} verb with a url path matching {string}", bootstrapUrlPathMatchingRequestMock());
+		Given("a wire mock named {string} that handles (the ){word} verb with a url path equal to {string}", bootstrapMockWithUrlPathEqualTo());
+		Given("a wire mock named {string} that handles (the ){word} verb with a url path matching {string}", bootstrapMockWithUrlPathMatching());
 
-		Given("that wire mock expects a url query string parameter {string} equal to {string}", setMockQueryParamEqualTo());
-		Given("that wire mock expects a url query string parameter {string} matching {string}", setMockQueryParamMatching());
+		Given("that wire mock expects a url query string parameter {string} equal to {string}", setMockWithQueryParamEqualTo());
+		Given("that wire mock expects a url query string parameter {string} matching {string}", setMockWithQueryParamMatching());
 
-		Given("that wire mock accepts {string}", setMockAccepts());
-		Given("that wire mock content type is {string}", setMockContentType());
+		Given("that wire mock accepts {string}", setMockWithAcceptContaining());
+		Given("that wire mock content type is {string}", setMockWithContentTypeContaining());
 		// TODO opportunity, what makes this special (bootstrap)?
 		Given("that wire mock will return a response with status {int}", bootstrapResponseBuilder());
 
 		Given("that wire mock response body is:", setMockResponseBodyString());
-		Given("that wire mock response body is the contents of file {string}", setMockResponseBodyFileName());
+		Given("that wire mock response body is the contents of file {string}", setMockResponseBodyFile());
 		Given("that wire mock response body is {string}", setMockResponseBodyString());
-		Given("that wire mock response body is these records:", setMockResponseBodyDataTable());
+		Given("that wire mock response body is these records:", setMockResponseWithBodyDataTable());
 
-		Given("that wire mock response content type is {string}", setMockResponseContentType());
-		Given("that wire mock response header {string} is {string}", setMockResponseHeaderValue());
+		Given("that wire mock response content type is {string}", setMockResponseWithContentType());
+		Given("that wire mock response header {string} is {string}", setMockResponseWithHeader());
 
 		Given("that wire mock enters invocation state {string}", setMockState());
 
@@ -177,96 +202,71 @@ public class Steps
 		Then("that wire mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
 
 		// TODO I'm not a huge fan of the "the request" language
-		Then("the request body should have been:", setVerifyMockStringBody());
-		Then("the request body should have been {string}", setVerifyMockStringBody());
-		Then("the request body should have been empty", setVerifyMockEmptyBody());
-		Then("the request body should have been these records:", setVerifyMockDataTableBody());
-		Then("the request should have had header {string} {string}", setVerifyMockHeader());
+		Then("the request body should have been:", setVerifyMockBodyEqualToString());
+		Then("the request body should have been {string}", setVerifyMockBodyEqualToString());
+		Then("the request body should have been empty", setVerifyMockBodyAbsent());
+		Then("the request body should have been these records:", setVerifyMockBodyEqualToDataTable());
+		Then("the request at invocation index {int} should have had body:", addInvocationIndexBodyEqualToStringVerification());
+		Then("the request at invocation index {int} should have had body {string}", addInvocationIndexBodyEqualToStringVerification());
+		Then("the request at invocation index {int} should have had an empty body", addInvocationIndexBodyAbsentVerification());
+		Then("the request at invocation index {int} should have had body records:", addInvocationIndexBodyEqualToDataTableVerification());
+		Then("the request at invocation state {string} should have had body:", addInvocationStateBodyEqualToStringVerification());
+		Then("the request at invocation state {string} should have had body {string}", addInvocationStateBodyEqualToStringVerification());
+		Then("the request at invocation state {string} should have had an empty body", addInvocationStateBodyAbsentVerification());
+		Then("the request at invocation state {string} should have had body records:", addInvocationStateBodyEqualToDataTableVerification());
+
+		Then("the request should have had header {string} absent", setVerifyMockHeaderAbsent());
+		Then("the request should have had header {string} containing {string}", setVerifyMockHeaderContaining());
+		Then("the request should have had header {string} present", setVerifyMockHeaderPresent());
+		Then("the request at invocation index {int} should have had header {string} absent", addInvocationIndexHeaderAbsentVerification());
+		Then("the request at invocation index {int} should have had header {string} containing {string}", addInvocationIndexHeaderContainingVerification());
+		Then("the request at invocation index {int} should have had header {string} present", addInvocationIndexHeaderPresentVerification());
+		Then("the request at invocation state {string} should have had header {string} absent", addInvocationStateHeaderAbsentVerification());
+		Then("the request at invocation state {string} should have had header {string} containing {string}", addInvocationStateHeaderContainingVerification());
+		Then("the request at invocation state {string} should have had header {string} present", addInvocationStateHeaderPresentVerification());
+
 		Then("the request url should have been {string}", setVerifyMockUrl());
-
-		Then("the request body of invocation index {int} should have been:", addInvocationIndexStringBodyVerification());
-		Then("the request body of invocation index {int} should have been {string}", addInvocationIndexStringBodyVerification());
-		Then("the request body of invocation index {int} should have been empty", addInvocationIndexEmptyBodyVerification());
-		Then("the request body of invocation index {int} should have been these records:", addInvocationIndexDataTableBodyVerification());
-		Then("the request url of invocation index {int} should have been {string}", addInvocationIndexUrlVerification());
-
-		Then("the request body of invocation state {string} should have been:", addInvocationStateStringBodyVerification());
-		Then("the request body of invocation state {string} should have been {string}", addInvocationStateStringBodyVerification());
-		Then("the request body of invocation state {string} should have been empty", addInvocationStateEmptyBodyVerification());
-		Then("the request body of invocation state {string} should have been these records:", addInvocationStateDataTableBodyVerification());
-		Then("the request url of invocation state {string} should have been {string}", addInvocationStateUrlVerification());
+		// TODO request at
+		Then("the request at invocation index {int} should have had url {string}", addInvocationIndexUrlVerification());
+		Then("the request at invocation state {string} should have had url {string}", addInvocationStateUrlVerification());
 
 		Then("the interactions with that wire mock are verified", verifyMockInvocations());
 
 		After(afterScenario(options));
 	}
 
-	protected A1<String> setMockState() {
-		return (newState) -> {
-			scenarioBuilder.transitionMockState(newState);
-		};
-	}
-
-	protected A1<String> setMockAccepts() {
-		return (value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithAccept(containing(value));
-		};
-	}
-
-	protected A2<String, String> setMockQueryParamEqualTo() {
-		return (key, value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithQueryParam(key, equalTo(value));
-		};
-	}
-
-	protected A2<String, String> setMockQueryParamMatching() {
-		return (key, value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithQueryParam(key, matching(value));
-		};
-	}
-
-	protected A1<String> setMockContentType() {
-		return (value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithContentType(containing(value));
-		};
-	}
-
-	protected A1<DataTable> setMockResponseBodyDataTable() {
+	protected A1<DataTable> setMockResponseWithBodyDataTable() {
 		return (dataTable) -> {
 			scenarioBuilder.getCurrentMockBuilder()
-				.responseBuilderWithDataTableBody(dataTable);
+					.responseBuilderWithBodyDataTable(dataTable);
 		};
 	}
 
 	protected A1<String> setMockResponseBodyString() {
 		return (responseBody) -> {
 			scenarioBuilder.getCurrentMockBuilder()
-				.responseBuilderWithBody(responseBody);
+					.responseBuilderWithBody(responseBody);
 		};
 	}
 
-	protected A1<String> setMockResponseBodyFileName() {
+	protected A1<String> setMockResponseBodyFile() {
 		return (responseBody) -> {
 			scenarioBuilder.getCurrentMockBuilder()
-				.responseBuilderWithBodyFileName(responseBody);
+					.responseBuilderWithBodyFile(responseBody);
 		};
 	}
 
-	protected A1<String> setMockResponseContentType() {
+	protected A1<String> setMockResponseWithContentType() {
 		return (contentType) -> {
 			scenarioBuilder.getCurrentMockBuilder()
-				.responseBuilderWithContentType(contentType);
+					.responseBuilderWithContentType(contentType);
 		};
 	}
 
-	protected A2<String, String> setMockResponseHeaderValue() {
+	protected A2<String, String> setMockResponseWithHeader() {
 		return (headerName, headerValue) -> {
 			scenarioBuilder.getCurrentMockBuilder()
-				.responseBuilderWithHeader(headerName, headerValue);
+					.responseBuilderWithHeader(headerName, headerValue);
 		};
 	}
 
@@ -276,17 +276,86 @@ public class Steps
 		};
 	}
 
-	protected A1<DataTable> setVerifyMockDataTableBody() {
+	protected A1<String> setMockWithAcceptContaining() {
+		return (value) -> {
+			scenarioBuilder.getCurrentMockBuilder()
+					.requestBuilderWithAccept(containing(value));
+		};
+	}
+
+	protected A2<String, String> setMockWithQueryParamEqualTo() {
+		return (key, value) -> {
+			scenarioBuilder.getCurrentMockBuilder()
+				.requestBuilderWithQueryParam(key, equalTo(value));
+		};
+	}
+
+	protected A2<String, String> setMockWithQueryParamMatching() {
+		return (key, value) -> {
+			scenarioBuilder.getCurrentMockBuilder()
+				.requestBuilderWithQueryParam(key, matching(value));
+		};
+	}
+
+	protected A1<String> setMockWithContentTypeContaining() {
+		return (value) -> {
+			scenarioBuilder.getCurrentMockBuilder()
+				.requestBuilderWithContentType(containing(value));
+		};
+	}
+
+	protected A1<String> setVerifyMockHeaderAbsent() {
+		return (name) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.withHeaderAbsent(name);
+		};
+	}
+
+	protected A2<String, String> setVerifyMockHeaderContaining() {
+		return (name, value) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.withHeaderContaining(name, value);
+		};
+	}
+
+	protected A1<String> setVerifyMockHeaderPresent() {
+		return (name) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.withHeaderPresent(name);
+		};
+	}
+
+	protected A1<String> setMockState() {
+		return (newState) -> {
+			scenarioBuilder.transitionMockState(newState);
+		};
+	}
+
+	protected A1<String> setVerifyMockUrl() {
+		return (url) -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.withUrl(url);
+		};
+	}
+
+	protected A0 setVerifyMockBodyAbsent() {
+		return () -> {
+			scenarioBuilder.getCurrentMockVerifier()
+					.withRequestBodyAbsent();
+		};
+	}
+
+	protected A1<DataTable> setVerifyMockBodyEqualToDataTable() {
 		return (dataTable) -> {
 			scenarioBuilder.getCurrentMockVerifier()
 					.withRequestBodyEqualTo(dataTable);
 		};
 	}
 
-	protected A0 setVerifyMockEmptyBody() {
-		return () -> {
+	protected A1<String> setVerifyMockBodyEqualToString() {
+		return (requestBody) -> {
 			scenarioBuilder.getCurrentMockVerifier()
-					.withRequestBodyEmpty();
+					.withRequestBodyEqualTo(requestBody);
 		};
 	}
 
@@ -301,13 +370,6 @@ public class Steps
 		return () -> {
 			scenarioBuilder.getCurrentMockVerifier()
 				.setExpectedMockInvocationCount(0);
-		};
-	}
-
-	protected A1<String> setVerifyMockStringBody() {
-		return (requestBody) -> {
-			scenarioBuilder.getCurrentMockVerifier()
-					.withRequestBodyEqualTo(requestBody);
 		};
 	}
 

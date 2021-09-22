@@ -167,6 +167,7 @@ public class WireCucumberFunctionalTest implements En {
 			assertNotNull(actualThrowable);
 
 			String actualExceptionMessage = TestUtils.dos2unix(actualThrowable.getMessage());
+			actualExceptionMessage = scrubMatchingExceptionMessage(actualExceptionMessage);
 			assertEquals(expectedExceptionMessage, actualExceptionMessage);
 
 			wireCucumber.getSteps()
@@ -177,6 +178,16 @@ public class WireCucumberFunctionalTest implements En {
 		After(() -> {
 			wireCucumber.close();
 		});
+	}
+
+	protected String scrubMatchingExceptionMessage(String actualExceptionMessage) {
+		String result = actualExceptionMessage;
+
+		// scrub elements expected to be uniq per run
+		result = result.replaceAll("    \"X-request-id\" : \"[^\"]+\",\\n", "");
+		result = result.replaceAll("    \"Host\" : \"[^\"]+\",\\n", "");
+
+		return result;
 	}
 
 	protected String getPath(String resource, String endpoint) {

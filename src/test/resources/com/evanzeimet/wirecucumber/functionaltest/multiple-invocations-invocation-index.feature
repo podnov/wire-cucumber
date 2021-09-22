@@ -28,14 +28,14 @@ Scenario: Multiple calls verifying specific invocation index details
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request body of invocation index 0 should have been:
+	And the request at invocation index 0 should have had body:
 	"""
 	{
 		"invocationName": "invocation-0"
 	}
 	"""
-	And the request body of invocation index 1 should have been empty
-	And the request body of invocation index 2 should have been:
+	And the request at invocation index 1 should have had an empty body
+	And the request at invocation index 2 should have had body:
 	"""
 	{
 		"invocationName": "invocation-2"
@@ -66,13 +66,13 @@ Scenario: Multiple calls verifying specific invocation index details with data t
 	And the response body should be "Hello Worlds"
 	And I want to verify interactions with the wire mock named "post-hello-worlds"
 	And that wire mock should have been invoked 3 times
-	And the request body of invocation index 0 should have been these records:
+	And the request at invocation index 0 should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | green        | Milky Way |
 	| given-world-3 | grey         | Milky Way |
-	And the request body of invocation index 1 should have been empty
-	And the request body of invocation index 2 should have been these records:
+	And the request at invocation index 1 should have had an empty body
+	And the request at invocation index 2 should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | yellow       | Milky Way |
@@ -111,17 +111,17 @@ Scenario: Multiple calls on the same mock with differing results, invocation ind
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request url of invocation index 0 should have been "/hello-world"
-	And the request body of invocation index 0 should have been:
+	And the request at invocation index 0 should have had url "/hello-world"
+	And the request at invocation index 0 should have had body:
 	"""
 	{
 		"invocationName": "invocation-0"
 	}
 	"""
-	And the request url of invocation index 1 should have been "/hello-world/world-two"
-	And the request body of invocation index 1 should have been empty
-	And the request url of invocation index 2 should have been "/hello-world/world-three"
-	And the request body of invocation index 2 should have been:
+	And the request at invocation index 1 should have had url "/hello-world/world-two"
+	And the request at invocation index 1 should have had an empty body
+	And the request at invocation index 2 should have had url "/hello-world/world-three"
+	And the request at invocation index 2 should have had body:
 	"""
 	{
 		"invocationName": "invocation-2"
@@ -156,14 +156,14 @@ Scenario: Invocation index failures
 	And the response body should be "Hello World"
 	And I want to verify interactions with the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request body of invocation index 0 should have been:
+	And the request at invocation index 0 should have had body:
 	"""
 	{
 		"invocationName": "invocation-42"
 	}
 	"""
-	And the request body of invocation index 1 should have been empty
-	And the request body of invocation index 2 should have been:
+	And the request at invocation index 1 should have had an empty body
+	And the request at invocation index 2 should have had body:
 	"""
 	{
 		"invocationName": "invocation-43"
@@ -222,13 +222,13 @@ Scenario: Invocation index details with data tables failures
 	And the response body should be "Hello Worlds"
 	And I want to verify interactions with the wire mock named "post-hello-worlds"
 	And that wire mock should have been invoked 3 times
-	And the request body of invocation index 0 should have been these records:
+	And the request at invocation index 0 should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | fuchsia      | Milky Way |
 	| given-world-3 | grey         | Milky Way |
-	And the request body of invocation index 1 should have been empty
-	And the request body of invocation index 2 should have been these records:
+	And the request at invocation index 1 should have had an empty body
+	And the request at invocation index 2 should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | fuchsia      | Milky Way |
@@ -295,17 +295,17 @@ Scenario: invocation index urls matching failures
 	And the response body should be "Hello World 3"
 	And I want to verify interactions with the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request url of invocation index 0 should have been "/hello-world"
-	And the request body of invocation index 0 should have been:
+	And the request at invocation index 0 should have had url "/hello-world"
+	And the request at invocation index 0 should have had body:
 	"""
 	{
 		"invocationName": "invocation-0"
 	}
 	"""
-	And the request url of invocation index 1 should have been "/hello-world/galaxy-two"
-	And the request body of invocation index 1 should have been empty
-	And the request url of invocation index 2 should have been "/hello-world/galayx-three"
-	And the request body of invocation index 2 should have been:
+	And the request at invocation index 1 should have had url "/hello-world/galaxy-two"
+	And the request at invocation index 1 should have had an empty body
+	And the request at invocation index 2 should have had url "/hello-world/galayx-three"
+	And the request at invocation index 2 should have had body:
 	"""
 	{
 		"invocationName": "invocation-2"

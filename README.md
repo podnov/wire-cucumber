@@ -12,6 +12,7 @@ Given a wire mock named {string} that handles (the ){word} verb with a url equal
 Given a wire mock named {string} that handles (the ){word} verb with a url matching {string}
 Given a wire mock named {string} that handles (the ){word} verb with a url path equal to {string}
 Given a wire mock named {string} that handles (the ){word} verb with a url path matching {string}
+
 Given that wire mock expects a url query string parameter {string} equal to {string}
 Given that wire mock expects a url query string parameter {string} matching {string}
 Given that wire mock accepts {string}
@@ -24,27 +25,40 @@ Given that wire mock response body is these records:
 Given that wire mock response content type is {string}
 Given that wire mock response header {string} is {string}
 Given that wire mock enters invocation state {string}
+
 Given that wire mock is finalized
 
 Then I want to verify interactions with the wire mock named {string}
 Then that wire mock should not have been invoked
 Then that wire mock should have been invoked {int} time(s)
+
 Then the request body should have been:
 Then the request body should have been {string}
 Then the request body should have been empty
 Then the request body should have been these records:
-Then the request body of invocation index {int} should have been:
-Then the request body of invocation index {int} should have been {string}
-Then the request body of invocation index {int} should have been empty
-Then the request body of invocation index {int} should have been these records:
-Then the request body of invocation state {string} should have been:
-Then the request body of invocation state {string} should have been {string}
-Then the request body of invocation state {string} should have been empty
-Then the request body of invocation state {string} should have been these records:
-Then the request should have had header {string} {string}
+Then the request at invocation index {int} should have had body:
+Then the request at invocation index {int} should have had body {string}
+Then the request at invocation index {int} should have had an empty body
+Then the request at invocation index {int} should have had body records:
+Then the request at invocation state {string} should have had body:
+Then the request at invocation state {string} should have had body {string}
+Then the request at invocation state {string} should have had an empty body
+Then the request at invocation state {string} should have had body records:
+
+Then the request should have had header {string} absent
+Then the request should have had header {string} containing {string}
+Then the request should have had header {string} present
+Then the request at invocation index {int} should have had header {string} absent
+Then the request at invocation index {int} should have had header {string} containing {string}
+Then the request at invocation index {int} should have had header {string} present
+Then the request at invocation state {string} should have had header {string} absent
+Then the request at invocation state {string} should have had header {string} containing {string}
+Then the request at invocation state {string} should have had header {string} present
+
 Then the request url should have been {string}
-Then the request url of invocation index {int} should have been {string}
-Then the request url of invocation state {string} should have been {string}
+Then the request at invocation index {int} should have had url {string}
+Then the request at invocation state {string} should have had url {string}
+
 Then the interactions with that wire mock are verified
 ```
 

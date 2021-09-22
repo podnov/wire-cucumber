@@ -27,7 +27,7 @@ public class StepsTest {
 	}
 
 	@Test
-	public void bootstrapUrlEqualToRequestMock_unexpectedHttpVerb() throws Throwable {
+	public void bootstrapMockWithUrlEqualTo_unexpectedHttpVerb() throws Throwable {
 		String givenMockName = "given-mock-name";
 		String givenHttpVerb = "FLY";
 		String givenPath = "/fly";
@@ -35,7 +35,7 @@ public class StepsTest {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			steps.bootstrapUrlEqualToRequestMock().accept(givenMockName, givenHttpVerb, givenPath);
+			steps.bootstrapMockWithUrlEqualTo().accept(givenMockName, givenHttpVerb, givenPath);
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}

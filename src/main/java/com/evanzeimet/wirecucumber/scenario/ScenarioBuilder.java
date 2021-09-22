@@ -62,20 +62,35 @@ public class ScenarioBuilder {
 		return mockNames;
 	}
 
-	public void addInvocationStateDataTableBodyVerification(String state, DataTable dataTable) {
+	public void addInvocationStateBodyAbsentVerification(String state) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addDataTableBodyVerification(invocationIndex, dataTable);
+		currentMockVerifier.addBodyAbsentVerification(invocationIndex);
 	}
 
-	public void addInvocationStateEmptyBodyVerification(String state) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addEmptyBodyVerification(invocationIndex);
-	}
-
-	public void addInvocationStateStringBodyVerification(String state,
+	public void addInvocationStateBodyEqualToVerification(String state,
 			String requestBody) {
 		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addStringBodyVerification(invocationIndex, requestBody);
+		currentMockVerifier.addBodyEqualToVerification(invocationIndex, requestBody);
+	}
+
+	public void addInvocationStateBodyEqualToVerification(String state, DataTable dataTable) {
+		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
+		currentMockVerifier.addBodyEqualToVerification(invocationIndex, dataTable);
+	}
+
+	public void addInvocationStateHeaderAbsentVerification(String state, String headerName) {
+		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
+		currentMockVerifier.addHeaderAbsentVerification(invocationIndex, headerName);
+	}
+
+	public void addInvocationStateHeaderContainingVerification(String state, String headerName, String headerValue) {
+		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
+		currentMockVerifier.addHeaderContainingVerification(invocationIndex, headerName, headerValue);
+	}
+
+	public void addInvocationStateHeaderPresentVerification(String state, String headerName) {
+		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
+		currentMockVerifier.addHeaderPresentVerification(invocationIndex, headerName);
 	}
 
 	public void addInvocationStateUrlVerification(String state, String url) {

@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.matching.RequestPattern.thatMatch;
 import static com.google.common.collect.FluentIterable.from;
 import static java.util.Arrays.asList;
@@ -55,7 +56,21 @@ public class MockInvocationsVerifier {
 		this.expectedMockInvocationCount = expectedMockInvocationCount;
 	}
 
-	public void addDataTableBodyVerification(Integer invocationIndex, DataTable dataTable) {
+	public void addBodyAbsentVerification(Integer invocationIndex) {
+		RequestPattern bodyPattern = cloneRequestPatterBuilder()
+				.withRequestBody(absent())
+				.build();
+		addVerification(invocationIndex, bodyPattern);
+	}
+
+	public void addBodyEqualToVerification(Integer invocationIndex, String requestBody) {
+		RequestPattern bodyPattern = cloneRequestPatterBuilder()
+				.withRequestBody(equalTo(requestBody))
+				.build();
+		addVerification(invocationIndex, bodyPattern);
+	}
+
+	public void addBodyEqualToVerification(Integer invocationIndex, DataTable dataTable) {
 		String requestBody = utils.convertDataTableToJson(dataTable);
 		RequestPattern bodyPattern = cloneRequestPatterBuilder()
 				.withRequestBody(equalTo(requestBody))
@@ -64,16 +79,24 @@ public class MockInvocationsVerifier {
 		addVerification(invocationIndex, bodyPattern);
 	}
 
-	public void addEmptyBodyVerification(Integer invocationIndex) {
+	public void addHeaderAbsentVerification(Integer invocationIndex, String headerName) {
 		RequestPattern bodyPattern = cloneRequestPatterBuilder()
-				.withRequestBody(absent())
+				.withoutHeader(headerName)
 				.build();
 		addVerification(invocationIndex, bodyPattern);
 	}
 
-	public void addStringBodyVerification(Integer invocationIndex, String requestBody) {
+	public void addHeaderContainingVerification(Integer invocationIndex, String headerName, String headerValue) {
+		addHeaderVerification(invocationIndex, headerName, containing(headerValue));
+	}
+
+	public void addHeaderPresentVerification(Integer invocationIndex, String headerName) {
+		addHeaderVerification(invocationIndex, headerName, matching(".*"));
+	}
+
+	public void addHeaderVerification(Integer invocationIndex, String headerName, StringValuePattern headerValuePattern) {
 		RequestPattern bodyPattern = cloneRequestPatterBuilder()
-				.withRequestBody(equalTo(requestBody))
+				.withHeader(headerName, headerValuePattern)
 				.build();
 		addVerification(invocationIndex, bodyPattern);
 	}
@@ -85,9 +108,9 @@ public class MockInvocationsVerifier {
 		addVerification(invocationIndex, bodyPattern);
 	}
 
-	public void addVerification(Integer invocationIndex, RequestPattern bodyPattern)
+	public void addVerification(Integer invocationIndex, RequestPattern requestPattern)
 			throws VerificationException {
-		MatchInvocationResult<Request> matchResult = match(invocationIndex, bodyPattern);
+		MatchInvocationResult<Request> matchResult = match(invocationIndex, requestPattern);
 		customMatchResults.add(matchResult);
 	}
 
@@ -214,15 +237,23 @@ public class MockInvocationsVerifier {
 		return requestPatternBuilder.withHeader(name, valuePattern);
 	}
 
+	public RequestPatternBuilder withHeaderAbsent(String name) {
+		return requestPatternBuilder.withoutHeader(name);
+	}
+
 	public RequestPatternBuilder withHeaderContaining(String name, String value) {
 		return withHeader(name, containing(value));
+	}
+
+	public RequestPatternBuilder withHeaderPresent(String name) {
+		return withHeader(name, matching(".*"));
 	}
 
 	public RequestPatternBuilder withRequestBody(ContentPattern<?> valuePattern) {
 		return requestPatternBuilder.withRequestBody(valuePattern);
 	}
 
-	public RequestPatternBuilder withRequestBodyEmpty() {
+	public RequestPatternBuilder withRequestBodyAbsent() {
 		return withRequestBody(absent());
 	}
 
