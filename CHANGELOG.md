@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.11.1]
+- Test fix
+
 ## [0.11.0]
 - [Breaking] Updated simple header request verification matching from `the request should have had header {string} {string}` to `the request should have had header {string} containing {string}`
 - [Breaking] Request invocation index/state body verification has been changed from `request body of invocation` to the `request at invocation` pattern
