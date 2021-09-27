@@ -76,6 +76,7 @@ public class MockInvocationsVerifier {
 				.withRequestBody(equalTo(requestBody))
 				.build();
 		// TODO make datatable verification do data table diff
+		// TODO this would have to match not only body, but other request attributes
 		addVerification(invocationIndex, bodyPattern);
 	}
 
@@ -162,22 +163,13 @@ public class MockInvocationsVerifier {
 	protected MatchInvocationResult<Request> match(Integer invocationIndex,
 			RequestPattern pattern)
 			throws VerificationException {
-		List<LoggedRequest> invocations = findRequests();
-		int invocationCount = invocations.size();
-
-		if (invocationCount <= invocationIndex) {
-			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
-					invocationIndex, invocationCount);
-			throw new WireCucumberRuntimeException(message);
-		}
-
-		return match(invocationIndex, pattern, invocations);
+		LoggedRequest invocation = verifyInvocationIndex(invocationIndex);
+		return match(invocationIndex, pattern, invocation);
 	}
 
 	protected MatchInvocationResult<Request> match(Integer invocationIndex,
 			RequestPattern pattern,
-			List<LoggedRequest> invocations) {
-		LoggedRequest invocation = invocations.get(invocationIndex);
+			LoggedRequest invocation) {
 		MatchResult matchResult = match(invocation, pattern);
 		String requestAttribute = String.format("request-invocation-%d", invocationIndex);
 		String printedPatternValue = pattern.getExpected();
@@ -197,10 +189,10 @@ public class MockInvocationsVerifier {
 	}
 
 	protected MatchResult match(LoggedRequest invocation, RequestPattern pattern) {
-		boolean empty = from(asList(invocation))
+		boolean isMatchEmpty = from(asList(invocation))
 				.filter(thatMatch(pattern))
 				.isEmpty();
-		return MatchResult.of(!empty);
+		return MatchResult.of(!isMatchEmpty);
 	}
 
 	protected void removeUnexpectedFieldNames(ObjectNode actualNode,
@@ -231,6 +223,19 @@ public class MockInvocationsVerifier {
 
 	protected void verifyCount() {
 		WireMock.verify(expectedMockInvocationCount, requestPatternBuilder);
+	}
+
+	protected LoggedRequest verifyInvocationIndex(Integer invocationIndex) {
+		List<LoggedRequest> invocations = findRequests();
+		int invocationCount = invocations.size();
+
+		if (invocationCount <= invocationIndex) {
+			String message = String.format("Invocation at index [%s] requested but only [%s] invocations found",
+					invocationIndex, invocationCount);
+			throw new WireCucumberRuntimeException(message);
+		}
+
+		return invocations.get(invocationIndex);
 	}
 
 	public RequestPatternBuilder withHeader(String name, StringValuePattern valuePattern) {
