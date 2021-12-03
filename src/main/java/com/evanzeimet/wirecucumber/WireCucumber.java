@@ -16,9 +16,17 @@ public class WireCucumber
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
+	protected WireCucumberOptions options;
 	protected Steps steps;
 	protected WireMockServer wireMockServer;
 
+	public WireCucumber() {
+		this(createDefaultWireCucumberOptions());
+	}
+
+	public WireCucumber(WireCucumberOptions options) {
+		this.options = options;
+	}
 
 	public WireMockServer getWireMockServer() {
 		return wireMockServer;
@@ -29,33 +37,23 @@ public class WireCucumber
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		if (wireMockServer != null) {
 			wireMockServer.shutdownServer();
 			wireMockServer = null;
 		}
 	}
 
-	protected WireCucumberOptions createDefaultWireCucumberOptions() {
+	protected static WireCucumberOptions createDefaultWireCucumberOptions() {
 		return new WireCucumberOptions();
 	}
 
 	public void createSteps() {
-		WireCucumberOptions options = createDefaultWireCucumberOptions();
-		createSteps(options);
-	}
-
-	public void createSteps(WireCucumberOptions options) {
 		steps = new Steps();
 		steps.initialize(options);
 	}
 
 	public void startWireMockServer() {
-		WireCucumberOptions options = createDefaultWireCucumberOptions();
-		startWireMockServer(options);
-	}
-
-	public void startWireMockServer(WireCucumberOptions options) {
 		Options wireMockOptions = options.getWireMockOptions();
 		wireMockServer = new WireMockServer(wireMockOptions);
 		wireMockServer.start();

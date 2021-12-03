@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 
 import com.evanzeimet.wirecucumber.TestUtils;
@@ -27,7 +28,8 @@ import io.restassured.specification.RequestSpecification;
 
 @RunWith(Cucumber.class)
 @CucumberOptions
-public class WireCucumberFunctionalTest implements En {
+public class WireCucumberFunctionalTest
+		implements En {
 
 	private static final String HELLO_WORLD_URI = "/hello-world";
 	private static final String HELLO_WORLDS_URI = "/hello-worlds";
@@ -36,18 +38,16 @@ public class WireCucumberFunctionalTest implements En {
 
 	private ValidatableResponse actualResponse;
 	private String currentRequestId;
+	private static TestWireCucumber wireCucumber = createWireCucumber();
 
 	public WireCucumberFunctionalTest() {
-		WireMockConfiguration wireMockConfiguration = options().dynamicPort();
-
-		WireCucumberOptions options = new WireCucumberOptions();
-		options.setWireMockOptions(wireMockConfiguration);
-
-		TestWireCucumber wireCucumber = new TestWireCucumber();
-		wireCucumber.startWireMockServer(options);
-		wireCucumber.createSteps(options);
+		wireCucumber.createSteps();
 
 		int port = wireCucumber.getWireMockServer().port();
+
+		Before(() -> {
+			wireCucumber.getWireMockServer().resetAll();
+		});
 
 		When("I DELETE the {string} resource {string} endpoint", (String resource, String endpoint) -> {
 			String path = getPath(resource, endpoint);
@@ -176,9 +176,23 @@ public class WireCucumberFunctionalTest implements En {
 					.setCurrentMockVerified();
 		});
 
-		After(() -> {
-			wireCucumber.close();
-		});
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		wireCucumber.close();
+	}
+
+	protected static TestWireCucumber createWireCucumber() {
+		WireMockConfiguration wireMockConfiguration = options().dynamicPort();
+
+		WireCucumberOptions options = new WireCucumberOptions();
+		options.setWireMockOptions(wireMockConfiguration);
+
+		TestWireCucumber result = new TestWireCucumber(options);
+		result.startWireMockServer();
+
+		return result;
 	}
 
 	protected String scrubMatchingExceptionMessage(String actualExceptionMessage) {

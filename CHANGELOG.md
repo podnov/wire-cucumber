@@ -1,3 +1,9 @@
+## [Unreleased]
+
+## [0.13.0]
+- Move WireCucumberOptions acceptance to constructor
+- Update functional test to uee a static WireCucumber and WireMockServer while resetting wire mock between scenarios
+
 ## [0.12.1]
 - Upgrade wiremock to 2.31.0
 
