@@ -1,5 +1,8 @@
-## [Unreleased]
-- Starting the wiremock server and init the cucumber steps don't need to be coupled, let's separate them
+## [0.12.1]
+- Upgrade wiremock to 2.31.0
+
+## [0.12.0]
+- Starting the wiremock server and initializing the cucumber steps don't need to be coupled, let's separate them
 
 ## [0.11.1]
 - Test fix

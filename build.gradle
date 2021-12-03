@@ -21,7 +21,7 @@ compileJava {
 }
 
 dependencies {
-	implementation 'com.github.tomakehurst:wiremock-jre8:2.29.0'
+	implementation 'com.github.tomakehurst:wiremock-jre8:2.31.0'
 	implementation 'io.cucumber:cucumber-java8:' + cucumberVersion
 	implementation 'io.cucumber:cucumber-junit:' + cucumberVersion
 	implementation 'org.slf4j:slf4j-api:1.7.31'
