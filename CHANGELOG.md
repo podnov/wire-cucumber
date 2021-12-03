@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Starting the wiremock server and init the cucumber steps don't need to be coupled, let's separate them
 
 ## [0.11.1]
 - Test fix

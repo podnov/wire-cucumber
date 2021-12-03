@@ -83,7 +83,8 @@ Scenario: GET Something That Calls Hello World
 ### Bootstrap wire-cucumber in your steps file
 ```
 wireCucumber = new WireCucumber();
-wireCucumber.initialize();
+wireCucumber.startWireMockServer();
+wireCucumber.createSteps();
 ```
 
 ### Call the service that calls the mock you configured in your scenario and verify that it behaved correctly:
@@ -131,7 +132,6 @@ CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireC
 ./gradlew build
 # Update CHANGELOG.md
 # commit
-# tag
 # push main
 # check github build results
 # tag

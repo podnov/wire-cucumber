@@ -44,7 +44,8 @@ public class WireCucumberFunctionalTest implements En {
 		options.setWireMockOptions(wireMockConfiguration);
 
 		TestWireCucumber wireCucumber = new TestWireCucumber();
-		wireCucumber.initialize(options);
+		wireCucumber.startWireMockServer(options);
+		wireCucumber.createSteps(options);
 
 		int port = wireCucumber.getWireMockServer().port();
 
