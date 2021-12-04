@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [0.14.0]
 - Add convencience `resetWireMockServer` that respects `isDisabled` option
 - Add functional test for `isDisabled` option
 - Standardize on invocation instead of interaction verbiage
