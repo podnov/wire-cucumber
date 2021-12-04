@@ -524,7 +524,6 @@ Scenario: Header absent, multiple requests
 	And the interactions with that wire mock are verified
 
 
-@current
 Scenario: Header absent, multiple requests, bad match
 	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200

@@ -21,7 +21,7 @@ public class WireCucumber
 	protected WireMockServer wireMockServer;
 
 	public WireCucumber() {
-		this(createDefaultWireCucumberOptions());
+		this(createDefaultOptions());
 	}
 
 	public WireCucumber(WireCucumberOptions options) {
@@ -44,7 +44,7 @@ public class WireCucumber
 		}
 	}
 
-	protected static WireCucumberOptions createDefaultWireCucumberOptions() {
+	protected static WireCucumberOptions createDefaultOptions() {
 		return new WireCucumberOptions();
 	}
 
@@ -54,15 +54,19 @@ public class WireCucumber
 	}
 
 	public void startWireMockServer() {
-		Options wireMockOptions = options.getWireMockOptions();
-		wireMockServer = new WireMockServer(wireMockOptions);
-		wireMockServer.start();
+		if (options.getIsDisabled()) {
+			logger.info("Skipping wire-cucumber start due to being disabled");
+		} else {
+			Options wireMockOptions = options.getWireMockOptions();
+			wireMockServer = new WireMockServer(wireMockOptions);
+			wireMockServer.start();
 
-		int port = wireMockServer.port();
-		configureFor(host, port);
+			int port = wireMockServer.port();
+			configureFor(host, port);
 
-		String message = String.format("wire-cucumber started on [%s:%s]", host, port);
-		logger.info(message);
+			String message = String.format("wire-cucumber started on [%s:%s]", host, port);
+			logger.info(message);
+		}
 	}
 
 }

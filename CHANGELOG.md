@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.13.1]
+- Add `isDisabled` option
+
 ## [0.13.0]
 - Move WireCucumberOptions acceptance to constructor
 - Update functional test to uee a static WireCucumber and WireMockServer while resetting wire mock between scenarios

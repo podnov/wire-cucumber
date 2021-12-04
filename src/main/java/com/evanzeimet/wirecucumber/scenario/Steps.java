@@ -20,7 +20,16 @@ public class Steps
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
+	protected boolean isDisabled;
 	protected ScenarioBuilder scenarioBuilder = new ScenarioBuilder();
+
+	public boolean getIsDisabled() {
+		return isDisabled;
+	}
+
+	public void setIsDisabled(boolean isDisabled) {
+		this.isDisabled = isDisabled;
+	}
 
 	public ScenarioBuilder getScenarioBuilder() {
 		return scenarioBuilder;
@@ -163,11 +172,15 @@ public class Steps
 
 	protected A0 finalizeMock() {
 		return () -> {
-			scenarioBuilder.finalizeMock();
+			if (!isDisabled) {
+				scenarioBuilder.finalizeMock();
+			}
 		};
 	}
 
 	public void initialize(WireCucumberOptions options) {
+		this.isDisabled = options.getIsDisabled();
+
 		Before(beforeScenario());
 
 		Given("a wire mock named {string} that handles (the ){word} verb with a url equal to {string}", bootstrapMockWithUrlEqualTo());

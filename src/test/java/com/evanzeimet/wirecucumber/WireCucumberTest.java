@@ -46,4 +46,17 @@ public class WireCucumberTest {
 		assertNull(actualException);
 	}
 
+	@Test
+	public void startWireMockServer_isDisabled_true() {
+		boolean givenIsDisabled = true;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setIsDisabled(givenIsDisabled);
+
+		wireCucumber.options = givenOptions;
+		wireCucumber.startWireMockServer();
+
+		assertNull(wireCucumber.wireMockServer);
+	}
+
 }

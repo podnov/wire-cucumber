@@ -6,9 +6,18 @@ import com.github.tomakehurst.wiremock.core.Options;
 
 public class WireCucumberOptions {
 
+	private boolean isDisabled = false;
 	private boolean requireMockInteractionsVerification = true;
 	private Options wireMockOptions = options();
 	private boolean requireMockFinalization = true;
+
+	public boolean getIsDisabled() {
+		return isDisabled;
+	}
+
+	public void setIsDisabled(boolean isDisabled) {
+		this.isDisabled = isDisabled;
+	}
 
 	public boolean getRequireMockFinalization() {
 		return requireMockFinalization;

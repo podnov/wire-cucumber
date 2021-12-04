@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +47,32 @@ public class StepsTest {
 		String actualExceptionMessage = actualException.getMessage();
 		String expectedExceptionMessage = "Unexpected http verb [FLY]";
 		assertEquals(expectedExceptionMessage, actualExceptionMessage);
+	}
+
+	@Test
+	public void finalizeMock_isDisabled_false() throws Throwable {
+		boolean givenIsDisabled = false;
+		ScenarioBuilder givenScenarioBuilder = mock(ScenarioBuilder.class);
+
+		steps.isDisabled = givenIsDisabled;
+		steps.scenarioBuilder = givenScenarioBuilder;
+
+		steps.finalizeMock().accept();
+
+		verify(givenScenarioBuilder).finalizeMock();
+	}
+
+	@Test
+	public void finalizeMock_isDisabled_true() throws Throwable {
+		boolean givenIsDisabled = true;
+		ScenarioBuilder givenScenarioBuilder = mock(ScenarioBuilder.class);
+
+		steps.isDisabled = givenIsDisabled;
+		steps.scenarioBuilder = givenScenarioBuilder;
+
+		steps.finalizeMock().accept();
+
+		verifyNoInteractions(givenScenarioBuilder);
 	}
 
 	@Test
