@@ -172,9 +172,7 @@ public class Steps
 
 	protected A0 finalizeMock() {
 		return () -> {
-			if (!isDisabled) {
-				scenarioBuilder.finalizeMock();
-			}
+			scenarioBuilder.finalizeMock(isDisabled);
 		};
 	}
 

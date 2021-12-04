@@ -160,11 +160,13 @@ public class ScenarioBuilder {
 		return new MockStateKey(currentMockName, currentMockState);
 	}
 
-	public void finalizeMock() {
+	public void finalizeMock(boolean isDisabled) {
 		validateMockStateUnused();
 
-		StubMapping stubMapping = currentMockBuilder.finalizeMock(currentMockState);
-		putCurrentMockStateStubMapping(stubMapping);
+		if (!isDisabled) {
+			StubMapping stubMapping = currentMockBuilder.finalizeMock(currentMockState);
+			putCurrentMockStateStubMapping(stubMapping);
+		}
 
 		currentMockName = null;
 		currentMockState = null;

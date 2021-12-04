@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.13.2]
+- Update disabled feature to consider mocks finalized
+
 ## [0.13.1]
 - Add `isDisabled` option
 

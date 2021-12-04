@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +58,7 @@ public class StepsTest {
 
 		steps.finalizeMock().accept();
 
-		verify(givenScenarioBuilder).finalizeMock();
+		verify(givenScenarioBuilder).finalizeMock(givenIsDisabled);
 	}
 
 	@Test
@@ -72,7 +71,7 @@ public class StepsTest {
 
 		steps.finalizeMock().accept();
 
-		verifyNoInteractions(givenScenarioBuilder);
+		verify(givenScenarioBuilder).finalizeMock(givenIsDisabled);
 	}
 
 	@Test
