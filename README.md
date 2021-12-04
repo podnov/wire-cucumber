@@ -115,7 +115,7 @@ After(() -> {
 ```
 
 ### Details
-Example cucumber features consuming the this library can be [found in this project](src/test/resources/com/evanzeimet/wirecucumber/). The steps defined in this test for this project only define a [few steps](src/test/java/com/evanzeimet/wirecucumber/WireCucumberFunctionalTest.java). The steps that create the REST mocks and verify interactions with them are defined [in the library itself](src/main/java/com/evanzeimet/wirecucumber/WireCucumberSteps.java) in the `initialize` method.
+Example cucumber features consuming the this library can be [found in this project](src/test/resources/com/evanzeimet/wirecucumber/functionaltest). The steps defined in this test for this project only define a [few steps](src/test/java/com/evanzeimet/wirecucumber/functionaltest/WireCucumberFunctionalTest.java). The steps that create the REST mocks and verify interactions with them are defined [in the library itself](src/main/java/com/evanzeimet/wirecucumber/scenario/Steps.java) in the `initialize` method.
 
 ## Maintainer's Corner
 ### How do I run specific cucumber tests?
