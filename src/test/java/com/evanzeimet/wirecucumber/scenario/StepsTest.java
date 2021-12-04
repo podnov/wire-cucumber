@@ -82,7 +82,7 @@ public class StepsTest {
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			steps.setMockToBeVerified().accept(givenName);
+			steps.setMockInvocationsToBeVerified().accept(givenName);
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -96,11 +96,11 @@ public class StepsTest {
 
 	@Test
 	public void verifyRequest() throws Throwable {
-		steps.scenarioBuilder.currentMockVerifier = mock(MockInvocationsVerifier.class);
+		steps.scenarioBuilder.currentMockInvocationsVerifier = mock(MockInvocationsVerifier.class);
 
 		steps.verifyMockInvocations().accept();
 
-		assertNull(steps.scenarioBuilder.currentMockVerifier);
+		assertNull(steps.scenarioBuilder.currentMockInvocationsVerifier);
 	}
 
 	protected void bootstrapWireMock() {

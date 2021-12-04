@@ -7,6 +7,6 @@ Scenario: Reponse status 500
 	And that wire mock is finalized
 	When I GET the "hello worlds" resource "default" endpoint
 	Then the response status code should be 500
-	And I want to verify interactions with the wire mock named "get-hello-worlds"
+	And I want to verify invocations of the wire mock named "get-hello-worlds"
 	And that wire mock should have been invoked 1 time
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified

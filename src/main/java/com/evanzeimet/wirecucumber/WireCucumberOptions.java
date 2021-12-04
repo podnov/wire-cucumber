@@ -7,7 +7,7 @@ import com.github.tomakehurst.wiremock.core.Options;
 public class WireCucumberOptions {
 
 	private boolean isDisabled = false;
-	private boolean requireMockInteractionsVerification = true;
+	private boolean requireMockInvocationsVerification = true;
 	private Options wireMockOptions = options();
 	private boolean requireMockFinalization = true;
 
@@ -27,12 +27,12 @@ public class WireCucumberOptions {
 		this.requireMockFinalization = requireMockFinalization;
 	}
 
-	public boolean getRequireMockInteractionsVerification() {
-		return requireMockInteractionsVerification;
+	public boolean getRequireMockInvocationsVerification() {
+		return requireMockInvocationsVerification;
 	}
 
-	public void setRequireMockInteractionsVerification(boolean requireMockInteractionsVerification) {
-		this.requireMockInteractionsVerification = requireMockInteractionsVerification;
+	public void setRequireMockInvocationsVerification(boolean requireMockInvocationsVerification) {
+		this.requireMockInvocationsVerification = requireMockInvocationsVerification;
 	}
 
 	public Options getWireMockOptions() {

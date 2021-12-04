@@ -26,7 +26,7 @@ Scenario: Header containing
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
@@ -35,7 +35,7 @@ Scenario: Header containing
 	}
 	"""
 	And the request should have had header "Content-Type" containing "application/json"
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Header containing, bad match
@@ -63,7 +63,7 @@ Scenario: Header containing, bad match
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
@@ -129,11 +129,11 @@ Scenario: Header containing, multiple requests
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 2 times
 	And the request at invocation index 0 should have had header "Content-Type" containing "application/json"
 	And the request at invocation index 1 should have had header "Content-Type" containing "application/x-www-form-urlencoded"
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Header containing, multiple requests, bad match
@@ -164,7 +164,7 @@ Scenario: Header containing, multiple requests, bad match
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 2 times
 	And the request at invocation index 0 should have had header "Content-Type" containing "application/json"
 	And the request at invocation index 1 should have had header "Content-Type" containing "application/x-www-form-urlencoded"
@@ -219,7 +219,7 @@ Scenario: Header present
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
@@ -228,7 +228,7 @@ Scenario: Header present
 	}
 	"""
 	And the request should have had header "Content-Type" present
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Header present, bad match
@@ -256,7 +256,7 @@ Scenario: Header present, bad match
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
@@ -324,11 +324,11 @@ Scenario: Header present, multiple requests
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 2 times
 	And the request at invocation index 0 should have had header "Content-Type" present
 	And the request at invocation index 1 should have had header "Content-Type" present
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Header present, multiple requests, bad match
@@ -359,7 +359,7 @@ Scenario: Header present, multiple requests, bad match
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 2 times
 	And the request at invocation index 0 should have had header "Content-Type" present
 	And the request at invocation index 1 should have had header "Content-Type-O" present
@@ -414,7 +414,7 @@ Scenario: Header absent
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
@@ -423,7 +423,7 @@ Scenario: Header absent
 	}
 	"""
 	And the request should have had header "Content-Type-O" absent
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Header absent, bad match
@@ -451,7 +451,7 @@ Scenario: Header absent, bad match
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request body should have been:
 	"""
@@ -517,11 +517,11 @@ Scenario: Header absent, multiple requests
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 2 times
 	And the request at invocation index 0 should have had header "Content-Type-O" absent
 	And the request at invocation index 1 should have had header "Content-Type-O" absent
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Header absent, multiple requests, bad match
@@ -552,7 +552,7 @@ Scenario: Header absent, multiple requests, bad match
 		"given-response-key": "given-response-value"
 	}
 	"""
-	And I want to verify interactions with the wire mock named "post-hello-world"
+	And I want to verify invocations of the wire mock named "post-hello-world"
 	And that wire mock should have been invoked 2 times
 	And the request at invocation index 0 should have had header "Content-Type" absent
 	And the request at invocation index 1 should have had header "Content-Type" absent

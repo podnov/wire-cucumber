@@ -1,4 +1,7 @@
 ## [Unreleased]
+- Add convencience `resetWireMockServer` that respects `isDisabled` option
+- Add functional test for `isDisabled` option
+- Standardize on invocation instead of interaction verbiage
 
 ## [0.13.2]
 - Update disabled feature to consider mocks finalized

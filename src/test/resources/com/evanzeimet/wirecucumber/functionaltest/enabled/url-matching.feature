@@ -10,10 +10,10 @@ Scenario: Mock based on regex url, default endpoint
 	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world"
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Mock based on regex url, other endpoint
@@ -24,10 +24,10 @@ Scenario: Mock based on regex url, other endpoint
 	When I GET the "hello world" resource "abc-def/hij" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world/abc-def/hij"
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Wrong url
@@ -38,7 +38,7 @@ Scenario: Wrong url
 	When I GET the "hello world" resource "abc-def/hij" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
 	And the request url should have been "/hello-world/abc-def/bad"
 	And verifying my request should yield this exception message:

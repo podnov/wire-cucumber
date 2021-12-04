@@ -53,6 +53,14 @@ public class WireCucumber
 		steps.initialize(options);
 	}
 
+	public void resetWireMockServer() {
+		boolean isDisabled = options.getIsDisabled();
+
+		if (!isDisabled) {
+			getWireMockServer().resetAll();
+		}
+	}
+
 	public void startWireMockServer() {
 		if (options.getIsDisabled()) {
 			logger.info("Skipping wire-cucumber start due to being disabled");

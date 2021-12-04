@@ -3,7 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.evanzeimet.wirecucumber/wire-cucumber.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.evanzeimet.wirecucumber%22%20AND%20a:%22wire-cucumber%22) [<img src="https://github.com/podnov/wire-cucumber/workflows/java-ci/badge.svg">](https://github.com/podnov/wire-cucumber/actions?query=workflow%3A%22java-ci%22) [<img src="https://codecov.io/gh/podnov/wire-cucumber/branch/master/graph/badge.svg">](https://codecov.io/gh/podnov/wire-cucumber/branch/master)
 
 ## Why?
-The intent of this project is to make mocking external REST calls easier. This is achieved by standardizing how the mocks are configured and reducing the scaffolding needed to create and verify interactions with those mocks.
+The intent of this project is to make mocking external REST calls easier. This is achieved by standardizing how the mocks are configured and reducing the scaffolding needed to create and verify invocations of those mocks.
 
 ## How?
 ### What steps are provided?
@@ -28,7 +28,7 @@ Given that wire mock enters invocation state {string}
 
 Given that wire mock is finalized
 
-Then I want to verify interactions with the wire mock named {string}
+Then I want to verify invocations of the wire mock named {string}
 Then that wire mock should not have been invoked
 Then that wire mock should have been invoked {int} time(s)
 
@@ -59,7 +59,7 @@ Then the request url should have been {string}
 Then the request at invocation index {int} should have had url {string}
 Then the request at invocation state {string} should have had url {string}
 
-Then the interactions with that wire mock are verified
+Then the invocations of that wire mock are verified
 ```
 
 ### Write a scenario
@@ -75,7 +75,7 @@ Scenario: GET Something That Calls Hello World
 	Then the response status code should be 200
 	And the response body should be "Something Called Hello World"
 	# provided by wire-cucumber
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
 	And my request is verified
 ```
@@ -115,15 +115,15 @@ After(() -> {
 ```
 
 ### Details
-Example cucumber features consuming the this library can be [found in this project](src/test/resources/com/evanzeimet/wirecucumber/functionaltest). The steps defined in this test for this project only define a [few steps](src/test/java/com/evanzeimet/wirecucumber/functionaltest/WireCucumberFunctionalTest.java). The steps that create the REST mocks and verify interactions with them are defined [in the library itself](src/main/java/com/evanzeimet/wirecucumber/scenario/Steps.java) in the `initialize` method.
+Example cucumber features consuming the this library can be [found in this project](src/test/resources/com/evanzeimet/wirecucumber/functionaltest/enabled). The steps defined in this test for this project only define a [few steps](src/test/java/com/evanzeimet/wirecucumber/functionaltest/enabled/WireCucumberEnabledFunctionalTest.java). The steps that create the REST mocks and verify invocations of them are defined [in the library itself](src/main/java/com/evanzeimet/wirecucumber/scenario/Steps.java) in the `initialize` method.
 
 ## Maintainer's Corner
 ### How do I run specific cucumber tests?
 ```
-CUCUMBER_FILTER_TAGS='@getVerb' ./gradlew clean test --tests **WireCucumberFunctionalTest
-CUCUMBER_FILTER_TAGS='@extensibility' ./gradlew clean test --tests **WireCucumberFunctionalTest
-CUCUMBER_FILTER_TAGS='@headers' ./gradlew clean test --tests **WireCucumberFunctionalTest
-CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireCucumberFunctionalTest
+CUCUMBER_FILTER_TAGS='@getVerb' ./gradlew clean test --tests **WireCucumber*FunctionalTest
+CUCUMBER_FILTER_TAGS='@extensibility' ./gradlew clean test --tests **WireCucumber*FunctionalTest
+CUCUMBER_FILTER_TAGS='@headers' ./gradlew clean test --tests **WireCucumber*FunctionalTest
+CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireCucumber*FunctionalTest
 ```
 
 ### How do I publish to sonatype?

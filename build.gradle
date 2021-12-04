@@ -108,7 +108,7 @@ uploadArchives {
 				name 'wire-cucumber'
 				packaging 'jar'
 				// optionally artifactId can be defined here
-				description 'The intent of this project is to make mocking external REST calls easier. This is achieved by standardizing how the mocks are configured and reducing the scaffolding needed to create and verify interactions with those mocks.'
+				description 'The intent of this project is to make mocking external REST calls easier. This is achieved by standardizing how the mocks are configured and reducing the scaffolding needed to create and verify invocations of those mocks.'
 				url 'https://github.com/podnov/wire-cucumber'
 
 				scm {

@@ -15,9 +15,9 @@ Scenario: Multiple calls on the same mock
 	When I GET the "hello world" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello World"
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Multiple calls to different mocks
@@ -35,9 +35,9 @@ Scenario: Multiple calls to different mocks
 	When I GET the "hello galaxy" resource "default" endpoint
 	Then the response status code should be 200
 	And the response body should be "Hello Galaxy"
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
-	And the interactions with that wire mock are verified
-	And I want to verify interactions with the wire mock named "get-hello-galaxy"
+	And the invocations of that wire mock are verified
+	And I want to verify invocations of the wire mock named "get-hello-galaxy"
 	And that wire mock should have been invoked 1 time
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified

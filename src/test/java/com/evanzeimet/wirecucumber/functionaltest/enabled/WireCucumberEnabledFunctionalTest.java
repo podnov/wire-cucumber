@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber.functionaltest;
+package com.evanzeimet.wirecucumber.functionaltest.enabled;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static io.restassured.RestAssured.given;
@@ -28,7 +28,7 @@ import io.restassured.specification.RequestSpecification;
 
 @RunWith(Cucumber.class)
 @CucumberOptions
-public class WireCucumberFunctionalTest
+public class WireCucumberEnabledFunctionalTest
 		implements En {
 
 	private static final String HELLO_WORLD_URI = "/hello-world";
@@ -40,7 +40,7 @@ public class WireCucumberFunctionalTest
 	private String currentRequestId;
 	private static TestWireCucumber wireCucumber = createWireCucumber();
 
-	public WireCucumberFunctionalTest() {
+	public WireCucumberEnabledFunctionalTest() {
 		wireCucumber.createSteps();
 
 		int port = wireCucumber.getWireMockServer().port();
@@ -152,7 +152,7 @@ public class WireCucumberFunctionalTest
 		Then("the request should have had my request id header", () -> {
 			wireCucumber.getSteps()
 					.getScenarioBuilder()
-					.getCurrentMockVerifier()
+					.getCurrentMockInvocationsVerifier()
 					.withHeader(REQUEST_ID_HEADER, WireMock.equalTo(currentRequestId));
 		});
 
@@ -173,7 +173,7 @@ public class WireCucumberFunctionalTest
 
 			wireCucumber.getSteps()
 					.getScenarioBuilder()
-					.setCurrentMockVerified();
+					.setCurrentMockInvocationsVerified();
 		});
 
 	}
@@ -187,6 +187,7 @@ public class WireCucumberFunctionalTest
 		WireMockConfiguration wireMockConfiguration = options().dynamicPort();
 
 		WireCucumberOptions options = new WireCucumberOptions();
+		options.setIsDisabled(false);
 		options.setWireMockOptions(wireMockConfiguration);
 
 		TestWireCucumber result = new TestWireCucumber(options);

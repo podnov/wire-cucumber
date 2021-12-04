@@ -37,49 +37,49 @@ public class Steps
 
 	protected A1<Integer> addInvocationIndexBodyAbsentVerification() {
 		return (invocationIndex) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addBodyAbsentVerification(invocationIndex);
 		};
 	}
 
 	protected A2<Integer, DataTable> addInvocationIndexBodyEqualToDataTableVerification() {
 		return (invocationIndex, dataTable) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addBodyEqualToVerification(invocationIndex, dataTable);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexBodyEqualToStringVerification() {
 		return (invocationIndex, requestBody) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addBodyEqualToVerification(invocationIndex, requestBody);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexHeaderAbsentVerification() {
 		return (invocationIndex, headerName) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addHeaderAbsentVerification(invocationIndex, headerName);
 		};
 	}
 
 	protected A3<Integer, String, String> addInvocationIndexHeaderContainingVerification() {
 		return (invocationIndex, headerName, headerValue) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addHeaderContainingVerification(invocationIndex, headerName, headerValue);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexHeaderPresentVerification() {
 		return (invocationIndex, headerName) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addHeaderPresentVerification(invocationIndex, headerName);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexUrlVerification() {
 		return (invocationIndex, url) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.addUrlVerification(invocationIndex, url);
 		};
 	}
@@ -207,7 +207,7 @@ public class Steps
 
 		Given("that wire mock is finalized", finalizeMock());
 
-		Then("I want to verify interactions with the wire mock named {string}", setMockToBeVerified());
+		Then("I want to verify invocations of the wire mock named {string}", setMockInvocationsToBeVerified());
 
 		Then("that wire mock should not have been invoked", setVerifyMockNotInvoked());
 		Then("that wire mock should have been invoked {int} time(s)", setVerifyMockInvocationCount());
@@ -240,7 +240,7 @@ public class Steps
 		Then("the request at invocation index {int} should have had url {string}", addInvocationIndexUrlVerification());
 		Then("the request at invocation state {string} should have had url {string}", addInvocationStateUrlVerification());
 
-		Then("the interactions with that wire mock are verified", verifyMockInvocations());
+		Then("the invocations of that wire mock are verified", verifyMockInvocations());
 
 		After(afterScenario(options));
 	}
@@ -280,9 +280,9 @@ public class Steps
 		};
 	}
 
-	protected A1<String> setMockToBeVerified() {
+	protected A1<String> setMockInvocationsToBeVerified() {
 		return (mockName) -> {
-			scenarioBuilder.setMockToBeVerified(mockName);
+			scenarioBuilder.setMockInvocationsToBeVerified(mockName);
 		};
 	}
 
@@ -316,21 +316,21 @@ public class Steps
 
 	protected A1<String> setVerifyMockHeaderAbsent() {
 		return (name) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withHeaderAbsent(name);
 		};
 	}
 
 	protected A2<String, String> setVerifyMockHeaderContaining() {
 		return (name, value) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withHeaderContaining(name, value);
 		};
 	}
 
 	protected A1<String> setVerifyMockHeaderPresent() {
 		return (name) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withHeaderPresent(name);
 		};
 	}
@@ -343,42 +343,42 @@ public class Steps
 
 	protected A1<String> setVerifyMockUrl() {
 		return (url) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withUrl(url);
 		};
 	}
 
 	protected A0 setVerifyMockBodyAbsent() {
 		return () -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withRequestBodyAbsent();
 		};
 	}
 
 	protected A1<DataTable> setVerifyMockBodyEqualToDataTable() {
 		return (dataTable) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withRequestBodyEqualTo(dataTable);
 		};
 	}
 
 	protected A1<String> setVerifyMockBodyEqualToString() {
 		return (requestBody) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 					.withRequestBodyEqualTo(requestBody);
 		};
 	}
 
 	protected A1<Integer> setVerifyMockInvocationCount() {
 		return (count) -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 				.setExpectedMockInvocationCount(count);
 		};
 	}
 
 	protected A0 setVerifyMockNotInvoked() {
 		return () -> {
-			scenarioBuilder.getCurrentMockVerifier()
+			scenarioBuilder.getCurrentMockInvocationsVerifier()
 				.setExpectedMockInvocationCount(0);
 		};
 	}

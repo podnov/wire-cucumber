@@ -65,17 +65,88 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
+	public void closeScenario_isDisabled_true_currentMockUnfinalized() {
+		String givenCurrentMockName = "given-current-mock-name";
+		boolean givenIsDisabled = true;
+		boolean givenRequireMockFinalization = true;
+		boolean givenRequireMockInvocationsVerification = true;
+
+		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
+		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setIsDisabled(givenIsDisabled);
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
+
+		builder.currentCucumberScenario = givenCurrentCucumberScenario;
+		builder.currentMockName = givenCurrentMockName;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
+	public void closeScenario_isDisabled_true_currentMockInvocationsUnverified() {
+		String givenCurrentMockName = null;
+		boolean givenIsDisabled = true;
+		boolean givenRequireMockFinalization = true;
+		boolean givenRequireMockInvocationsVerification = true;
+
+		Set<String> givenMockNames = new HashSet<>() {
+
+			private static final long serialVersionUID = -8408162546126661141L;
+
+			{
+				add("given-mock-name-1");
+				add("given-mock-name-2");
+				add("given-mock-name-3");
+			}
+
+		};
+
+		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
+		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setIsDisabled(givenIsDisabled);
+		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
+
+		builder.currentCucumberScenario = givenCurrentCucumberScenario;
+		builder.currentMockName = givenCurrentMockName;
+		builder.mockNames = givenMockNames;
+
+		WireCucumberRuntimeException actualException = null;
+
+		try {
+			builder.closeScenario(givenOptions);
+		} catch (WireCucumberRuntimeException e) {
+			actualException = e;
+		}
+
+		assertNull(actualException);
+	}
+
+	@Test
 	public void closeScenario_requireMockFinalization_false_currentMockFinalized() {
 		String givenCurrentMockName = null;
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.currentMockName = givenCurrentMockName;
@@ -95,14 +166,14 @@ public class ScenarioBuilderTest {
 	public void closeScenario_requireMockFinalization_false_currentMockUnfinalized() {
 		String givenCurrentMockName = "given-current-mock-name";
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.currentMockName = givenCurrentMockName;
@@ -122,14 +193,14 @@ public class ScenarioBuilderTest {
 	public void closeScenario_requireMockFinalization_true_currentMockFinalized() {
 		String givenCurrentMockName = null;
 		boolean givenRequireMockFinalization = true;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.currentMockName = givenCurrentMockName;
@@ -146,22 +217,22 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_empty() {
+	public void closeScenario_requireMockInvocationsVerification_false_unverifiedMocks_empty() {
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.mockNames = givenMockNames;
-		builder.verifiedMockNames = givenMockNames;
+		builder.invocationVerifiedMockNames = givenMockNames;
 
 		WireCucumberRuntimeException actualException = null;
 
@@ -175,20 +246,20 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_requireMockInteractionsVerification_false_unverifiedMocks_notEmpty() {
+	public void closeScenario_requireMockInvocationsVerification_false_unverifiedMocks_notEmpty() {
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
-		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
+		builder.invocationVerifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
 		WireCucumberRuntimeException actualException = null;
 
@@ -202,22 +273,22 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_requireMockInteractionsVerification_true_unverifiedMocks_empty() {
+	public void closeScenario_requireMockInvocationsVerification_true_unverifiedMocks_empty() {
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = true;
+		boolean givenRequireMockInvocationsVerification = true;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.mockNames = givenMockNames;
-		builder.verifiedMockNames = givenMockNames;
+		builder.invocationVerifiedMockNames = givenMockNames;
 
 		WireCucumberRuntimeException actualException = null;
 
@@ -234,14 +305,14 @@ public class ScenarioBuilderTest {
 	public void closeScenario_scenarioStatus_notPassed_requireMockFinalization_true_currentMockUnfinalized() {
 		String givenCurrentMockName = "given-current-mock-name";
 		boolean givenRequireMockFinalization = true;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(UNDEFINED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.currentMockName = givenCurrentMockName;
@@ -258,20 +329,21 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_scenarioStatus_notPassed_requireMockInteractionsVerification_true_unverifiedMocks_notEmpty() {
+	public void
+			closeScenario_scenarioStatus_notPassed_requireMockInvocationsVerification_true_unverifiedMocks_notEmpty() {
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = true;
+		boolean givenRequireMockInvocationsVerification = true;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(UNDEFINED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
-		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
+		builder.invocationVerifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
 		WireCucumberRuntimeException actualException = null;
 
@@ -288,14 +360,14 @@ public class ScenarioBuilderTest {
 	public void closeScenario_scenarioStatus_passed_requireMockFinalization_true_currentMockUnfinalized() {
 		String givenCurrentMockName = "given-current-mock-name";
 		boolean givenRequireMockFinalization = true;
-		boolean givenRequireMockInteractionsVerification = false;
+		boolean givenRequireMockInvocationsVerification = false;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.currentMockName = givenCurrentMockName;
@@ -317,20 +389,20 @@ public class ScenarioBuilderTest {
 	}
 
 	@Test
-	public void closeScenario_scenarioStatus_passed_requireMockInteractionsVerification_true_unverifiedMocks_notEmpty() {
+	public void closeScenario_scenarioStatus_passed_requireMockInvocationsVerification_true_unverifiedMocks_notEmpty() {
 		boolean givenRequireMockFinalization = false;
-		boolean givenRequireMockInteractionsVerification = true;
+		boolean givenRequireMockInvocationsVerification = true;
 
 		Scenario givenCurrentCucumberScenario = mock(Scenario.class);
 		doReturn(PASSED).when(givenCurrentCucumberScenario).getStatus();
 
 		WireCucumberOptions givenOptions = new WireCucumberOptions();
 		givenOptions.setRequireMockFinalization(givenRequireMockFinalization);
-		givenOptions.setRequireMockInteractionsVerification(givenRequireMockInteractionsVerification);
+		givenOptions.setRequireMockInvocationsVerification(givenRequireMockInvocationsVerification);
 
 		builder.currentCucumberScenario = givenCurrentCucumberScenario;
 		builder.mockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
-		builder.verifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
+		builder.invocationVerifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
 		WireCucumberRuntimeException actualException = null;
 
@@ -646,11 +718,11 @@ public class ScenarioBuilderTest {
 		Set<String> givenVerifiedMockNames = new HashSet<>();
 
 		builder.mockNames = givenMockNames;
-		builder.verifiedMockNames = givenVerifiedMockNames;
+		builder.invocationVerifiedMockNames = givenVerifiedMockNames;
 
 		builder.setAllMocksVerified();
 
-		Set<String> actual = builder.verifiedMockNames;
+		Set<String> actual = builder.invocationVerifiedMockNames;
 		Set<String> expected = givenMockNames;
 
 		assertEquals(expected, actual);

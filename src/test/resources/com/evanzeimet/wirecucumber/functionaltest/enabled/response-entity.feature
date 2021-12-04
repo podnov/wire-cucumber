@@ -17,9 +17,9 @@ Scenario: Mock data table response
 	"""
 	[{"name":"given-world-1","primaryColor":"blue","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"green","galaxy":"Milky Way"},{"name":"given-world-2","primaryColor":"grey","galaxy":"Milky Way"}]
 	"""
-	And I want to verify interactions with the wire mock named "get-hello-worlds"
+	And I want to verify invocations of the wire mock named "get-hello-worlds"
 	And that wire mock should have been invoked 1 time
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified
 
 
 Scenario: Body file name
@@ -33,6 +33,6 @@ Scenario: Body file name
 	"""
 	{"hello":"world"}
 	"""
-	And I want to verify interactions with the wire mock named "get-hello-world"
+	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
-	And the interactions with that wire mock are verified
+	And the invocations of that wire mock are verified

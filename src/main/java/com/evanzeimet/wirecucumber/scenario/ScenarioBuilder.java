@@ -31,12 +31,12 @@ public class ScenarioBuilder {
 	protected String currentMockName;
 	protected String currentMockState;
 	protected Integer currentMockStateIndex;
-	protected String currentVerifyMockName;
-	protected MockInvocationsVerifier currentMockVerifier;
+	protected String currentVerifyInvocationsMockName;
+	protected MockInvocationsVerifier currentMockInvocationsVerifier;
+	protected Set<String> invocationVerifiedMockNames = new HashSet<>();
 	protected Set<String> mockNames = new HashSet<String>();
 	protected Map<MockStateKey, StubMapping> mockStateStubMappings = new HashMap<>();
 	protected Map<MockStateKey, Integer> mockStateIndices = new HashMap<>();
-	protected Set<String> verifiedMockNames = new HashSet<>();
 
 	public MockBuilder getCurrentMockBuilder() {
 		return currentMockBuilder;
@@ -54,8 +54,8 @@ public class ScenarioBuilder {
 		return currentMockStateIndex;
 	}
 
-	public MockInvocationsVerifier getCurrentMockVerifier() {
-		return currentMockVerifier;
+	public MockInvocationsVerifier getCurrentMockInvocationsVerifier() {
+		return currentMockInvocationsVerifier;
 	}
 
 	public Set<String> getMockNames() {
@@ -63,39 +63,39 @@ public class ScenarioBuilder {
 	}
 
 	public void addInvocationStateBodyAbsentVerification(String state) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addBodyAbsentVerification(invocationIndex);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addBodyAbsentVerification(invocationIndex);
 	}
 
 	public void addInvocationStateBodyEqualToVerification(String state,
 			String requestBody) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addBodyEqualToVerification(invocationIndex, requestBody);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addBodyEqualToVerification(invocationIndex, requestBody);
 	}
 
 	public void addInvocationStateBodyEqualToVerification(String state, DataTable dataTable) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addBodyEqualToVerification(invocationIndex, dataTable);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addBodyEqualToVerification(invocationIndex, dataTable);
 	}
 
 	public void addInvocationStateHeaderAbsentVerification(String state, String headerName) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addHeaderAbsentVerification(invocationIndex, headerName);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addHeaderAbsentVerification(invocationIndex, headerName);
 	}
 
 	public void addInvocationStateHeaderContainingVerification(String state, String headerName, String headerValue) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addHeaderContainingVerification(invocationIndex, headerName, headerValue);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addHeaderContainingVerification(invocationIndex, headerName, headerValue);
 	}
 
 	public void addInvocationStateHeaderPresentVerification(String state, String headerName) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addHeaderPresentVerification(invocationIndex, headerName);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addHeaderPresentVerification(invocationIndex, headerName);
 	}
 
 	public void addInvocationStateUrlVerification(String state, String url) {
-		Integer invocationIndex = getMockStateIndex(currentVerifyMockName, state);
-		currentMockVerifier.addUrlVerification(invocationIndex, url);
+		Integer invocationIndex = getMockStateIndex(currentVerifyInvocationsMockName, state);
+		currentMockInvocationsVerifier.addUrlVerification(invocationIndex, url);
 	}
 
 	protected void bootstrapMock(String mockName, String httpVerb, UrlPattern urlPattern) {
@@ -135,13 +135,22 @@ public class ScenarioBuilder {
 
 	public void closeScenario(WireCucumberOptions options) {
 		Status scenarioStatus = currentCucumberScenario.getStatus();
+
 		if (Status.PASSED.equals(scenarioStatus)) {
-			if (options.getRequireMockFinalization()) {
+			boolean isDisabled = options.getIsDisabled();
+
+			boolean requireMockFinalization = options.getRequireMockFinalization();
+			boolean verifyMocksFinalized = (!isDisabled && requireMockFinalization);
+
+			if (verifyMocksFinalized) {
 				verifyMocksFinalized();
 			}
 
-			if (options.getRequireMockInteractionsVerification()) {
-				verifyMockInteractionsVerified();
+			boolean requireMockInvocationsVerification = options.getRequireMockInvocationsVerification();
+			boolean verifyMockInvocations = (!isDisabled && requireMockInvocationsVerification);
+
+			if (verifyMockInvocations) {
+				verifyMockInvocationsVerified();
 			}
 		}
 	}
@@ -216,7 +225,7 @@ public class ScenarioBuilder {
 	 */
 	public void setAllMocksVerified() {
 		for (String mockName : mockNames) {
-			verifiedMockNames.add(mockName);
+			invocationVerifiedMockNames.add(mockName);
 		}
 	}
 
@@ -224,12 +233,12 @@ public class ScenarioBuilder {
 		currentCucumberScenario = scenario;
 	}
 
-	public void setCurrentMockVerified() {
-		verifiedMockNames.add(currentVerifyMockName);
+	public void setCurrentMockInvocationsVerified() {
+		invocationVerifiedMockNames.add(currentVerifyInvocationsMockName);
 	}
 
-	public void setMockToBeVerified(String mockName) {
-		currentVerifyMockName = mockName;
+	public void setMockInvocationsToBeVerified(String mockName) {
+		currentVerifyInvocationsMockName = mockName;
 		StubMapping stubMapping = getMockStateMapping(mockName, STARTED);
 
 		if (stubMapping == null) {
@@ -238,7 +247,7 @@ public class ScenarioBuilder {
 		}
 
 		RequestPattern request = stubMapping.getRequest();
-		currentMockVerifier = MockInvocationsVerifier.forRequestPattern(request);
+		currentMockInvocationsVerifier = MockInvocationsVerifier.forRequestPattern(request);
 	}
 
 	public void transitionMockState(String nextState) {
@@ -271,11 +280,11 @@ public class ScenarioBuilder {
 	}
 
 	public void verifyMockInvocations() {
-		currentMockVerifier.verify();
-		currentMockVerifier = null;
+		currentMockInvocationsVerifier.verify();
+		currentMockInvocationsVerifier = null;
 
-		setCurrentMockVerified();
-		currentVerifyMockName = null;
+		setCurrentMockInvocationsVerified();
+		currentVerifyInvocationsMockName = null;
 	}
 
 	protected void verifyMocksFinalized() {
@@ -287,9 +296,9 @@ public class ScenarioBuilder {
 		}
 	}
 
-	protected void verifyMockInteractionsVerified() {
+	protected void verifyMockInvocationsVerified() {
 		Set<String> unverifiedMocks = new HashSet<>(mockNames);
-		unverifiedMocks.removeAll(verifiedMockNames);
+		unverifiedMocks.removeAll(invocationVerifiedMockNames);
 
 		int unverifiedMockCount = unverifiedMocks.size();
 
