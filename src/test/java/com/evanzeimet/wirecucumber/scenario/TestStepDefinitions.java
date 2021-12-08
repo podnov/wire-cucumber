@@ -2,11 +2,11 @@ package com.evanzeimet.wirecucumber.scenario;
 
 import io.cucumber.java8.StepDefinitionBody.A0;
 
-public class TestSteps {
+public class TestStepDefinitions {
 
-	private Steps steps;
+	private StepDefinitions steps;
 
-	public TestSteps(Steps steps) {
+	public TestStepDefinitions(StepDefinitions steps) {
 		this.steps = steps;
 	}
 

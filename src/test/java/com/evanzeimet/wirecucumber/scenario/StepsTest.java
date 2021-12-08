@@ -18,13 +18,13 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 
 public class StepsTest {
 
-	private Steps steps;
+	private StepDefinitions steps;
 
 	@Before
 	public void setUp() {
 		bootstrapWireMock();
 
-		steps = spy(new Steps());
+		steps = spy(new StepDefinitions());
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class StepsTest {
 	@Test
 	public void finalizeMock_isDisabled_false() throws Throwable {
 		boolean givenIsDisabled = false;
-		ScenarioBuilder givenScenarioBuilder = mock(ScenarioBuilder.class);
+		ScenarioMocksBuilder givenScenarioBuilder = mock(ScenarioMocksBuilder.class);
 
 		steps.isDisabled = givenIsDisabled;
 		steps.scenarioBuilder = givenScenarioBuilder;
@@ -64,7 +64,7 @@ public class StepsTest {
 	@Test
 	public void finalizeMock_isDisabled_true() throws Throwable {
 		boolean givenIsDisabled = true;
-		ScenarioBuilder givenScenarioBuilder = mock(ScenarioBuilder.class);
+		ScenarioMocksBuilder givenScenarioBuilder = mock(ScenarioMocksBuilder.class);
 
 		steps.isDisabled = givenIsDisabled;
 		steps.scenarioBuilder = givenScenarioBuilder;

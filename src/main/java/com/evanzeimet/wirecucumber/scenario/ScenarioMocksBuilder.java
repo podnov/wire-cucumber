@@ -22,7 +22,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.Scenario;
 import io.cucumber.java8.Status;
 
-public class ScenarioBuilder {
+public class ScenarioMocksBuilder {
 
 	// TODO call index across mocks/scenarios? timestamp comparison?
 
@@ -233,6 +233,7 @@ public class ScenarioBuilder {
 		currentCucumberScenario = scenario;
 	}
 
+	// TODO can verifications be moved to another class?
 	public void setCurrentMockInvocationsVerified() {
 		invocationVerifiedMockNames.add(currentVerifyInvocationsMockName);
 	}

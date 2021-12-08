@@ -77,7 +77,7 @@ Scenario: GET Something That Calls Hello World
 	# provided by wire-cucumber
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 1 time
-	And my request is verified
+	And the invocations of that wire mock are verified
 ```
 
 ### Bootstrap wire-cucumber in your steps file

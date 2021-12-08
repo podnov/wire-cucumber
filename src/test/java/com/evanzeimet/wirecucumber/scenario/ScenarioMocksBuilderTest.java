@@ -29,13 +29,13 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import io.cucumber.java8.Scenario;
 
-public class ScenarioBuilderTest {
+public class ScenarioMocksBuilderTest {
 
-	private ScenarioBuilder builder;
+	private ScenarioMocksBuilder builder;
 
 	@Before
 	public void setUp() {
-		builder = spy(new ScenarioBuilder());
+		builder = spy(new ScenarioMocksBuilder());
 	}
 
 	@Test

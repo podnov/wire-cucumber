@@ -15,13 +15,13 @@ import io.cucumber.java8.StepDefinitionBody.A1;
 import io.cucumber.java8.StepDefinitionBody.A2;
 import io.cucumber.java8.StepDefinitionBody.A3;
 
-public class Steps
+public class StepDefinitions
 		implements En {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
 	protected boolean isDisabled;
-	protected ScenarioBuilder scenarioBuilder = new ScenarioBuilder();
+	protected ScenarioMocksBuilder scenarioBuilder = new ScenarioMocksBuilder();
 
 	public boolean getIsDisabled() {
 		return isDisabled;
@@ -31,7 +31,7 @@ public class Steps
 		this.isDisabled = isDisabled;
 	}
 
-	public ScenarioBuilder getScenarioBuilder() {
+	public ScenarioMocksBuilder getScenarioBuilder() {
 		return scenarioBuilder;
 	}
 
