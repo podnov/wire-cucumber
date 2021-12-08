@@ -21,7 +21,7 @@ public class WireCucumberDisabledFunctionalTest
 	private static TestWireCucumber wireCucumber = createWireCucumber();
 
 	public WireCucumberDisabledFunctionalTest() {
-		wireCucumber.createSteps();
+		wireCucumber.createStepDefinitions();
 
 		Before(() -> {
 			wireCucumber.resetWireMockServer();

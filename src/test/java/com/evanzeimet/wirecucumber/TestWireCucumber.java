@@ -1,7 +1,5 @@
 package com.evanzeimet.wirecucumber;
 
-import com.evanzeimet.wirecucumber.scenario.TestSteps;
-
 public class TestWireCucumber
 		extends WireCucumber {
 
@@ -13,8 +11,8 @@ public class TestWireCucumber
 		super(options);
 	}
 
-	protected TestSteps getTestSteps() {
-		return new TestSteps(steps);
+	protected TestWireCucumberStepDefinitions getTestSteps() {
+		return new TestWireCucumberStepDefinitions(stepDefinitions);
 	}
 
 	public void verifyInvocations() throws Throwable {

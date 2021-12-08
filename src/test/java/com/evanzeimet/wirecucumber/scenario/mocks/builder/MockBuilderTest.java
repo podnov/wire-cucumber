@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber.scenario;
+package com.evanzeimet.wirecucumber.scenario.mocks.builder;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.any;

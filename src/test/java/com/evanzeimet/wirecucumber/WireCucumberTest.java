@@ -2,6 +2,7 @@ package com.evanzeimet.wirecucumber;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -44,6 +45,38 @@ public class WireCucumberTest {
 		}
 
 		assertNull(actualException);
+	}
+
+	@Test
+	public void resetWireMockServer_isDisabled_false() {
+		boolean givenIsDisabled = false;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setIsDisabled(givenIsDisabled);
+		wireCucumber.options = givenOptions;
+
+		WireMockServer givenWireMockServer = mock(WireMockServer.class);
+		wireCucumber.wireMockServer = givenWireMockServer;
+
+		wireCucumber.resetWireMockServer();
+
+		verify(givenWireMockServer).resetAll();
+	}
+
+	@Test
+	public void resetWireMockServer_isDisabled_true() {
+		boolean givenIsDisabled = true;
+
+		WireCucumberOptions givenOptions = new WireCucumberOptions();
+		givenOptions.setIsDisabled(givenIsDisabled);
+		wireCucumber.options = givenOptions;
+
+		WireMockServer givenWireMockServer = mock(WireMockServer.class);
+		wireCucumber.wireMockServer = givenWireMockServer;
+
+		wireCucumber.resetWireMockServer();
+
+		verify(givenWireMockServer, never()).resetAll();
 	}
 
 	@Test

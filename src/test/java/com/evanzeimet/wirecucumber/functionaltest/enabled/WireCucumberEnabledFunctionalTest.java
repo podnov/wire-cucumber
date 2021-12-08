@@ -41,7 +41,7 @@ public class WireCucumberEnabledFunctionalTest
 	private static TestWireCucumber wireCucumber = createWireCucumber();
 
 	public WireCucumberEnabledFunctionalTest() {
-		wireCucumber.createSteps();
+		wireCucumber.createStepDefinitions();
 
 		int port = wireCucumber.getWireMockServer().port();
 
@@ -150,9 +150,10 @@ public class WireCucumberEnabledFunctionalTest
 		});
 
 		Then("the request should have had my request id header", () -> {
-			wireCucumber.getSteps()
+			wireCucumber.getStepDefinitions()
 					.getScenarioBuilder()
-					.getCurrentMockInvocationsVerifier()
+					.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withHeader(REQUEST_ID_HEADER, WireMock.equalTo(currentRequestId));
 		});
 
@@ -171,8 +172,9 @@ public class WireCucumberEnabledFunctionalTest
 			actualExceptionMessage = scrubMatchingExceptionMessage(actualExceptionMessage);
 			assertEquals(expectedExceptionMessage, actualExceptionMessage);
 
-			wireCucumber.getSteps()
+			wireCucumber.getStepDefinitions()
 					.getScenarioBuilder()
+					.getMocksInvocationsVerifier()
 					.setCurrentMockInvocationsVerified();
 		});
 

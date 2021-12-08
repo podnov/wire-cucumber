@@ -1,7 +1,7 @@
-package com.evanzeimet.wirecucumber.scenario.verification;
+package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
-import static com.evanzeimet.wirecucumber.scenario.verification.MockInvocationsVerifier.BODY_FIELD_NAME;
-import static com.evanzeimet.wirecucumber.scenario.verification.MockInvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.mocks.verification.MockInvocationsVerifier.BODY_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.mocks.verification.MockInvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
