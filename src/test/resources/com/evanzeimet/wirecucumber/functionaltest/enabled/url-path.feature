@@ -106,3 +106,18 @@ Scenario: Mock based on url path equal to, multiple query params matching failur
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should not have been invoked
 	And the invocations of that wire mock are verified
+
+
+Scenario: Mock based on url path equal to, multiple query params matching failure
+	Given a wire mock named "get-hello-world" that handles the GET verb with a url path matching "/hello-w.*"
+	And that wire mock expects a url query string parameter "a" matching "[1]"
+	And that wire mock expects a url query string parameter "b" matching "[2]"
+	And that wire mock expects a url query string parameter "c" matching "[3]"
+	And that wire mock will return a response with status 200
+	And that wire mock response body is "Hello World"
+	And that wire mock is finalized
+	When I GET the "hello world" resource "default" endpoint and query string "a=2&b=3&c=1"
+	Then the response status code should be 404
+	And I want to verify invocations of the wire mock named "get-hello-world"
+	And that wire mock should not have been invoked
+	And the invocations of that wire mock are verified

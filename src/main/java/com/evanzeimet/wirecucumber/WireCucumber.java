@@ -5,7 +5,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.evanzeimet.wirecucumber.scenario.StepDefinitions;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.Options;
 
@@ -17,7 +16,7 @@ public class WireCucumber
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
 
 	protected WireCucumberOptions options;
-	protected StepDefinitions stepDefinitions;
+	protected WireCucumberStepDefinitions stepDefinitions;
 	protected WireMockServer wireMockServer;
 
 	public WireCucumber() {
@@ -28,12 +27,12 @@ public class WireCucumber
 		this.options = options;
 	}
 
-	public WireMockServer getWireMockServer() {
-		return wireMockServer;
+	public WireCucumberStepDefinitions getStepDefinitions() {
+		return stepDefinitions;
 	}
 
-	public StepDefinitions getStepDefinitions() {
-		return stepDefinitions;
+	public WireMockServer getWireMockServer() {
+		return wireMockServer;
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class WireCucumber
 	}
 
 	public void createStepDefinitions() {
-		stepDefinitions = new StepDefinitions();
+		stepDefinitions = new WireCucumberStepDefinitions();
 		stepDefinitions.initialize(options);
 	}
 

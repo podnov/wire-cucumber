@@ -1,11 +1,10 @@
-package com.evanzeimet.wirecucumber.scenario;
+package com.evanzeimet.wirecucumber;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
-import com.evanzeimet.wirecucumber.WireCucumberOptions;
-import com.evanzeimet.wirecucumber.WireCucumberUtils;
+import com.evanzeimet.wirecucumber.scenario.ScenarioBuilder;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
@@ -15,115 +14,127 @@ import io.cucumber.java8.StepDefinitionBody.A1;
 import io.cucumber.java8.StepDefinitionBody.A2;
 import io.cucumber.java8.StepDefinitionBody.A3;
 
-public class StepDefinitions
+public class WireCucumberStepDefinitions
 		implements En {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	protected boolean isDisabled;
-	protected ScenarioMocksBuilder scenarioBuilder = new ScenarioMocksBuilder();
+	protected WireCucumberOptions options;
+	protected ScenarioBuilder scenarioBuilder = new ScenarioBuilder();
 
-	public boolean getIsDisabled() {
-		return isDisabled;
-	}
-
-	public void setIsDisabled(boolean isDisabled) {
-		this.isDisabled = isDisabled;
-	}
-
-	public ScenarioMocksBuilder getScenarioBuilder() {
+	public ScenarioBuilder getScenarioBuilder() {
 		return scenarioBuilder;
 	}
 
 	protected A1<Integer> addInvocationIndexBodyAbsentVerification() {
 		return (invocationIndex) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addBodyAbsentVerification(invocationIndex);
 		};
 	}
 
 	protected A2<Integer, DataTable> addInvocationIndexBodyEqualToDataTableVerification() {
 		return (invocationIndex, dataTable) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addBodyEqualToVerification(invocationIndex, dataTable);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexBodyEqualToStringVerification() {
 		return (invocationIndex, requestBody) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addBodyEqualToVerification(invocationIndex, requestBody);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexHeaderAbsentVerification() {
 		return (invocationIndex, headerName) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addHeaderAbsentVerification(invocationIndex, headerName);
 		};
 	}
 
 	protected A3<Integer, String, String> addInvocationIndexHeaderContainingVerification() {
 		return (invocationIndex, headerName, headerValue) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addHeaderContainingVerification(invocationIndex, headerName, headerValue);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexHeaderPresentVerification() {
 		return (invocationIndex, headerName) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addHeaderPresentVerification(invocationIndex, headerName);
 		};
 	}
 
 	protected A2<Integer, String> addInvocationIndexUrlVerification() {
 		return (invocationIndex, url) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.addUrlVerification(invocationIndex, url);
 		};
 	}
 
 	protected A1<String> addInvocationStateBodyAbsentVerification() {
 		return (state) -> {
-			scenarioBuilder.addInvocationStateBodyAbsentVerification(state);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateBodyAbsentVerification(state);
 		};
 	}
 
 	protected A2<String, DataTable> addInvocationStateBodyEqualToDataTableVerification() {
 		return (state, dataTable) -> {
-			scenarioBuilder.addInvocationStateBodyEqualToVerification(state,
-					dataTable);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateBodyEqualToVerification(state, dataTable);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateBodyEqualToStringVerification() {
 		return (state, requestBody) -> {
-			scenarioBuilder.addInvocationStateBodyEqualToVerification(state, requestBody);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateBodyEqualToVerification(state, requestBody);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateHeaderAbsentVerification() {
 		return (state, headerName) -> {
-			scenarioBuilder.addInvocationStateHeaderAbsentVerification(state, headerName);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateHeaderAbsentVerification(state, headerName);
 		};
 	}
 
 	protected A3<String, String, String> addInvocationStateHeaderContainingVerification() {
 		return (state, headerName, headerValue) -> {
-			scenarioBuilder.addInvocationStateHeaderContainingVerification(state, headerName, headerName);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateHeaderContainingVerification(state, headerName, headerValue);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateHeaderPresentVerification() {
 		return (state, headerName) -> {
-			scenarioBuilder.addInvocationStateHeaderPresentVerification(state, headerName);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateHeaderPresentVerification(state, headerName);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateUrlVerification() {
 		return (state, url) -> {
-			scenarioBuilder.addInvocationStateUrlVerification(state, url);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.addInvocationStateUrlVerification(state, url);
 		};
 	}
 
@@ -141,43 +152,50 @@ public class StepDefinitions
 
 	protected A1<Integer> bootstrapResponseBuilder() {
 		return (status) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.bootstrapResponseBuilder(status);
 		};
 	}
 
 	protected A3<String, String, String> bootstrapMockWithUrlEqualTo() {
 		return (mockName, httpVerb, path) -> {
-			scenarioBuilder.bootstrapMockWithUrlEqualTo(mockName, httpVerb, path);
+			scenarioBuilder.getMocksBuilder()
+					.bootstrapMockWithUrlEqualTo(mockName, httpVerb, path);
 		};
 	}
 
 	protected A3<String, String, String> bootstrapMockWithUrlMatching() {
 		return (mockName, httpVerb, path) -> {
-			scenarioBuilder.bootstrapMockWithUrlMatching(mockName, httpVerb, path);
+			scenarioBuilder.getMocksBuilder()
+					.bootstrapMockWithUrlMatching(mockName, httpVerb, path);
 		};
 	}
 
 	protected A3<String, String, String> bootstrapMockWithUrlPathEqualTo() {
 		return (mockName, httpVerb, path) -> {
-			scenarioBuilder.bootstrapMockWithUrlPathEqualTo(mockName, httpVerb, path);
+			scenarioBuilder.getMocksBuilder()
+					.bootstrapMockWithUrlPathEqualTo(mockName, httpVerb, path);
 		};
 	}
 
 	protected A3<String, String, String> bootstrapMockWithUrlPathMatching() {
 		return (mockName, httpVerb, path) -> {
-			scenarioBuilder.bootstrapMockWithUrlPathMatching(mockName, httpVerb, path);
+			scenarioBuilder.getMocksBuilder()
+					.bootstrapMockWithUrlPathMatching(mockName, httpVerb, path);
 		};
 	}
 
 	protected A0 finalizeMock() {
 		return () -> {
-			scenarioBuilder.finalizeMock(isDisabled);
+			boolean isDisabled = options.getIsDisabled();
+			scenarioBuilder.getMocksBuilder()
+					.finalizeMock(isDisabled);
 		};
 	}
 
 	public void initialize(WireCucumberOptions options) {
-		this.isDisabled = options.getIsDisabled();
+		this.options = options;
 
 		Before(beforeScenario());
 
@@ -247,145 +265,166 @@ public class StepDefinitions
 
 	protected A1<DataTable> setMockResponseWithBodyDataTable() {
 		return (dataTable) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.responseBuilderWithBodyDataTable(dataTable);
 		};
 	}
 
 	protected A1<String> setMockResponseBodyString() {
 		return (responseBody) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.responseBuilderWithBody(responseBody);
 		};
 	}
 
 	protected A1<String> setMockResponseBodyFile() {
 		return (responseBody) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.responseBuilderWithBodyFile(responseBody);
 		};
 	}
 
 	protected A1<String> setMockResponseWithContentType() {
 		return (contentType) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.responseBuilderWithContentType(contentType);
 		};
 	}
 
 	protected A2<String, String> setMockResponseWithHeader() {
 		return (headerName, headerValue) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.responseBuilderWithHeader(headerName, headerValue);
 		};
 	}
 
 	protected A1<String> setMockInvocationsToBeVerified() {
 		return (mockName) -> {
-			scenarioBuilder.setMockInvocationsToBeVerified(mockName);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.bootstrapVerifier(mockName);
 		};
 	}
 
 	protected A1<String> setMockWithAcceptContaining() {
 		return (value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
 					.requestBuilderWithAccept(containing(value));
 		};
 	}
 
 	protected A2<String, String> setMockWithQueryParamEqualTo() {
 		return (key, value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithQueryParam(key, equalTo(value));
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
+					.requestBuilderWithQueryParam(key, equalTo(value));
 		};
 	}
 
 	protected A2<String, String> setMockWithQueryParamMatching() {
 		return (key, value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithQueryParam(key, matching(value));
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
+					.requestBuilderWithQueryParam(key, matching(value));
 		};
 	}
 
 	protected A1<String> setMockWithContentTypeContaining() {
 		return (value) -> {
-			scenarioBuilder.getCurrentMockBuilder()
-				.requestBuilderWithContentType(containing(value));
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
+					.requestBuilderWithContentType(containing(value));
 		};
 	}
 
 	protected A1<String> setVerifyMockHeaderAbsent() {
 		return (name) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withHeaderAbsent(name);
 		};
 	}
 
 	protected A2<String, String> setVerifyMockHeaderContaining() {
 		return (name, value) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withHeaderContaining(name, value);
 		};
 	}
 
 	protected A1<String> setVerifyMockHeaderPresent() {
 		return (name) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withHeaderPresent(name);
 		};
 	}
 
 	protected A1<String> setMockState() {
 		return (newState) -> {
-			scenarioBuilder.transitionMockState(newState);
+			scenarioBuilder.getMocksBuilder()
+					.transitionMockState(newState);
 		};
 	}
 
 	protected A1<String> setVerifyMockUrl() {
 		return (url) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withUrl(url);
 		};
 	}
 
 	protected A0 setVerifyMockBodyAbsent() {
 		return () -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withRequestBodyAbsent();
 		};
 	}
 
 	protected A1<DataTable> setVerifyMockBodyEqualToDataTable() {
 		return (dataTable) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withRequestBodyEqualTo(dataTable);
 		};
 	}
 
 	protected A1<String> setVerifyMockBodyEqualToString() {
 		return (requestBody) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
 					.withRequestBodyEqualTo(requestBody);
 		};
 	}
 
 	protected A1<Integer> setVerifyMockInvocationCount() {
 		return (count) -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
-				.setExpectedMockInvocationCount(count);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.setExpectedMockInvocationCount(count);
 		};
 	}
 
 	protected A0 setVerifyMockNotInvoked() {
 		return () -> {
-			scenarioBuilder.getCurrentMockInvocationsVerifier()
-				.setExpectedMockInvocationCount(0);
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.getMockInvocationsVerifier()
+					.setExpectedMockInvocationCount(0);
 		};
 	}
 
 	protected A0 verifyMockInvocations() {
 		return () -> {
-			scenarioBuilder.verifyMockInvocations();
+			scenarioBuilder.getMocksInvocationsVerifier()
+					.verifyCurrentMockInvocations();
 		};
 	}
 

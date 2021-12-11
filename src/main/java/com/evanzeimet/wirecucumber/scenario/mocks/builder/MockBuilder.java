@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber.scenario;
+package com.evanzeimet.wirecucumber.scenario.mocks.builder;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.any;
@@ -29,14 +29,6 @@ public class MockBuilder {
 
 	protected ScenarioMappingBuilder requestBuilder;
 	protected ResponseDefinitionBuilder responseBuilder;
-
-	public ScenarioMappingBuilder getRequestBuilder() {
-		return requestBuilder;
-	}
-
-	public ResponseDefinitionBuilder getResponseBuilder() {
-		return responseBuilder;
-	}
 
 	public void bootstrapResponseBuilder(Integer status) {
 		responseBuilder = aResponse().withStatus(status);

@@ -1,7 +1,7 @@
-package com.evanzeimet.wirecucumber.scenario.verification;
+package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
-import static com.evanzeimet.wirecucumber.scenario.verification.VerificationConstants.ACTUAL;
-import static com.evanzeimet.wirecucumber.scenario.verification.VerificationConstants.EXPECTED;
+import static com.evanzeimet.wirecucumber.scenario.mocks.verification.VerificationConstants.ACTUAL;
+import static com.evanzeimet.wirecucumber.scenario.mocks.verification.VerificationConstants.EXPECTED;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -16,6 +16,7 @@ import java.util.List;
 
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
+import com.evanzeimet.wirecucumber.scenario.ScenarioContext;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.client.VerificationException;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -40,20 +41,56 @@ public class MockInvocationsVerifier {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	protected Integer expectedMockInvocationCount;
+	protected ScenarioContext context;
 	protected List<MatchInvocationResult<Request>> customMatchResults = new ArrayList<>();
+	protected Integer expectedMockInvocationCount;
+	protected String mockName;
 	protected RequestPatternBuilder requestPatternBuilder;
 
-	public RequestPatternBuilder getRequestPatternBuilder() {
-		return requestPatternBuilder;
-	}
+	protected MockInvocationsVerifier() {
 
-	public Integer getExpectedMockInvocationCount() {
-		return expectedMockInvocationCount;
 	}
 
 	public void setExpectedMockInvocationCount(Integer expectedMockInvocationCount) {
 		this.expectedMockInvocationCount = expectedMockInvocationCount;
+	}
+
+	public void addInvocationStateBodyAbsentVerification(String state) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addBodyAbsentVerification(invocationIndex);
+	}
+
+	public void addInvocationStateBodyEqualToVerification(String state,
+			String requestBody) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addBodyEqualToVerification(invocationIndex, requestBody);
+	}
+
+	public void addInvocationStateBodyEqualToVerification(String state, DataTable dataTable) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addBodyEqualToVerification(invocationIndex, dataTable);
+	}
+
+	public void addInvocationStateHeaderAbsentVerification(String state, String headerName) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addHeaderAbsentVerification(invocationIndex, headerName);
+	}
+
+	public void addInvocationStateHeaderContainingVerification(String state,
+			String headerName,
+			String headerValue) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addHeaderContainingVerification(invocationIndex, headerName, headerValue);
+	}
+
+	public void addInvocationStateHeaderPresentVerification(String state, String headerName) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addHeaderPresentVerification(invocationIndex, headerName);
+	}
+
+	public void addInvocationStateUrlVerification(String state, String url) {
+		Integer invocationIndex = context.getMockStateIndex(mockName, state);
+		addUrlVerification(invocationIndex, url);
 	}
 
 	public void addBodyAbsentVerification(Integer invocationIndex) {
@@ -87,7 +124,9 @@ public class MockInvocationsVerifier {
 		addVerification(invocationIndex, bodyPattern);
 	}
 
-	public void addHeaderContainingVerification(Integer invocationIndex, String headerName, String headerValue) {
+	public void addHeaderContainingVerification(Integer invocationIndex,
+			String headerName,
+			String headerValue) {
 		addHeaderVerification(invocationIndex, headerName, containing(headerValue));
 	}
 
@@ -95,7 +134,9 @@ public class MockInvocationsVerifier {
 		addHeaderVerification(invocationIndex, headerName, matching(".*"));
 	}
 
-	public void addHeaderVerification(Integer invocationIndex, String headerName, StringValuePattern headerValuePattern) {
+	public void addHeaderVerification(Integer invocationIndex,
+			String headerName,
+			StringValuePattern headerValuePattern) {
 		RequestPattern bodyPattern = cloneRequestPatterBuilder()
 				.withHeader(headerName, headerValuePattern)
 				.build();
@@ -148,9 +189,13 @@ public class MockInvocationsVerifier {
 		return String.format("for invocation at index %d,%s", invocationIndex, diffMessage);
 	}
 
-	public static MockInvocationsVerifier forRequestPattern(RequestPattern requestPattern) {
+	public static MockInvocationsVerifier forRequestPattern(ScenarioContext context,
+			String mockName,
+			RequestPattern requestPattern) {
 		MockInvocationsVerifier result = new MockInvocationsVerifier();
 
+		result.mockName = mockName;
+		result.context = context;
 		result.requestPatternBuilder = RequestPatternBuilder.like(requestPattern);
 
 		return result;

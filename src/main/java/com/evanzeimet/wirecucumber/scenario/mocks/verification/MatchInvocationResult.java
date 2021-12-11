@@ -1,4 +1,4 @@
-package com.evanzeimet.wirecucumber.scenario.verification;
+package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.verification.diff.WireCucumberDiffLine;
