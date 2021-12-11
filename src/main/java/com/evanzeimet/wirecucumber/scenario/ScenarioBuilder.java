@@ -9,8 +9,6 @@ import io.cucumber.java8.Status;
 
 public class ScenarioBuilder {
 
-	// TODO call index across mocks/scenarios? timestamp comparison?
-
 	protected ScenarioContext context;
 	protected MocksBuilder mocksBuilder;
 	protected MocksInvocationsVerifier mocksVerifier;
@@ -33,26 +31,35 @@ public class ScenarioBuilder {
 		Status scenarioStatus = context.getCurrentScenario().getStatus();
 
 		if (Status.PASSED.equals(scenarioStatus)) {
-			boolean isDisabled = options.getIsDisabled();
-
-			boolean requireMockFinalization = options.getRequireMockFinalization();
-			boolean verifyMocksFinalized = (!isDisabled && requireMockFinalization);
-
-			if (verifyMocksFinalized) {
-				mocksBuilder.verifyMocksFinalized();
-			}
-
-			boolean requireMockInvocationsVerification = options.getRequireMockInvocationsVerification();
-			boolean verifyMockInvocations = (!isDisabled && requireMockInvocationsVerification);
-
-			if (verifyMockInvocations) {
-				mocksVerifier.verifyMockInvocationsVerified();
-			}
+			verifyMocksFinalized(options);
+			verifyMockInvocationsVerified(options);
 		}
 	}
 
 	public void setCurrentCucumberScenario(Scenario scenario) {
 		context.setCurrentScenario(scenario);
+	}
+
+	protected void verifyMockInvocationsVerified(WireCucumberOptions options) {
+		boolean isDisabled = options.getIsDisabled();
+
+		boolean requireMockInvocationsVerification = options.getRequireMockInvocationsVerification();
+		boolean verifyMockInvocations = (!isDisabled && requireMockInvocationsVerification);
+
+		if (verifyMockInvocations) {
+			mocksVerifier.verifyMockInvocationsVerified();
+		}
+	}
+
+	protected void verifyMocksFinalized(WireCucumberOptions options) {
+		boolean isDisabled = options.getIsDisabled();
+
+		boolean requireMockFinalization = options.getRequireMockFinalization();
+		boolean verifyMocksFinalized = (!isDisabled && requireMockFinalization);
+
+		if (verifyMocksFinalized) {
+			mocksBuilder.verifyMocksFinalized();
+		}
 	}
 
 }
