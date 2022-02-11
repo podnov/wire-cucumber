@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.16.1]
+- Fix mock verification while disabled
+
 ## [0.16.0]
 - Modify mock verification to not cause exceptions when wire-cucumber isDisabled
 

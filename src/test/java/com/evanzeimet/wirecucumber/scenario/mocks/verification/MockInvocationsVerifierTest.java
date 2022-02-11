@@ -1,7 +1,7 @@
 package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
-import static com.evanzeimet.wirecucumber.scenario.mocks.verification.MockInvocationsVerifier.BODY_FIELD_NAME;
-import static com.evanzeimet.wirecucumber.scenario.mocks.verification.MockInvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.mocks.verification.DefaultMockInvocationsVerifier.BODY_FIELD_NAME;
+import static com.evanzeimet.wirecucumber.scenario.mocks.verification.DefaultMockInvocationsVerifier.BODY_PATTERNS_FIELD_NAME;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -37,11 +37,11 @@ public class MockInvocationsVerifierTest {
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	private MockInvocationsVerifier verifier;
+	private DefaultMockInvocationsVerifier verifier;
 
 	@Before
 	public void setUp() {
-		verifier = spy(new MockInvocationsVerifier());
+		verifier = spy(new DefaultMockInvocationsVerifier());
 	}
 
 	@Test

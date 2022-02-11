@@ -2,14 +2,12 @@ package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -81,12 +79,10 @@ public class MocksInvocationsVerifierTest {
 	}
 
 	@Test
-	public void setCurrentMockInvocationsVerified_isDisabled_false() {
+	public void setCurrentMockInvocationsVerified() {
 		String givenCurrentMockName = "given-current-mock-name";
-		boolean givenIsDisabled = false;
 
 		verifier.currentMockName = givenCurrentMockName;
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
 
 		verifier.setCurrentMockInvocationsVerified();
 
@@ -94,27 +90,12 @@ public class MocksInvocationsVerifierTest {
 	}
 
 	@Test
-	public void setCurrentMockInvocationsVerified_isDisabled_true() {
-		String givenCurrentMockName = "given-current-mock-name";
-		boolean givenIsDisabled = true;
-
-		verifier.currentMockName = givenCurrentMockName;
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
-
-		verifier.setCurrentMockInvocationsVerified();
-
-		assertThat(verifier.verifiedMockNames, empty());
-	}
-
-	@Test
-	public void setAllMocksVerified_isDisabled_false() {
+	public void setAllMocksVerified() {
 		Set<String> givenMockNames = new HashSet<>(Arrays.asList("given-mock-name-1",
 				"given-mock-name-2",
 				"given-mock-name-3"));
 		Set<String> givenVerifiedMockNames = new HashSet<>();
-		boolean givenIsDisabled = false;
 
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
 		doReturn(givenMockNames).when(givenContext).getMockNames();
 
 		verifier.verifiedMockNames = givenVerifiedMockNames;
@@ -128,34 +109,11 @@ public class MocksInvocationsVerifierTest {
 	}
 
 	@Test
-	public void setAllMocksVerified_isDisabled_true() {
-		Set<String> givenMockNames = new HashSet<>(Arrays.asList("given-mock-name-1",
-				"given-mock-name-2",
-				"given-mock-name-3"));
-		Set<String> givenVerifiedMockNames = new HashSet<>();
-		boolean givenIsDisabled = true;
-
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
-		doReturn(givenMockNames).when(givenContext).getMockNames();
-
-		verifier.verifiedMockNames = givenVerifiedMockNames;
-
-		verifier.setAllMocksVerified();
-
-		Set<String> actual = verifier.verifiedMockNames;
-
-		assertThat(actual, empty());
-	}
-
-	@Test
-	public void verifyCurrentMockInvocations_isDisabled_false() throws Throwable {
-		boolean givenIsDisabled = false;
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
-
+	public void verifyCurrentMockInvocations() {
 		String givenCurrentMockName = "given-current-mock-name";
 		verifier.currentMockName = givenCurrentMockName;
 
-		MockInvocationsVerifier givenMockInvocationsVerifier = mock(MockInvocationsVerifier.class);
+		DefaultMockInvocationsVerifier givenMockInvocationsVerifier = mock(DefaultMockInvocationsVerifier.class);
 		verifier.mockInvocationsVerifier = givenMockInvocationsVerifier;
 
 		verifier.verifyCurrentMockInvocations();
@@ -169,32 +127,8 @@ public class MocksInvocationsVerifierTest {
 	}
 
 	@Test
-	public void verifyCurrentMockInvocations_isDisabled_true() throws Throwable {
-		boolean givenIsDisabled = true;
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
-
-		String givenCurrentMockName = "given-current-mock-name";
-		verifier.currentMockName = givenCurrentMockName;
-
-		MockInvocationsVerifier givenMockInvocationsVerifier = mock(MockInvocationsVerifier.class);
-		verifier.mockInvocationsVerifier = givenMockInvocationsVerifier;
-
-		verifier.verifyCurrentMockInvocations();
-
-		assertEquals(givenCurrentMockName, verifier.currentMockName);
-		assertEquals(givenMockInvocationsVerifier, verifier.mockInvocationsVerifier);
-
-		assertThat(verifier.verifiedMockNames, empty());
-
-		verify(givenMockInvocationsVerifier, never()).verify();
-	}
-
-	@Test
-	public void verifyMockInvocationsVerified_isDisabled_false_unverifiedMocks_empty() {
-		boolean givenIsDisabled = false;
+	public void verifyMockInvocationsVerified_unverifiedMocks_empty() {
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
-
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
 		doReturn(givenMockNames).when(givenContext).getMockNames();
 
 		verifier.verifiedMockNames = givenMockNames;
@@ -211,12 +145,10 @@ public class MocksInvocationsVerifierTest {
 	}
 
 	@Test
-	public void verifyMockInvocationsVerified_isDisabled_false_unverifiedMocks_notEmpty() {
-		boolean givenIsDisabled = false;
+	public void verifyMockInvocationsVerified_unverifiedMocks_notEmpty() {
 		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
 		Set<String> givenVerifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
 
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
 		doReturn(givenMockNames).when(givenContext).getMockNames();
 
 		verifier.verifiedMockNames = givenVerifiedMockNames;
@@ -235,49 +167,6 @@ public class MocksInvocationsVerifierTest {
 		String expectedExceptionMessage = "Found [2] unverified mocks [b, d]";
 
 		assertEquals(expectedExceptionMessage, actualExceptionMessage);
-	}
-
-	@Test
-	public void verifyMockInvocationsVerified_isDisabled_true_unverifiedMocks_empty() {
-		boolean givenIsDisabled = true;
-		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c"));
-
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
-		doReturn(givenMockNames).when(givenContext).getMockNames();
-
-		verifier.verifiedMockNames = givenMockNames;
-
-		WireCucumberRuntimeException actualException = null;
-
-		try {
-			verifier.verifyMockInvocationsVerified();
-		} catch (WireCucumberRuntimeException e) {
-			actualException = e;
-		}
-
-		assertNull(actualException);
-	}
-
-	@Test
-	public void verifyMockInvocationsVerified_isDisabled_true_unverifiedMocks_notEmpty() {
-		boolean givenIsDisabled = true;
-		Set<String> givenMockNames = new HashSet<String>(Arrays.asList("a", "b", "c", "d"));
-		Set<String> givenVerifiedMockNames = new HashSet<String>(Arrays.asList("a", "c"));
-
-		doReturn(givenIsDisabled).when(givenOptions).getIsDisabled();
-		doReturn(givenMockNames).when(givenContext).getMockNames();
-
-		verifier.verifiedMockNames = givenVerifiedMockNames;
-
-		WireCucumberRuntimeException actualException = null;
-
-		try {
-			verifier.verifyMockInvocationsVerified();
-		} catch (WireCucumberRuntimeException e) {
-			actualException = e;
-		}
-
-		assertNull(actualException);
 	}
 
 }

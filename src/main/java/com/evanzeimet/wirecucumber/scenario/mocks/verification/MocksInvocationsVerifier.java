@@ -31,7 +31,9 @@ public class MocksInvocationsVerifier {
 	public void bootstrapVerifier(String mockName) {
 		boolean isDisabled = options.getIsDisabled();
 
-		if (!isDisabled) {
+		if (isDisabled) {
+			mockInvocationsVerifier = new NoOpMockInvocationsVerifier();
+		} else {
 			currentMockName = mockName;
 			StubMapping stubMapping = context.getMockStateMapping(mockName, STARTED);
 
@@ -41,7 +43,7 @@ public class MocksInvocationsVerifier {
 			}
 
 			RequestPattern request = stubMapping.getRequest();
-			mockInvocationsVerifier = MockInvocationsVerifier.forRequestPattern(context, mockName, request);
+			mockInvocationsVerifier = DefaultMockInvocationsVerifier.forRequestPattern(context, mockName, request);
 		}
 	}
 
@@ -50,51 +52,35 @@ public class MocksInvocationsVerifier {
 	 * to consider all mocks verified.
 	 */
 	public void setAllMocksVerified() {
-		boolean isDisabled = options.getIsDisabled();
-
-		if (!isDisabled) {
-			for (String mockName : context.getMockNames()) {
-				verifiedMockNames.add(mockName);
-			}
+		for (String mockName : context.getMockNames()) {
+			verifiedMockNames.add(mockName);
 		}
 	}
 
 	public void setCurrentMockInvocationsVerified() {
-		boolean isDisabled = options.getIsDisabled();
-
-		if (!isDisabled) {
-			verifiedMockNames.add(currentMockName);
-		}
+		verifiedMockNames.add(currentMockName);
 	}
 
 	public void verifyCurrentMockInvocations() {
-		boolean isDisabled = options.getIsDisabled();
+		mockInvocationsVerifier.verify();
+		mockInvocationsVerifier = null;
 
-		if (!isDisabled) {
-			mockInvocationsVerifier.verify();
-			mockInvocationsVerifier = null;
-
-			setCurrentMockInvocationsVerified();
-			currentMockName = null;
-		}
+		setCurrentMockInvocationsVerified();
+		currentMockName = null;
 	}
 
 	public void verifyMockInvocationsVerified() {
-		boolean isDisabled = options.getIsDisabled();
+		Set<String> mockNames = context.getMockNames();
+		Set<String> unverifiedMocks = new HashSet<>(mockNames);
+		unverifiedMocks.removeAll(verifiedMockNames);
 
-		if (!isDisabled) {
-			Set<String> mockNames = context.getMockNames();
-			Set<String> unverifiedMocks = new HashSet<>(mockNames);
-			unverifiedMocks.removeAll(verifiedMockNames);
+		int unverifiedMockCount = unverifiedMocks.size();
 
-			int unverifiedMockCount = unverifiedMocks.size();
-
-			if (unverifiedMockCount > 0) {
-				String message = String.format("Found [%s] unverified mocks %s",
-						unverifiedMockCount,
-						unverifiedMocks);
-				throw new WireCucumberRuntimeException(message);
-			}
+		if (unverifiedMockCount > 0) {
+			String message = String.format("Found [%s] unverified mocks %s",
+					unverifiedMockCount,
+					unverifiedMocks);
+			throw new WireCucumberRuntimeException(message);
 		}
 	}
 
