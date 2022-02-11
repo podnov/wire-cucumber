@@ -128,12 +128,14 @@ CUCUMBER_FILTER_TAGS='@multipleInvocations' ./gradlew clean test --tests **WireC
 
 ### How do I publish to sonatype?
 ```
-# update gradle.properties version
 ./gradlew build
 # Update CHANGELOG.md
 # commit
 # push main
 # check github build results
+# update gradle.properties version
+./gradlew build
+# commit version rev
 # tag
 ./gradlew uploadArchives
 # update gradle.properties version
