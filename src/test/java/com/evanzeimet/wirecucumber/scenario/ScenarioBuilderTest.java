@@ -3,6 +3,7 @@ package com.evanzeimet.wirecucumber.scenario;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -23,10 +24,13 @@ public class ScenarioBuilderTest {
 	private ScenarioContext givenContext;
 	private MocksBuilder givenMocksBuilder;
 	private MocksInvocationsVerifier givenMocksVerifier;
+	private WireCucumberOptions givenOptions;
 
 	@Before
 	public void setUp() {
-		builder = new ScenarioBuilder();
+		givenOptions = spy(new WireCucumberOptions());
+
+		builder = new ScenarioBuilder(givenOptions);
 
 		givenContext = mock(ScenarioContext.class);
 		builder.context = givenContext;

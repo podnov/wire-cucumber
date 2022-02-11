@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.ScenarioContext;
 import com.evanzeimet.wirecucumber.scenario.mocks.MockStateKey;
@@ -21,8 +22,10 @@ public class MocksBuilder {
 	protected Integer currentMockStateIndex;
 	protected String currentMockName;
 	protected String currentMockState;
+	protected WireCucumberOptions options;
 
-	public MocksBuilder(ScenarioContext context) {
+	public MocksBuilder(WireCucumberOptions options, ScenarioContext context) {
+		this.options = options;
 		this.context = context;
 	}
 
@@ -78,8 +81,10 @@ public class MocksBuilder {
 		return (currentMockName != null);
 	}
 
-	public void finalizeMock(boolean isDisabled) {
+	public void finalizeMock() {
 		validateMockStateUnused();
+
+		boolean isDisabled = options.getIsDisabled();
 
 		if (!isDisabled) {
 			StubMapping stubMapping = mockBuilder.finalizeMock(currentMockState);

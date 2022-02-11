@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.ScenarioContext;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
@@ -15,9 +16,11 @@ public class MocksInvocationsVerifier {
 	protected ScenarioContext context;
 	protected String currentMockName;
 	protected MockInvocationsVerifier mockInvocationsVerifier;
+	protected WireCucumberOptions options;
 	protected Set<String> verifiedMockNames = new HashSet<>();
 
-	public MocksInvocationsVerifier(ScenarioContext context) {
+	public MocksInvocationsVerifier(WireCucumberOptions options, ScenarioContext context) {
+		this.options = options;
 		this.context = context;
 	}
 
@@ -26,16 +29,20 @@ public class MocksInvocationsVerifier {
 	}
 
 	public void bootstrapVerifier(String mockName) {
-		currentMockName = mockName;
-		StubMapping stubMapping = context.getMockStateMapping(mockName, STARTED);
+		boolean isDisabled = options.getIsDisabled();
 
-		if (stubMapping == null) {
-			String message = String.format("No mock found for name [%s]", mockName);
-			throw new WireCucumberRuntimeException(message);
+		if (!isDisabled) {
+			currentMockName = mockName;
+			StubMapping stubMapping = context.getMockStateMapping(mockName, STARTED);
+
+			if (stubMapping == null) {
+				String message = String.format("No mock found for name [%s]", mockName);
+				throw new WireCucumberRuntimeException(message);
+			}
+
+			RequestPattern request = stubMapping.getRequest();
+			mockInvocationsVerifier = MockInvocationsVerifier.forRequestPattern(context, mockName, request);
 		}
-
-		RequestPattern request = stubMapping.getRequest();
-		mockInvocationsVerifier = MockInvocationsVerifier.forRequestPattern(context, mockName, request);
 	}
 
 	/**
@@ -43,35 +50,51 @@ public class MocksInvocationsVerifier {
 	 * to consider all mocks verified.
 	 */
 	public void setAllMocksVerified() {
-		for (String mockName : context.getMockNames()) {
-			verifiedMockNames.add(mockName);
+		boolean isDisabled = options.getIsDisabled();
+
+		if (!isDisabled) {
+			for (String mockName : context.getMockNames()) {
+				verifiedMockNames.add(mockName);
+			}
 		}
 	}
 
 	public void setCurrentMockInvocationsVerified() {
-		verifiedMockNames.add(currentMockName);
+		boolean isDisabled = options.getIsDisabled();
+
+		if (!isDisabled) {
+			verifiedMockNames.add(currentMockName);
+		}
 	}
 
 	public void verifyCurrentMockInvocations() {
-		mockInvocationsVerifier.verify();
-		mockInvocationsVerifier = null;
+		boolean isDisabled = options.getIsDisabled();
 
-		setCurrentMockInvocationsVerified();
-		currentMockName = null;
+		if (!isDisabled) {
+			mockInvocationsVerifier.verify();
+			mockInvocationsVerifier = null;
+
+			setCurrentMockInvocationsVerified();
+			currentMockName = null;
+		}
 	}
 
 	public void verifyMockInvocationsVerified() {
-		Set<String> mockNames = context.getMockNames();
-		Set<String> unverifiedMocks = new HashSet<>(mockNames);
-		unverifiedMocks.removeAll(verifiedMockNames);
+		boolean isDisabled = options.getIsDisabled();
 
-		int unverifiedMockCount = unverifiedMocks.size();
+		if (!isDisabled) {
+			Set<String> mockNames = context.getMockNames();
+			Set<String> unverifiedMocks = new HashSet<>(mockNames);
+			unverifiedMocks.removeAll(verifiedMockNames);
 
-		if (unverifiedMockCount > 0) {
-			String message = String.format("Found [%s] unverified mocks %s",
-					unverifiedMockCount,
-					unverifiedMocks);
-			throw new WireCucumberRuntimeException(message);
+			int unverifiedMockCount = unverifiedMocks.size();
+
+			if (unverifiedMockCount > 0) {
+				String message = String.format("Found [%s] unverified mocks %s",
+						unverifiedMockCount,
+						unverifiedMocks);
+				throw new WireCucumberRuntimeException(message);
+			}
 		}
 	}
 

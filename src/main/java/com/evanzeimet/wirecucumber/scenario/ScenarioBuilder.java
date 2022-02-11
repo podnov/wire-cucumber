@@ -13,10 +13,10 @@ public class ScenarioBuilder {
 	protected MocksBuilder mocksBuilder;
 	protected MocksInvocationsVerifier mocksVerifier;
 
-	public ScenarioBuilder() {
+	public ScenarioBuilder(WireCucumberOptions options) {
 		this.context = new ScenarioContext();
-		this.mocksBuilder = new MocksBuilder(context);
-		this.mocksVerifier = new MocksInvocationsVerifier(context);
+		this.mocksBuilder = new MocksBuilder(options, context);
+		this.mocksVerifier = new MocksInvocationsVerifier(options, context);
 	}
 
 	public MocksBuilder getMocksBuilder() {

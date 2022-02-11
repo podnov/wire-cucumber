@@ -19,8 +19,7 @@ public class WireCucumberStepDefinitions
 
 	protected static final WireCucumberUtils utils = new WireCucumberUtils();
 
-	protected WireCucumberOptions options;
-	protected ScenarioBuilder scenarioBuilder = new ScenarioBuilder();
+	protected ScenarioBuilder scenarioBuilder;
 
 	public ScenarioBuilder getScenarioBuilder() {
 		return scenarioBuilder;
@@ -188,14 +187,13 @@ public class WireCucumberStepDefinitions
 
 	protected A0 finalizeMock() {
 		return () -> {
-			boolean isDisabled = options.getIsDisabled();
 			scenarioBuilder.getMocksBuilder()
-					.finalizeMock(isDisabled);
+					.finalizeMock();
 		};
 	}
 
 	public void initialize(WireCucumberOptions options) {
-		this.options = options;
+		scenarioBuilder = new ScenarioBuilder(options);
 
 		Before(beforeScenario());
 

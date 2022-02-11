@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.16.0]
+- Modify mock verification to not cause exceptions when wire-cucumber isDisabled
+
 ## [0.15.0]
 - Refactor to separate out building and verifying
 

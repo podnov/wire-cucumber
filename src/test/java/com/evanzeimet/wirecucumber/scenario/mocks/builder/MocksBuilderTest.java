@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.ScenarioContext;
 import com.evanzeimet.wirecucumber.scenario.mocks.MockStateKey;
@@ -29,11 +30,14 @@ public class MocksBuilderTest {
 
 	private MocksBuilder builder;
 	private ScenarioContext givenContext;
+	private WireCucumberOptions givenOptions;
 
 	@Before
 	public void setUp() {
 		givenContext = spy(new ScenarioContext());
-		builder = spy(new MocksBuilder(givenContext));
+		givenOptions = spy(new WireCucumberOptions());
+
+		builder = spy(new MocksBuilder(givenOptions, givenContext));
 	}
 
 	@Test
@@ -99,11 +103,15 @@ public class MocksBuilderTest {
 		builder.mockBuilder = givenMockBuilder;
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 
+		doReturn(givenIsDisabled)
+			.when(givenOptions)
+				.getIsDisabled();
+
 		doReturn(givenStubMapping)
 			.when(givenMockBuilder)
 			.createStubForBuilders(anyString());
 
-		builder.finalizeMock(givenIsDisabled);
+		builder.finalizeMock();
 
 		assertNull(builder.currentMockName);
 		assertNull(builder.currentMockState);
@@ -129,7 +137,11 @@ public class MocksBuilderTest {
 		builder.currentMockStateIndex = givenCurrentMockStateIndex;
 		builder.mockBuilder = givenMockBuilder;
 
-		builder.finalizeMock(givenIsDisabled);
+		doReturn(givenIsDisabled)
+				.when(givenOptions)
+				.getIsDisabled();
+
+		builder.finalizeMock();
 
 		assertNull(builder.currentMockName);
 		assertNull(builder.currentMockState);
@@ -149,10 +161,14 @@ public class MocksBuilderTest {
 
 		builder.currentMockName = givenCurrentMockName;
 
+		doReturn(givenIsDisabled)
+				.when(givenOptions)
+				.getIsDisabled();
+
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.finalizeMock(givenIsDisabled);
+			builder.finalizeMock();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
@@ -178,10 +194,14 @@ public class MocksBuilderTest {
 		builder.transitionMockState(givenNextMockState);
 		builder.putCurrentMockStateStubMapping(null);
 
+		doReturn(givenIsDisabled)
+				.when(givenOptions)
+				.getIsDisabled();
+
 		WireCucumberRuntimeException actualException = null;
 
 		try {
-			builder.finalizeMock(givenIsDisabled);
+			builder.finalizeMock();
 		} catch (WireCucumberRuntimeException e) {
 			actualException = e;
 		}
