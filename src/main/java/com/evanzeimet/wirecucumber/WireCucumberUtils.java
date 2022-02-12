@@ -30,6 +30,10 @@ public class WireCucumberUtils {
 		return result;
 	}
 
+	public String createIsDisabledSkippingMessage(String skipping) {
+		return String.format("Skipping %s due to wire-cucumber being disabled", skipping);
+	}
+
 	public List<String> getNodeFieldNames(ObjectNode node) {
 		Iterator<String> fieldNames = node.fieldNames();
 		return Lists.newArrayList(fieldNames);

@@ -2,6 +2,7 @@ package com.evanzeimet.wirecucumber;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -54,6 +55,17 @@ public class WireCucumberUtilsTest {
 		}
 
 		assertNotNull(actual);
+	}
+
+	@Test
+	public void createIsDisabledSkipMessage() {
+		String givenSkipped = "given-skipped";
+
+		String actual = utils.createIsDisabledSkippingMessage(givenSkipped);
+
+		String expected = "Skipping given-skipped due to wire-cucumber being disabled";
+
+		assertEquals(expected, actual);
 	}
 
 	@Test

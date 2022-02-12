@@ -14,6 +14,7 @@ public class WireCucumber
 	protected static final String host = "localhost";
 
 	private static final Logger logger = LoggerFactory.getLogger(WireCucumber.class);
+	private static final WireCucumberUtils utils = new WireCucumberUtils();
 
 	protected WireCucumberOptions options;
 	protected WireCucumberStepDefinitions stepDefinitions;
@@ -62,7 +63,9 @@ public class WireCucumber
 
 	public void startWireMockServer() {
 		if (options.getIsDisabled()) {
-			logger.info("Skipping wire-cucumber start due to being disabled");
+			String skipping = "wiremock server start";
+			String message = utils.createIsDisabledSkippingMessage(skipping);
+			logger.info(message);
 		} else {
 			Options wireMockOptions = options.getWireMockOptions();
 			wireMockServer = new WireMockServer(wireMockOptions);

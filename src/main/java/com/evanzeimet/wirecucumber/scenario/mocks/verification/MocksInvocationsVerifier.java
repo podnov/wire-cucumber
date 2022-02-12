@@ -32,7 +32,7 @@ public class MocksInvocationsVerifier {
 		boolean isDisabled = options.getIsDisabled();
 
 		if (isDisabled) {
-			mockInvocationsVerifier = new NoOpMockInvocationsVerifier();
+			mockInvocationsVerifier = new NoOpMockInvocationsVerifier(mockName);
 		} else {
 			currentMockName = mockName;
 			StubMapping stubMapping = context.getMockStateMapping(mockName, STARTED);

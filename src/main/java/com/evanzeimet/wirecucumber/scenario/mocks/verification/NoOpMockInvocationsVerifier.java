@@ -1,5 +1,9 @@
 package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.evanzeimet.wirecucumber.WireCucumberUtils;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 
@@ -8,10 +12,15 @@ import io.cucumber.datatable.DataTable;
 public class NoOpMockInvocationsVerifier
 		implements MockInvocationsVerifier {
 
+	private static final Logger logger = LoggerFactory.getLogger(NoOpMockInvocationsVerifier.class);
+	private static final WireCucumberUtils utils = new WireCucumberUtils();
+
+	private String mockName;
 	private RequestPatternBuilder requestPatternBuilder;
 
-	public NoOpMockInvocationsVerifier() {
-		requestPatternBuilder = RequestPatternBuilder.newRequestPattern();
+	public NoOpMockInvocationsVerifier(String mockName) {
+		this.mockName = mockName;
+		this.requestPatternBuilder = RequestPatternBuilder.newRequestPattern();
 	}
 
 	@Override
@@ -84,6 +93,11 @@ public class NoOpMockInvocationsVerifier
 
 	}
 
+	protected String createSkippingVerifyMessage() {
+		String skipping = String.format("%s mock verification", mockName);
+		return utils.createIsDisabledSkippingMessage(skipping);
+	}
+
 	@Override
 	public void setExpectedMockInvocationCount(Integer count) {
 
@@ -91,7 +105,8 @@ public class NoOpMockInvocationsVerifier
 
 	@Override
 	public void verify() {
-
+		String message = createSkippingVerifyMessage();
+		logger.info(message);
 	}
 
 	@Override

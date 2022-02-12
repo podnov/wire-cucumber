@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.16.2]
+- Add log message when performaing no-op mock verification
+
 ## [0.16.1]
 - Fix mock verification while disabled
 
