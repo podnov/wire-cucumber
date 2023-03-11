@@ -3,7 +3,7 @@ plugins {
 	id 'java-library'
 	id 'maven-publish'
 }
-apply plugin: 'maven'
+
 apply plugin: 'signing'
 
 repositories {
@@ -13,6 +13,11 @@ repositories {
 ext {
 	cucumberVersion = "6.10.4"
 	isReleaseVersion = !version.endsWith("SNAPSHOT")
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
 }
 
 compileJava {
@@ -38,16 +43,6 @@ test {
 	finalizedBy jacocoTestReport
 }
 
-task javadocJar(type: Jar) {
-	classifier = 'javadoc'
-	from javadoc
-}
-
-task sourcesJar(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
 artifacts {
 	archives javadocJar, sourcesJar
 }
@@ -58,9 +53,7 @@ signing {
 }
 
 jacocoTestReport {
-	reports {
-		xml.enabled true
-	}
+	dependsOn test
 
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
@@ -91,6 +84,8 @@ publishing {
 	}
 }
 
+
+/**
 uploadArchives {
 	repositories {
 		mavenDeployer {
@@ -135,3 +130,5 @@ uploadArchives {
 		}
 	}
 }
+
+**/
