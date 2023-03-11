@@ -25,8 +25,10 @@ import org.junit.Test;
 import com.evanzeimet.wirecucumber.TestUtils;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
+import com.github.tomakehurst.wiremock.http.Cookie;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
+import com.github.tomakehurst.wiremock.http.Request.Part;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
@@ -137,17 +139,29 @@ public class MockInvocationsVerifierTest {
 	}
 
 	protected LoggedRequest createGivenLoggedRequest() {
-		return new LoggedRequest("given-invocation-url",
-				"http://given-invocation-absolute-url/",
-				RequestMethod.DELETE,
-				"127.0.0.1",
-				new HttpHeaders(),
-				Collections.emptyMap(),
-				false,
-				new Date(),
-				new byte[] {},
-				Collections.emptyList(),
-				"http");
+		String url = "given-invocation-url";
+		String absoluteUrl = "http://given-invocation-absolute-url/";
+		RequestMethod method = RequestMethod.DELETE;
+		String clientIp = "127.0.0.1";
+		HttpHeaders headers = new HttpHeaders();
+		Map<String, Cookie> cookies = Collections.emptyMap();
+		boolean isBrowserProxyRequest = false;
+		Date loggedDate = new Date();
+		byte[] body = new byte[] {};
+		List<Part> multiparts = Collections.emptyList();
+		String protocol = "http";
+
+		return new LoggedRequest(url,
+				absoluteUrl,
+				method,
+				clientIp,
+				headers,
+				cookies,
+				isBrowserProxyRequest,
+				loggedDate,
+				body,
+				multiparts,
+				protocol);
 	}
 
 	@SuppressWarnings("unused")
