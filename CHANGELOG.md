@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.16.3]
+- Add request body matching
+
 ## [0.16.2]
 - Add log message when performaing no-op mock verification
 
