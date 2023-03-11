@@ -146,7 +146,8 @@ public class MockInvocationsVerifierTest {
 				false,
 				new Date(),
 				new byte[] {},
-				Collections.emptyList());
+				Collections.emptyList(),
+				"http");
 	}
 
 	@SuppressWarnings("unused")

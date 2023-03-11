@@ -8,8 +8,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.patch;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static org.apache.http.HttpHeaders.ACCEPT;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
+import static org.eclipse.jetty.http.HttpHeader.CONTENT_TYPE;
 
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.WireCucumberUtils;
@@ -97,11 +97,11 @@ public class MockBuilder {
 	}
 
 	public ScenarioMappingBuilder requestBuilderWithAccept(StringValuePattern value) {
-		return requestBuilderWithHeader(ACCEPT, value);
+		return requestBuilderWithHeader(ACCEPT.asString(), value);
 	}
 
 	public ScenarioMappingBuilder requestBuilderWithContentType(StringValuePattern value) {
-		return requestBuilderWithHeader(CONTENT_TYPE, value);
+		return requestBuilderWithHeader(CONTENT_TYPE.asString(), value);
 	}
 
 	public ScenarioMappingBuilder requestBuilderWithHeader(String headerName, StringValuePattern headerValuePattern) {
@@ -130,7 +130,7 @@ public class MockBuilder {
 	}
 
 	public ResponseDefinitionBuilder responseBuilderWithContentType(String contentType) {
-		return responseBuilderWithHeader(CONTENT_TYPE, contentType);
+		return responseBuilderWithHeader(CONTENT_TYPE.asString(), contentType);
 	}
 
 	public ResponseDefinitionBuilder responseBuilderWithHeader(String headerName, String headerValue) {

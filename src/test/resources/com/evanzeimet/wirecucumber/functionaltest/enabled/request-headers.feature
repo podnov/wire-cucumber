@@ -184,11 +184,11 @@ Scenario: Header containing, multiple requests, bad match
 	  "url" : "/hello-world",
 	  "method" : "POST",
 	  "headers" : {
+	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1",
 	    "Accept" : "*/*",
-	    "Connection" : "keep-alive",
-	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
-	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
+	    "Connection" : "keep-alive",
+	    "Accept-Encoding" : "gzip,deflate"
 	  }
 	}>
 	"""
@@ -379,11 +379,11 @@ Scenario: Header present, multiple requests, bad match
 	  "url" : "/hello-world",
 	  "method" : "POST",
 	  "headers" : {
+	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1",
 	    "Accept" : "*/*",
-	    "Connection" : "keep-alive",
-	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
-	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
+	    "Connection" : "keep-alive",
+	    "Accept-Encoding" : "gzip,deflate"
 	  }
 	}>
 	"""
@@ -572,11 +572,11 @@ Scenario: Header absent, multiple requests, bad match
 	  "url" : "/hello-world",
 	  "method" : "POST",
 	  "headers" : {
+	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1",
 	    "Accept" : "*/*",
-	    "Connection" : "keep-alive",
-	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
-	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
+	    "Connection" : "keep-alive",
+	    "Accept-Encoding" : "gzip,deflate"
 	  }
 	}>
 	for invocation at index 1, expected:<
@@ -593,11 +593,11 @@ Scenario: Header absent, multiple requests, bad match
 	  "url" : "/hello-world",
 	  "method" : "POST",
 	  "headers" : {
+	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1",
 	    "Accept" : "*/*",
-	    "Connection" : "keep-alive",
-	    "Accept-Encoding" : "gzip,deflate",
 	    "Content-Length" : "0",
-	    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
+	    "Connection" : "keep-alive",
+	    "Accept-Encoding" : "gzip,deflate"
 	  }
 	}>
 	"""

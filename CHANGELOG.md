@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Upgrade wiremock from `2.31.0` to `2.35.0`
 
 ## [0.16.3]
 - Add request body matching
