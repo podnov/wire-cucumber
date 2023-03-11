@@ -16,6 +16,7 @@ import com.evanzeimet.wirecucumber.WireCucumberUtils;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.ScenarioMappingBuilder;
+import com.github.tomakehurst.wiremock.matching.ContentPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -109,6 +110,10 @@ public class MockBuilder {
 
 	public ScenarioMappingBuilder requestBuilderWithQueryParam(String key, StringValuePattern pattern) {
 		return requestBuilder.withQueryParam(key, pattern);
+	}
+
+	public ScenarioMappingBuilder requestBuilderWithRequestBody(ContentPattern<?> bodyPattern) {
+		return requestBuilder.withRequestBody(bodyPattern);
 	}
 
 	public ResponseDefinitionBuilder responseBuilderWithBody(String body) {

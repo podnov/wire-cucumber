@@ -205,6 +205,7 @@ public class WireCucumberStepDefinitions
 
 		Given("that wire mock expects a url query string parameter {string} equal to {string}", setMockWithQueryParamEqualTo());
 		Given("that wire mock expects a url query string parameter {string} matching {string}", setMockWithQueryParamMatching());
+		Given("that wire mock expects this request body:", setMockWithRequestBody());
 
 		Given("that wire mock accepts {string}", setMockWithAcceptContaining());
 		Given("that wire mock content type is {string}", setMockWithContentTypeContaining());
@@ -316,6 +317,14 @@ public class WireCucumberStepDefinitions
 		};
 	}
 
+	protected A1<String> setMockWithContentTypeContaining() {
+		return (value) -> {
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
+					.requestBuilderWithContentType(containing(value));
+		};
+	}
+
 	protected A2<String, String> setMockWithQueryParamEqualTo() {
 		return (key, value) -> {
 			scenarioBuilder.getMocksBuilder()
@@ -332,11 +341,11 @@ public class WireCucumberStepDefinitions
 		};
 	}
 
-	protected A1<String> setMockWithContentTypeContaining() {
+	protected A1<String> setMockWithRequestBody() {
 		return (value) -> {
 			scenarioBuilder.getMocksBuilder()
 					.mockBuilder()
-					.requestBuilderWithContentType(containing(value));
+					.requestBuilderWithRequestBody(equalTo(value));
 		};
 	}
 

@@ -15,6 +15,7 @@ Given a wire mock named {string} that handles (the ){word} verb with a url path 
 
 Given that wire mock expects a url query string parameter {string} equal to {string}
 Given that wire mock expects a url query string parameter {string} matching {string}
+Given that wire mock expects this request body:
 Given that wire mock accepts {string}
 Given that wire mock content type is {string}
 Given that wire mock will return a response with status {int}
