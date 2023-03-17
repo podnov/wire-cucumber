@@ -1,4 +1,7 @@
 ## [Unreleased]
+- Fix skip all mocks verification verbiage
+
+## [0.17.1]
 - Fix for scenario state transition while disabled
 - Support mock verification skipping
 

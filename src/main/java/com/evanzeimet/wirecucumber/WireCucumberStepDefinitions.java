@@ -312,7 +312,7 @@ public class WireCucumberStepDefinitions
 
 		Then("the invocations of that wire mock are verified", verifyMockInvocations());
 
-		Then("I want to skip verifying invocations of the all wire mocks", setSkipAllMockInvocationsToBeVerified());
+		Then("I want to skip verifying invocations of all wire mocks", setSkipAllMockInvocationsToBeVerified());
 		Then("I want to skip verifying invocations of the wire mock named {string}", setSkipMockInvocationsToBeVerified());
 
 		After(afterScenario(options));

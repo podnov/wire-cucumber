@@ -11,7 +11,7 @@ Scenario: Skip verifying all mocks
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello Galaxy"
 	And that wire mock is finalized
-	Then I want to skip verifying invocations of the all wire mocks
+	Then I want to skip verifying invocations of all wire mocks
 
 
 

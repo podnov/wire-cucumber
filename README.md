@@ -61,7 +61,7 @@ Then the request at invocation index {int} should have had url {string}
 Then the request at scenario state {string} should have had url {string}
 
 Then the invocations of that wire mock are verified
-Then I want to skip verifying invocations of the all wire mocks
+Then I want to skip verifying invocations of all wire mocks
 Then I want to skip verifying invocations of the wire mock named {string}
 ```
 
