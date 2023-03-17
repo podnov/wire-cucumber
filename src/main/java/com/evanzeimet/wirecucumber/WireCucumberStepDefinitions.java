@@ -312,6 +312,9 @@ public class WireCucumberStepDefinitions
 
 		Then("the invocations of that wire mock are verified", verifyMockInvocations());
 
+		Then("I want to skip verifying invocations of the all wire mocks", setSkipAllMockInvocationsToBeVerified());
+		Then("I want to skip verifying invocations of the wire mock named {string}", setSkipMockInvocationsToBeVerified());
+
 		After(afterScenario(options));
 	}
 
@@ -413,6 +416,27 @@ public class WireCucumberStepDefinitions
 		};
 	}
 
+	protected A1<String> setScenarioState() {
+		return (newState) -> {
+			scenarioBuilder.getMocksBuilder()
+					.transitionScenarioState(newState);
+		};
+	}
+
+	protected A0 setSkipAllMockInvocationsToBeVerified() {
+		return () -> {
+			scenarioBuilder.getMocksInvocationsVerifier()
+				.setAllMocksVerified();
+		};
+	}
+
+	protected A1<String> setSkipMockInvocationsToBeVerified() {
+		return (mockName) -> {
+			scenarioBuilder.getMocksInvocationsVerifier()
+			.setMockVerified(mockName);
+		};
+	}
+
 	protected A1<String> setVerifyMockHeaderAbsent() {
 		return (name) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
@@ -434,13 +458,6 @@ public class WireCucumberStepDefinitions
 			scenarioBuilder.getMocksInvocationsVerifier()
 					.getMockInvocationsVerifier()
 					.withHeaderPresent(name);
-		};
-	}
-
-	protected A1<String> setScenarioState() {
-		return (newState) -> {
-			scenarioBuilder.getMocksBuilder()
-					.transitionScenarioState(newState);
 		};
 	}
 

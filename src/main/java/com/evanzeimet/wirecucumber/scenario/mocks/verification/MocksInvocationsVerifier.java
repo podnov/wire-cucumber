@@ -52,12 +52,16 @@ public class MocksInvocationsVerifier {
 	 */
 	public void setAllMocksVerified() {
 		for (String mockName : context.getMockNames()) {
-			verifiedMockNames.add(mockName);
+			setMockVerified(mockName);
 		}
 	}
 
 	public void setCurrentMockInvocationsVerified() {
-		verifiedMockNames.add(currentMockName);
+		setMockVerified(currentMockName);
+	}
+
+	public void setMockVerified(String mockName) {
+		verifiedMockNames.add(mockName);
 	}
 
 	public void verifyCurrentMockInvocations() {

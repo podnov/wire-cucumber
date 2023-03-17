@@ -1,5 +1,6 @@
 ## [Unreleased]
 - Fix for scenario state transition while disabled
+- Support mock verification skipping
 
 ## [0.17.0]
 - Refactor for mock vs scenario state
