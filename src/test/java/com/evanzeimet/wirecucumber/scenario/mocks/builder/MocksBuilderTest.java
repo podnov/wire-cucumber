@@ -13,6 +13,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -289,7 +290,7 @@ public class MocksBuilderTest {
 	}
 
 	@Test
-	public void transitionMockState() {
+	public void transitionScenarioState() {
 		String givenCurrentMockName = "given-current-mock-name";
 		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
 		Integer givenCurrentMockScenarioStateIndex = 42;
@@ -315,6 +316,24 @@ public class MocksBuilderTest {
 		assertEquals(givenNextMockState, builder.expectedScenarioState);
 
 		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockScenarioStateIndex);
+	}
+
+	@Test
+	public void transitionScenarioState_isDisabled() {
+		Boolean givenIsDisabled = true;
+		String givenNextMockState = "given-next-scenario-state";
+		MockBuilder givenMockBuilder = mock(MockBuilder.class);
+
+		builder.mockBuilder = givenMockBuilder;
+
+		doReturn(givenIsDisabled)
+			.when(givenOptions)
+			.getIsDisabled();
+
+		builder.transitionScenarioState(givenNextMockState);
+
+		assertEquals(givenNextMockState, builder.expectedScenarioState);
+		verifyNoInteractions(givenMockBuilder);
 	}
 
 	@Test

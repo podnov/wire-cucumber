@@ -9,6 +9,7 @@ import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.ScenarioContext;
 import com.evanzeimet.wirecucumber.scenario.mocks.MockStateKey;
+import com.evanzeimet.wirecucumber.util.Execution;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
@@ -85,15 +86,20 @@ public class MocksBuilder {
 	public void finalizeMock() {
 		validateMockStateUnused();
 
-		boolean isDisabled = options.getIsDisabled();
-
-		if (!isDisabled) {
+		ifEnabled(() -> {
 			StubMapping stubMapping = mockBuilder.finalizeMock(expectedScenarioState);
 			putCurrentMockStateStubMapping(stubMapping);
-		}
+		});
 
 		currentMockName = null;
 		currentMockScenarioStateIndex = -1;
+	}
+
+	protected void ifEnabled(Execution execution) {
+		boolean isDisabled = options.getIsDisabled();
+		if (!isDisabled) {
+			execution.execute();
+		}
 	}
 
 	protected void putCurrentMockStateStubMapping(StubMapping stubMapping) {
@@ -102,8 +108,11 @@ public class MocksBuilder {
 	}
 
 	public void transitionScenarioState(String nextState) {
-		StubMapping stubMapping = mockBuilder.setRequestBuilderState(expectedScenarioState, nextState);
-		putCurrentMockStateStubMapping(stubMapping);
+		ifEnabled(() -> {
+			StubMapping stubMapping = mockBuilder.setRequestBuilderState(expectedScenarioState, nextState);
+			putCurrentMockStateStubMapping(stubMapping);
+		});
+
 		expectedScenarioState = nextState;
 	}
 

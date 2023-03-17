@@ -1,3 +1,6 @@
+## [Unreleased]
+- Fix for scenario state transition while disabled
+
 ## [0.17.0]
 - Refactor for mock vs scenario state
 

@@ -1,7 +1,7 @@
 @multipleMocksMultipleInvocations
 Feature: Wire Cucumber Multiple Mocks with Multiple Invocation Tests
 
-@current
+
 Scenario: Multiple mocks with calls verifying specific invocation state details
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200

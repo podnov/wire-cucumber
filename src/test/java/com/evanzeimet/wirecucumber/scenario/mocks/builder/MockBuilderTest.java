@@ -37,7 +37,7 @@ public class MockBuilderTest {
 	}
 
 	@Test
-	public void finalizeRequestMock() throws Throwable {
+	public void finalizeMock() {
 		String givenScenarioState = "given-current-scenario-state";
 		StubMapping givenStubmapping = mock(StubMapping.class);
 
