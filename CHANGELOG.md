@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [0.17.2]
 - Fix skip all mocks verification verbiage
 
 ## [0.17.1]
