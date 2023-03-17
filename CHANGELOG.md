@@ -1,4 +1,7 @@
-## [Unreleased]
+## [0.17.0]
+- Refactor for mock vs scenario state
+
+## [0.16.4]
 - Upgrade wiremock from `2.31.0` to `2.35.0`
 
 ## [0.16.3]
