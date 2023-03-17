@@ -1,15 +1,14 @@
 @multipleInvocations
 Feature: Wire Cucumber Multiple Invocation Tests
 
-@current
 Scenario: Multiple calls verifying specific invocation state details
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -34,22 +33,22 @@ Scenario: Multiple calls verifying specific invocation state details
 	And the response body should be "Hello World 3"
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request at invocation state "Started" should have had body:
+	And the request at the default scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-0"
 	}
 	"""
-	And the request at invocation state "Started" should have had header "Content-Type" present
-	And the request at invocation state "call 2" should have had an empty body
-	And the request at invocation state "call 3" should have had body:
+	And the request at the default scenario state should have had header "Content-Type" present
+	And the request at the "call 2" scenario state should have had an empty body
+	And the request at the "call 3" scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-2"
 	}
 	"""
-	And the request at invocation state "call 3" should have had header "Content-Type" containing "application/json"
-	And the request at invocation state "call 3" should have had header "Content-Type-O" absent
+	And the request at the "call 3" scenario state should have had header "Content-Type" containing "application/json"
+	And the request at the "call 3" scenario state should have had header "Content-Type-O" absent
 	And the invocations of that wire mock are verified
 
 
@@ -57,10 +56,10 @@ Scenario: Multiple calls verifying specific invocation state details with data t
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -81,13 +80,13 @@ Scenario: Multiple calls verifying specific invocation state details with data t
 	And the response body should be "Hello World 3"
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request at invocation state "Started" should have had body records:
+	And the request at the default scenario state should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | green        | Milky Way |
 	| given-world-3 | grey         | Milky Way |
-	And the request at invocation state "call 2" should have had an empty body
-	And the request at invocation state "call 3" should have had body records:
+	And the request at the "call 2" scenario state should have had an empty body
+	And the request at the "call 3" scenario state should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | blue         | Milky Way |
 	| given-world-2 | yellow       | Milky Way |
@@ -99,10 +98,10 @@ Scenario: Multiple calls on the same mock with differing results, invocation sta
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -127,17 +126,17 @@ Scenario: Multiple calls on the same mock with differing results, invocation sta
 	And the response body should be "Hello World 3"
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request at invocation state "Started" should have had url "/hello-world"
-	And the request at invocation state "Started" should have had body:
+	And the request at the default scenario state should have had url "/hello-world"
+	And the request at the default scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-0"
 	}
 	"""
-	And the request at invocation state "call 2" should have had url "/hello-world/world-two"
-	And the request at invocation state "call 2" should have had an empty body
-	And the request at invocation state "call 3" should have had url "/hello-world/world-three"
-	And the request at invocation state "call 3" should have had body:
+	And the request at the "call 2" scenario state should have had url "/hello-world/world-two"
+	And the request at the "call 2" scenario state should have had an empty body
+	And the request at the "call 3" scenario state should have had url "/hello-world/world-three"
+	And the request at the "call 3" scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-2"
@@ -150,10 +149,10 @@ Scenario: Invocation state failures
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -178,14 +177,14 @@ Scenario: Invocation state failures
 	And the response body should be "Hello World 3"
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request at invocation state "Started" should have had body:
+	And the request at the default scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-42"
 	}
 	"""
-	And the request at invocation state "call 2" should have had an empty body
-	And the request at invocation state "call 3" should have had body:
+	And the request at the "call 2" scenario state should have had an empty body
+	And the request at the "call 3" scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-43"
@@ -226,10 +225,10 @@ Scenario: Invocation state details with data tables failures
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -250,13 +249,13 @@ Scenario: Invocation state details with data tables failures
 	And the response body should be "Hello World 3"
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request at invocation state "Started" should have had body records:
+	And the request at the default scenario state should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | red          | Milky Way |
 	| given-world-2 | fuchsia      | Milky Way |
 	| given-world-3 | grey         | Milky Way |
-	And the request at invocation state "call 2" should have had an empty body
-	And the request at invocation state "call 3" should have had body records:
+	And the request at the "call 2" scenario state should have had an empty body
+	And the request at the "call 3" scenario state should have had body records:
 	| name          | primaryColor | galaxy    |
 	| given-world-1 | blue         | Milky Way |
 	| given-world-2 | fuchsia      | Milky Way |
@@ -296,10 +295,10 @@ Scenario: invocation state urls matching failures
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -324,17 +323,17 @@ Scenario: invocation state urls matching failures
 	And the response body should be "Hello World 3"
 	And I want to verify invocations of the wire mock named "get-hello-world"
 	And that wire mock should have been invoked 3 times
-	And the request at invocation state "Started" should have had url "/hello-world"
-	And the request at invocation state "Started" should have had body:
+	And the request at the default scenario state should have had url "/hello-world"
+	And the request at the default scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-0"
 	}
 	"""
-	And the request at invocation state "call 2" should have had url "/hello-world/galaxy-two"
-	And the request at invocation state "call 2" should have had an empty body
-	And the request at invocation state "call 3" should have had url "/hello-world/galayx-three"
-	And the request at invocation state "call 3" should have had body:
+	And the request at the "call 2" scenario state should have had url "/hello-world/galaxy-two"
+	And the request at the "call 2" scenario state should have had an empty body
+	And the request at the "call 3" scenario state should have had url "/hello-world/galayx-three"
+	And the request at the "call 3" scenario state should have had body:
 	"""
 	{
 		"invocationName": "invocation-2"

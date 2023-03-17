@@ -83,10 +83,10 @@ Scenario: Multiple calls on the same mock with differing results, invocation ind
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized
@@ -267,10 +267,10 @@ Scenario: invocation index urls matching failures
 	Given a wire mock named "get-hello-world" that handles the POST verb with a url matching "/hello-world/?.*"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World"
-	And that wire mock enters invocation state "call 2"
+	And the scenario enters state "call 2"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 2"
-	And that wire mock enters invocation state "call 3"
+	And the scenario enters state "call 3"
 	And that wire mock will return a response with status 200
 	And that wire mock response body is "Hello World 3"
 	And that wire mock is finalized

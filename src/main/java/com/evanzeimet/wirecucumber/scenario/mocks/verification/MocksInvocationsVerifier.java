@@ -1,13 +1,12 @@
 package com.evanzeimet.wirecucumber.scenario.mocks.verification;
 
-import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
 import com.evanzeimet.wirecucumber.scenario.ScenarioContext;
+import com.evanzeimet.wirecucumber.scenario.mocks.builder.MocksBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
@@ -35,7 +34,7 @@ public class MocksInvocationsVerifier {
 			mockInvocationsVerifier = new NoOpMockInvocationsVerifier(mockName);
 		} else {
 			currentMockName = mockName;
-			StubMapping stubMapping = context.getMockStateMapping(mockName, STARTED);
+			StubMapping stubMapping = context.getMockStateMapping(mockName, MocksBuilder.DEFAULT_MOCK_EXPECTED_SCENARIO_STATE);
 
 			if (stubMapping == null) {
 				String message = String.format("No mock found for name [%s]", mockName);

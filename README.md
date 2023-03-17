@@ -25,7 +25,7 @@ Given that wire mock response body is {string}
 Given that wire mock response body is these records:
 Given that wire mock response content type is {string}
 Given that wire mock response header {string} is {string}
-Given that wire mock enters invocation state {string}
+Given the scenario enters state {string}
 
 Given that wire mock is finalized
 
@@ -41,10 +41,10 @@ Then the request at invocation index {int} should have had body:
 Then the request at invocation index {int} should have had body {string}
 Then the request at invocation index {int} should have had an empty body
 Then the request at invocation index {int} should have had body records:
-Then the request at invocation state {string} should have had body:
-Then the request at invocation state {string} should have had body {string}
-Then the request at invocation state {string} should have had an empty body
-Then the request at invocation state {string} should have had body records:
+Then the request at scenario state {string} should have had body:
+Then the request at scenario state {string} should have had body {string}
+Then the request at scenario state {string} should have had an empty body
+Then the request at scenario state {string} should have had body records:
 
 Then the request should have had header {string} absent
 Then the request should have had header {string} containing {string}
@@ -52,13 +52,13 @@ Then the request should have had header {string} present
 Then the request at invocation index {int} should have had header {string} absent
 Then the request at invocation index {int} should have had header {string} containing {string}
 Then the request at invocation index {int} should have had header {string} present
-Then the request at invocation state {string} should have had header {string} absent
-Then the request at invocation state {string} should have had header {string} containing {string}
-Then the request at invocation state {string} should have had header {string} present
+Then the request at scenario state {string} should have had header {string} absent
+Then the request at scenario state {string} should have had header {string} containing {string}
+Then the request at scenario state {string} should have had header {string} present
 
 Then the request url should have been {string}
 Then the request at invocation index {int} should have had url {string}
-Then the request at invocation state {string} should have had url {string}
+Then the request at scenario state {string} should have had url {string}
 
 Then the invocations of that wire mock are verified
 ```

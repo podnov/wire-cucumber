@@ -4,7 +4,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
 import com.evanzeimet.wirecucumber.WireCucumberOptions;
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
@@ -17,11 +16,13 @@ import io.cucumber.java8.Scenario;
 
 public class MocksBuilder {
 
+	public static final String DEFAULT_MOCK_EXPECTED_SCENARIO_STATE = null;
+
 	protected ScenarioContext context;
 	protected MockBuilder mockBuilder;
-	protected Integer currentMockStateIndex;
+	protected Integer currentMockScenarioStateIndex;
 	protected String currentMockName;
-	protected String currentMockState;
+	protected String expectedScenarioState;
 	protected WireCucumberOptions options;
 
 	public MocksBuilder(WireCucumberOptions options, ScenarioContext context) {
@@ -43,8 +44,8 @@ public class MocksBuilder {
 
 		currentMockName = mockName;
 		context.addMockName(mockName);
-		currentMockState = STARTED;
-		currentMockStateIndex = 0;
+		expectedScenarioState = DEFAULT_MOCK_EXPECTED_SCENARIO_STATE;
+		currentMockScenarioStateIndex = 0;
 
 		Scenario currentScenario = context.getCurrentScenario();
 		mockBuilder = MockBuilder.create(currentScenario, httpVerb, urlPattern);
@@ -74,7 +75,7 @@ public class MocksBuilder {
 
 	protected MockStateKey createCurrentMockStateKey() {
 		validateMockStateConfigured();
-		return new MockStateKey(currentMockName, currentMockState);
+		return new MockStateKey(currentMockName, expectedScenarioState);
 	}
 
 	protected boolean getIsCurrentMockUnfinalized() {
@@ -87,33 +88,28 @@ public class MocksBuilder {
 		boolean isDisabled = options.getIsDisabled();
 
 		if (!isDisabled) {
-			StubMapping stubMapping = mockBuilder.finalizeMock(currentMockState);
+			StubMapping stubMapping = mockBuilder.finalizeMock(expectedScenarioState);
 			putCurrentMockStateStubMapping(stubMapping);
 		}
 
 		currentMockName = null;
-		currentMockState = null;
-		currentMockStateIndex = -1;
+		currentMockScenarioStateIndex = -1;
 	}
 
 	protected void putCurrentMockStateStubMapping(StubMapping stubMapping) {
 		MockStateKey key = validateMockStateUnused();
-		context.putMockState(key, stubMapping, currentMockStateIndex++);
+		context.putMockState(key, stubMapping, currentMockScenarioStateIndex++);
 	}
 
-	public void transitionMockState(String nextState) {
-		StubMapping stubMapping = mockBuilder.setRequestBuilderState(currentMockState, nextState);
+	public void transitionScenarioState(String nextState) {
+		StubMapping stubMapping = mockBuilder.setRequestBuilderState(expectedScenarioState, nextState);
 		putCurrentMockStateStubMapping(stubMapping);
-		currentMockState = nextState;
+		expectedScenarioState = nextState;
 	}
 
 	protected void validateMockStateConfigured() {
 		if (currentMockName == null) {
 			throw new WireCucumberRuntimeException("Mock name not set");
-		}
-
-		if (currentMockState == null) {
-			throw new WireCucumberRuntimeException("Scenario state not set");
 		}
 	}
 
@@ -121,7 +117,7 @@ public class MocksBuilder {
 		MockStateKey key = createCurrentMockStateKey();
 
 		if (context.containsMockState(key)) {
-			String message = String.format("Mock name [%s] and state [%s] already in use",
+			String message = String.format("Mock name [%s] and scenario state [%s] already in use",
 					key.getMockName(),
 					key.getScenarioState());
 			throw new WireCucumberRuntimeException(message);

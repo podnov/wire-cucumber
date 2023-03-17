@@ -41,6 +41,30 @@ public class MocksBuilderTest {
 	}
 
 	@Test
+	public void bootstrapMock() {
+		String givenCurrentMockName = null;
+		String givenExpectedScenarioState = "given-expected-scenario-state";
+
+		String givenNewMockName = "given-new-mock-name";
+		String givenNewHttpVerb = "get";
+		UrlPattern givenNewPattern = urlEqualTo("given-url-pattern");
+		String givenScenarioName = "given-scenario-name";
+
+		Scenario givenScenario = mock(Scenario.class);
+		doReturn(givenScenarioName).when(givenScenario).getName();
+
+		builder.currentMockName = givenCurrentMockName;
+		builder.expectedScenarioState = givenExpectedScenarioState;
+
+		givenContext.setCurrentScenario(givenScenario);
+
+		builder.bootstrapMock(givenNewMockName, givenNewHttpVerb, givenNewPattern);
+
+		assertEquals(givenNewMockName, builder.currentMockName);
+		assertNull(builder.expectedScenarioState);
+	}
+
+	@Test
 	public void bootstrapMock_existingMockUnfinalized() {
 		String givenUnfinalizedMockName = "given-unfinalized-mock-name";
 
@@ -91,15 +115,15 @@ public class MocksBuilderTest {
 	public void finalizeMock_isDisabled_false() {
 		boolean givenIsDisabled = false;
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
-		Integer givenCurrentMockStateIndex = 42;
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
+		Integer givenCurrentMockScenarioStateIndex = 42;
 		StubMapping givenStubMapping = mock(StubMapping.class);
 		MockBuilder givenMockBuilder = spy(new MockBuilder());
 
 		builder.context = givenContext;
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
-		builder.currentMockStateIndex = givenCurrentMockStateIndex;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
+		builder.currentMockScenarioStateIndex = givenCurrentMockScenarioStateIndex;
 		builder.mockBuilder = givenMockBuilder;
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 
@@ -114,27 +138,27 @@ public class MocksBuilderTest {
 		builder.finalizeMock();
 
 		assertNull(builder.currentMockName);
-		assertNull(builder.currentMockState);
+		assertEquals(givenCurrentExpectedScenarioState, builder.expectedScenarioState);
 
-		verify(givenMockBuilder).finalizeMock(givenCurrentMockState);
+		verify(givenMockBuilder).finalizeMock(givenCurrentExpectedScenarioState);
 
 		Integer expectedCurrentMockStateIndex = -1;
-		assertEquals(expectedCurrentMockStateIndex, builder.currentMockStateIndex);
+		assertEquals(expectedCurrentMockStateIndex, builder.currentMockScenarioStateIndex);
 
-		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockStateIndex);
+		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockScenarioStateIndex);
 	}
 
 	@Test
-	public void finalizeRequestMock_isDisabled_true() {
+	public void finalizeMock_isDisabled_true() {
 		boolean givenIsDisabled = true;
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
-		Integer givenCurrentMockStateIndex = 42;
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
+		Integer givenCurrentMockScenarioStateIndex = 42;
 		MockBuilder givenMockBuilder = spy(new MockBuilder());
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
-		builder.currentMockStateIndex = givenCurrentMockStateIndex;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
+		builder.currentMockScenarioStateIndex = givenCurrentMockScenarioStateIndex;
 		builder.mockBuilder = givenMockBuilder;
 
 		doReturn(givenIsDisabled)
@@ -144,18 +168,18 @@ public class MocksBuilderTest {
 		builder.finalizeMock();
 
 		assertNull(builder.currentMockName);
-		assertNull(builder.currentMockState);
+		assertEquals(givenCurrentExpectedScenarioState, builder.expectedScenarioState);
 
-		verify(givenMockBuilder, never()).finalizeMock(givenCurrentMockState);
+		verify(givenMockBuilder, never()).finalizeMock(givenCurrentExpectedScenarioState);
 
 		Integer expectedCurrentMockStateIndex = -1;
-		assertEquals(expectedCurrentMockStateIndex, builder.currentMockStateIndex);
+		assertEquals(expectedCurrentMockStateIndex, builder.currentMockScenarioStateIndex);
 
 		verify(givenContext, never()).putMockState(any(MockStateKey.class), any(StubMapping.class), anyInt());
 	}
 
 	@Test
-	public void finalizeRequestMock_currentMockName_null() {
+	public void finalizeMock_currentMockName_null() {
 		boolean givenIsDisabled = false;
 		String givenCurrentMockName = null;
 
@@ -181,17 +205,17 @@ public class MocksBuilderTest {
 	}
 
 	@Test
-	public void finalizeRequestMock_currentMockName_used() {
+	public void finalizeMock_currentMockName_used() {
 		boolean givenIsDisabled = false;
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
-		String givenNextMockState = "given-next-mock-state";
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
+		String givenNextScenarioState = "given-next-scenario-state";
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
-		builder.currentMockStateIndex = 0;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
+		builder.currentMockScenarioStateIndex = 0;
 		builder.mockBuilder = mock(MockBuilder.class);
-		builder.transitionMockState(givenNextMockState);
+		builder.transitionScenarioState(givenNextScenarioState);
 		builder.putCurrentMockStateStubMapping(null);
 
 		doReturn(givenIsDisabled)
@@ -209,39 +233,39 @@ public class MocksBuilderTest {
 		assertNotNull(actualException);
 
 		String actualExceptionMessage = actualException.getMessage();
-		String expectedExceptionMessage = "Mock name [given-current-mock-name] and state [given-next-mock-state] already in use";
+		String expectedExceptionMessage = "Mock name [given-current-mock-name] and scenario state [given-next-scenario-state] already in use";
 		assertEquals(expectedExceptionMessage, actualExceptionMessage);
 	}
 
 	@Test
 	public void putCurrentMockStateStubMapping() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
-		Integer givenCurrentMockStateIndex = 42;
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
+		Integer givenCurrentMockScenarioStateIndex = 42;
 		StubMapping givenStubMapping = mock(StubMapping.class);
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
-		builder.currentMockStateIndex = givenCurrentMockStateIndex;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
+		builder.currentMockScenarioStateIndex = givenCurrentMockScenarioStateIndex;
 
 		builder.putCurrentMockStateStubMapping(givenStubMapping);
 
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 
-		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockStateIndex);
+		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockScenarioStateIndex);
 	}
 
 	@Test
 	public void putCurrentMockStateStubMapping_duplicate() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
-		Integer givenCurrentMockStateIndex = 42;
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
+		Integer givenCurrentMockScenarioStateIndex = 42;
 		Boolean givenContainsMockState = true;
 		StubMapping givenStubMapping = mock(StubMapping.class);
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
-		builder.currentMockStateIndex = givenCurrentMockStateIndex;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
+		builder.currentMockScenarioStateIndex = givenCurrentMockScenarioStateIndex;
 
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 
@@ -259,7 +283,7 @@ public class MocksBuilderTest {
 
 		String actualMessage = actual.getMessage();
 		String expectedMessage =
-				"Mock name [given-current-mock-name] and state [given-current-mock-state] already in use";
+				"Mock name [given-current-mock-name] and scenario state [given-current-expected-scenario-state] already in use";
 
 		assertEquals(expectedMessage, actualMessage);
 	}
@@ -267,39 +291,39 @@ public class MocksBuilderTest {
 	@Test
 	public void transitionMockState() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
-		Integer givenCurrentMockStateIndex = 42;
-		String givenNextMockState = "given-next-state";
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
+		Integer givenCurrentMockScenarioStateIndex = 42;
+		String givenNextMockState = "given-next-scenario-state";
 		StubMapping givenStubMapping = mock(StubMapping.class);
 		MockBuilder givenMockBuilder = mock(MockBuilder.class);
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
-		builder.currentMockStateIndex = givenCurrentMockStateIndex;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
+		builder.currentMockScenarioStateIndex = givenCurrentMockScenarioStateIndex;
 		builder.mockBuilder = givenMockBuilder;
 
 		MockStateKey actualKey = builder.createCurrentMockStateKey();
 		doReturn(givenStubMapping).when(givenMockBuilder)
-				.setRequestBuilderState(givenCurrentMockState, givenNextMockState);
+				.setRequestBuilderState(givenCurrentExpectedScenarioState, givenNextMockState);
 
-		builder.transitionMockState(givenNextMockState);
+		builder.transitionScenarioState(givenNextMockState);
 
 		assertEquals(givenCurrentMockName, builder.currentMockName);
 
-		Integer expectedCurrentScenarioStateIndex = givenCurrentMockStateIndex + 1;
-		assertEquals(expectedCurrentScenarioStateIndex, builder.currentMockStateIndex);
-		assertEquals(givenNextMockState, builder.currentMockState);
+		Integer expectedCurrentScenarioStateIndex = givenCurrentMockScenarioStateIndex + 1;
+		assertEquals(expectedCurrentScenarioStateIndex, builder.currentMockScenarioStateIndex);
+		assertEquals(givenNextMockState, builder.expectedScenarioState);
 
-		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockStateIndex);
+		verify(givenContext).putMockState(actualKey, givenStubMapping, givenCurrentMockScenarioStateIndex);
 	}
 
 	@Test
 	public void validateMockStateConfigured() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
 
 		WireCucumberRuntimeException actual = null;
 
@@ -315,10 +339,10 @@ public class MocksBuilderTest {
 	@Test
 	public void validateMockStateConfigured_nullMockName() {
 		String givenCurrentMockName = null;
-		String givenCurrentMockState = "given-current-mock-state";
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
 
 		WireCucumberRuntimeException actual = null;
 
@@ -339,10 +363,10 @@ public class MocksBuilderTest {
 	@Test
 	public void validateMockStateConfigured_nullMockState() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = null;
+		String givenCurrentExpectedScenarioState = null;
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
 
 		WireCucumberRuntimeException actual = null;
 
@@ -352,21 +376,16 @@ public class MocksBuilderTest {
 			actual = e;
 		}
 
-		assertNotNull(actual);
-
-		String actualMessage = actual.getMessage();
-		String expectedMessage = "Scenario state not set";
-
-		assertEquals(expectedMessage, actualMessage);
+		assertNull(actual);
 	}
 
 	@Test
 	public void validateMockStateUnused_unused() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
 		MockStateKey givenKey = builder.createCurrentMockStateKey();
 
 		boolean givenContextContainsMockState = false;
@@ -386,10 +405,10 @@ public class MocksBuilderTest {
 	@Test
 	public void validateMockStateUnused_used() {
 		String givenCurrentMockName = "given-current-mock-name";
-		String givenCurrentMockState = "given-current-mock-state";
+		String givenCurrentExpectedScenarioState = "given-current-expected-scenario-state";
 
 		builder.currentMockName = givenCurrentMockName;
-		builder.currentMockState = givenCurrentMockState;
+		builder.expectedScenarioState = givenCurrentExpectedScenarioState;
 		MockStateKey givenKey = builder.createCurrentMockStateKey();
 
 		boolean givenContextContainsMockState = true;
@@ -407,7 +426,7 @@ public class MocksBuilderTest {
 
 		String actualMessage = actual.getMessage();
 		String expectedMessage =
-				"Mock name [given-current-mock-name] and state [given-current-mock-state] already in use";
+				"Mock name [given-current-mock-name] and scenario state [given-current-expected-scenario-state] already in use";
 
 		assertEquals(expectedMessage, actualMessage);
 	}

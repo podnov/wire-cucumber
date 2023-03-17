@@ -1,5 +1,6 @@
 package com.evanzeimet.wirecucumber;
 
+import static com.evanzeimet.wirecucumber.scenario.mocks.builder.MocksBuilder.DEFAULT_MOCK_EXPECTED_SCENARIO_STATE;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
@@ -23,6 +24,48 @@ public class WireCucumberStepDefinitions
 
 	public ScenarioBuilder getScenarioBuilder() {
 		return scenarioBuilder;
+	}
+
+	protected A0 addInvocationDefaultStateBodyAbsentVerification() {
+		return () -> {
+			addInvocationStateBodyAbsentVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE);
+		};
+	}
+
+	protected A1<DataTable> addInvocationDefaultStateBodyEqualToDataTableVerification() {
+		return (dataTable) -> {
+			addInvocationStateBodyEqualToDataTableVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE, dataTable);
+		};
+	}
+
+	protected A1<String> addInvocationDefaultStateBodyEqualToStringVerification() {
+		return (requestBody) -> {
+			addInvocationStateBodyEqualToStringVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE, requestBody);
+		};
+	}
+
+	protected A1<String> addInvocationDefaultStateHeaderAbsentVerification() {
+		return (headerName) -> {
+			addInvocationStateHeaderAbsentVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE, headerName);
+		};
+	}
+
+	protected A2<String, String> addInvocationDefaultStateHeaderContainingVerification() {
+		return (headerName, headerValue) -> {
+			addInvocationStateHeaderContainingVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE, headerName, headerValue);
+		};
+	}
+
+	protected A1<String> addInvocationDefaultStateHeaderPresentVerification() {
+		return (headerName) -> {
+			addInvocationStateHeaderPresentVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE, headerName);
+		};
+	}
+
+	protected A1<String> addInvocationDefaultStateUrlVerification() {
+		return (url) -> {
+			addInvocationStateUrlVerification().accept(DEFAULT_MOCK_EXPECTED_SCENARIO_STATE, url);
+		};
 	}
 
 	protected A1<Integer> addInvocationIndexBodyAbsentVerification() {
@@ -84,56 +127,56 @@ public class WireCucumberStepDefinitions
 	protected A1<String> addInvocationStateBodyAbsentVerification() {
 		return (state) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateBodyAbsentVerification(state);
+			.getMockInvocationsVerifier()
+			.addInvocationStateBodyAbsentVerification(state);
 		};
 	}
 
 	protected A2<String, DataTable> addInvocationStateBodyEqualToDataTableVerification() {
 		return (state, dataTable) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateBodyEqualToVerification(state, dataTable);
+			.getMockInvocationsVerifier()
+			.addInvocationStateBodyEqualToVerification(state, dataTable);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateBodyEqualToStringVerification() {
 		return (state, requestBody) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateBodyEqualToVerification(state, requestBody);
+			.getMockInvocationsVerifier()
+			.addInvocationStateBodyEqualToVerification(state, requestBody);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateHeaderAbsentVerification() {
 		return (state, headerName) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateHeaderAbsentVerification(state, headerName);
+			.getMockInvocationsVerifier()
+			.addInvocationStateHeaderAbsentVerification(state, headerName);
 		};
 	}
 
 	protected A3<String, String, String> addInvocationStateHeaderContainingVerification() {
 		return (state, headerName, headerValue) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateHeaderContainingVerification(state, headerName, headerValue);
+			.getMockInvocationsVerifier()
+			.addInvocationStateHeaderContainingVerification(state, headerName, headerValue);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateHeaderPresentVerification() {
 		return (state, headerName) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateHeaderPresentVerification(state, headerName);
+			.getMockInvocationsVerifier()
+			.addInvocationStateHeaderPresentVerification(state, headerName);
 		};
 	}
 
 	protected A2<String, String> addInvocationStateUrlVerification() {
 		return (state, url) -> {
 			scenarioBuilder.getMocksInvocationsVerifier()
-					.getMockInvocationsVerifier()
-					.addInvocationStateUrlVerification(state, url);
+			.getMockInvocationsVerifier()
+			.addInvocationStateUrlVerification(state, url);
 		};
 	}
 
@@ -205,6 +248,7 @@ public class WireCucumberStepDefinitions
 
 		Given("that wire mock expects a url query string parameter {string} equal to {string}", setMockWithQueryParamEqualTo());
 		Given("that wire mock expects a url query string parameter {string} matching {string}", setMockWithQueryParamMatching());
+		// Given("that wire mock expects this header:", setMockWithHeader()); TODO add
 		Given("that wire mock expects this request body:", setMockWithRequestBody());
 
 		Given("that wire mock accepts {string}", setMockWithAcceptContaining());
@@ -220,7 +264,7 @@ public class WireCucumberStepDefinitions
 		Given("that wire mock response content type is {string}", setMockResponseWithContentType());
 		Given("that wire mock response header {string} is {string}", setMockResponseWithHeader());
 
-		Given("that wire mock enters invocation state {string}", setMockState());
+		Given("the scenario enters state {string}", setScenarioState());
 
 		Given("that wire mock is finalized", finalizeMock());
 
@@ -234,28 +278,37 @@ public class WireCucumberStepDefinitions
 		Then("the request body should have been {string}", setVerifyMockBodyEqualToString());
 		Then("the request body should have been empty", setVerifyMockBodyAbsent());
 		Then("the request body should have been these records:", setVerifyMockBodyEqualToDataTable());
+		Then("the request should have had header {string} absent", setVerifyMockHeaderAbsent());
+		Then("the request should have had header {string} containing {string}", setVerifyMockHeaderContaining());
+		Then("the request should have had header {string} present", setVerifyMockHeaderPresent());
+		Then("the request url should have been {string}", setVerifyMockUrl());
+
 		Then("the request at invocation index {int} should have had body:", addInvocationIndexBodyEqualToStringVerification());
 		Then("the request at invocation index {int} should have had body {string}", addInvocationIndexBodyEqualToStringVerification());
 		Then("the request at invocation index {int} should have had an empty body", addInvocationIndexBodyAbsentVerification());
 		Then("the request at invocation index {int} should have had body records:", addInvocationIndexBodyEqualToDataTableVerification());
-		Then("the request at invocation state {string} should have had body:", addInvocationStateBodyEqualToStringVerification());
-		Then("the request at invocation state {string} should have had body {string}", addInvocationStateBodyEqualToStringVerification());
-		Then("the request at invocation state {string} should have had an empty body", addInvocationStateBodyAbsentVerification());
-		Then("the request at invocation state {string} should have had body records:", addInvocationStateBodyEqualToDataTableVerification());
-
-		Then("the request should have had header {string} absent", setVerifyMockHeaderAbsent());
-		Then("the request should have had header {string} containing {string}", setVerifyMockHeaderContaining());
-		Then("the request should have had header {string} present", setVerifyMockHeaderPresent());
 		Then("the request at invocation index {int} should have had header {string} absent", addInvocationIndexHeaderAbsentVerification());
 		Then("the request at invocation index {int} should have had header {string} containing {string}", addInvocationIndexHeaderContainingVerification());
 		Then("the request at invocation index {int} should have had header {string} present", addInvocationIndexHeaderPresentVerification());
-		Then("the request at invocation state {string} should have had header {string} absent", addInvocationStateHeaderAbsentVerification());
-		Then("the request at invocation state {string} should have had header {string} containing {string}", addInvocationStateHeaderContainingVerification());
-		Then("the request at invocation state {string} should have had header {string} present", addInvocationStateHeaderPresentVerification());
-
-		Then("the request url should have been {string}", setVerifyMockUrl());
 		Then("the request at invocation index {int} should have had url {string}", addInvocationIndexUrlVerification());
-		Then("the request at invocation state {string} should have had url {string}", addInvocationStateUrlVerification());
+
+		Then("the request at the default scenario state should have had body:", addInvocationDefaultStateBodyEqualToStringVerification());
+		Then("the request at the default scenario state should have had body {string}", addInvocationDefaultStateBodyEqualToStringVerification());
+		Then("the request at the default scenario state should have had an empty body", addInvocationDefaultStateBodyAbsentVerification());
+		Then("the request at the default scenario state should have had body records:", addInvocationDefaultStateBodyEqualToDataTableVerification());
+		Then("the request at the default scenario state should have had header {string} absent", addInvocationDefaultStateHeaderAbsentVerification());
+		Then("the request at the default scenario state should have had header {string} containing {string}", addInvocationDefaultStateHeaderContainingVerification());
+		Then("the request at the default scenario state should have had header {string} present", addInvocationDefaultStateHeaderPresentVerification());
+		Then("the request at the default scenario state should have had url {string}", addInvocationDefaultStateUrlVerification());
+
+		Then("the request at the {string} scenario state should have had body:", addInvocationStateBodyEqualToStringVerification());
+		Then("the request at the {string} scenario state should have had body {string}", addInvocationStateBodyEqualToStringVerification());
+		Then("the request at the {string} scenario state should have had an empty body", addInvocationStateBodyAbsentVerification());
+		Then("the request at the {string} scenario state should have had body records:", addInvocationStateBodyEqualToDataTableVerification());
+		Then("the request at the {string} scenario state should have had header {string} absent", addInvocationStateHeaderAbsentVerification());
+		Then("the request at the {string} scenario state should have had header {string} containing {string}", addInvocationStateHeaderContainingVerification());
+		Then("the request at the {string} scenario state should have had header {string} present", addInvocationStateHeaderPresentVerification());
+		Then("the request at the {string} scenario state should have had url {string}", addInvocationStateUrlVerification());
 
 		Then("the invocations of that wire mock are verified", verifyMockInvocations());
 
@@ -309,6 +362,17 @@ public class WireCucumberStepDefinitions
 		};
 	}
 
+	/*
+	protected A1<String> setMockWithHeader() {
+		return (value) -> {
+			scenarioBuilder.getMocksBuilder()
+					.mockBuilder()
+					.requestBuilderWithHeader(value) // TODO add this expectation
+		};
+	}
+	*/
+
+	// TODO is this really the "mock's" accept or the request's accpet?
 	protected A1<String> setMockWithAcceptContaining() {
 		return (value) -> {
 			scenarioBuilder.getMocksBuilder()
@@ -373,10 +437,10 @@ public class WireCucumberStepDefinitions
 		};
 	}
 
-	protected A1<String> setMockState() {
+	protected A1<String> setScenarioState() {
 		return (newState) -> {
 			scenarioBuilder.getMocksBuilder()
-					.transitionMockState(newState);
+					.transitionScenarioState(newState);
 		};
 	}
 
