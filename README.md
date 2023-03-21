@@ -24,13 +24,13 @@ Given that wire mock expects this request body:
 
 Given that wire mock will return a response with status {int}
 
+Given that wire mock response content type is {string}
+Given that wire mock response header {string} is {string}
+
 Given that wire mock response body is:
 Given that wire mock response body is the contents of file {string}
 Given that wire mock response body is {string}
 Given that wire mock response body is these records:
-
-Given that wire mock response content type is {string}
-Given that wire mock response header {string} is {string}
 
 Given the scenario enters state {string}
 
@@ -41,7 +41,7 @@ Then I want to verify invocations of the wire mock named {string}
 Then that wire mock should not have been invoked
 Then that wire mock should have been invoked {int} time(s)
 
-Then the request url should have been {string}d body records:
+Then the request url should have been {string}
 
 Then the request should have had header {string} absent
 Then the request should have had header {string} containing {string}

@@ -258,13 +258,13 @@ public class WireCucumberStepDefinitions
 		// TODO opportunity, what makes this special (bootstrap)?
 		Given("that wire mock will return a response with status {int}", bootstrapResponseBuilder());
 
+		Given("that wire mock response content type is {string}", setMockResponseWithContentType());
+		Given("that wire mock response header {string} is {string}", setMockResponseWithHeader());
+
 		Given("that wire mock response body is:", setMockResponseBodyString());
 		Given("that wire mock response body is the contents of file {string}", setMockResponseBodyFile());
 		Given("that wire mock response body is {string}", setMockResponseBodyString());
 		Given("that wire mock response body is these records:", setMockResponseWithBodyDataTable());
-
-		Given("that wire mock response content type is {string}", setMockResponseWithContentType());
-		Given("that wire mock response header {string} is {string}", setMockResponseWithHeader());
 
 		Given("the scenario enters state {string}", setScenarioState());
 
