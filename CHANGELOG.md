@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.18.0]
+- Update header expectation verbiage
+
 ## [0.17.2]
 - Fix skip all mocks verification verbiage
 
