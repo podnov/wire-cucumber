@@ -90,7 +90,6 @@ Scenario: Request entity matching, multiple
 	And the invocations of that wire mock are verified
 
 
-@current
 Scenario: Request entity matching, mismatch
 	Given a wire mock named "post-hello-world" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock expects this request body:
@@ -141,7 +140,6 @@ Scenario: Request entity matching, mismatch
 	"""
 
 
-@current
 Scenario: Request entity matching, multiple mismatch
 	Given a wire mock named "post-hello-world-1" that handles the POST verb with a url equal to "/hello-world"
 	And that wire mock expects this request body:

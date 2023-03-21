@@ -1,8 +1,8 @@
 package com.evanzeimet.wirecucumber.functionaltest.enabled;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -126,8 +126,8 @@ public class WireCucumberEnabledFunctionalTest
 
 			actualResponse = bootstrapRequest()
 					.port(port)
-					.accept(JSON)
-					.contentType(JSON)
+					.accept(JSON_UTF_8.toString())
+					.contentType(JSON_UTF_8.toString())
 					.body(requestBody)
 					.post(path)
 					.then();

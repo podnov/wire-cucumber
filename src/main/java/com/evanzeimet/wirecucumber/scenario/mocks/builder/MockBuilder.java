@@ -8,7 +8,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.patch;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
 import static org.eclipse.jetty.http.HttpHeader.CONTENT_TYPE;
 
 import com.evanzeimet.wirecucumber.WireCucumberRuntimeException;
@@ -94,14 +93,6 @@ public class MockBuilder {
 		responseBuilder = null;
 
 		return result;
-	}
-
-	public ScenarioMappingBuilder requestBuilderWithAccept(StringValuePattern value) {
-		return requestBuilderWithHeader(ACCEPT.asString(), value);
-	}
-
-	public ScenarioMappingBuilder requestBuilderWithContentType(StringValuePattern value) {
-		return requestBuilderWithHeader(CONTENT_TYPE.asString(), value);
 	}
 
 	public ScenarioMappingBuilder requestBuilderWithHeader(String headerName, StringValuePattern headerValuePattern) {
